@@ -3,264 +3,227 @@
 using namespace std;
 using namespace uhh2;
 
-BstarToTWGen::BstarToTWGen(const vector<GenParticle> & genparticles, bool throw_on_failure): m_type(e_notfound) {    
-  int n_bstar = 0;
-  for(unsigned int i=0; i<genparticles.size(); ++i) {
-    const GenParticle & genp = genparticles[i];
-    if (abs(genp.pdgId()) == 1005){
-      auto w = genp.daughter(&genparticles, 1);
-      auto t = genp.daughter(&genparticles, 2);
-      if(!w || !t){
-	if(throw_on_failure) throw runtime_error("BstarToTWGen: bstar has not ==2 daughters");
-	return;
-      }
-      if(abs(w->pdgId()) != 24){
-	std::swap(w, t);
-	if(abs(w->pdgId()) != 24){
-	  if(throw_on_failure) throw runtime_error("BstarToTWGen: bstar has no W daughter");
-	  return;
+/* ------------------------------------------------------------------
+ * BstarToTWGen - Interprets an b* -> tW event by going through the
+ * GenParticle list and identifying all GenParticles from the hard
+ * process. It also gets a list of all stable GenParticles
+ * (status() == 1).
+ */
+
+// possible to write this more efficient..
+BstarToTWGen::BstarToTWGen(const Event & event)
+{
+  vector<GenParticle> genparticles = *event.genparticles;
+  vector<Particle> genjets = *event.genjets;
+  // Get first 11 genparticles (this should be all particles from the hard process) and match them
+  vector<GenParticle> hardGenparticles(&genparticles[0], &genparticles[10]);
+
+  is_singlemuo = false;
+  is_singleele = false;
+  bool has_bstar = false;
+  for(unsigned int i = 0; i < genparticles.size(); ++i) 
+    {
+      const GenParticle & genp = genparticles[i];
+      // is b*
+      if (abs(genp.pdgId()) == 1005)
+	{
+	  m_bstar = genp.v4();
+	  has_bstar = true;
 	}
-      }
-      
-      // NOTE: here, we could skip over intermediate W bosons. However,
-      // this Pythia8-related problem is now fixed when creating ntuples already,
-      // so this should not be necessary.
-      
-      if(abs(t->pdgId()) != 6){
-	if(throw_on_failure) throw runtime_error("BstarToTWGen: bstar has no t daughter");
-	return;
-      }
-
-      // get W daughters:
-      auto wd1 = w->daughter(&genparticles, 1);
-      auto wd2 = w->daughter(&genparticles, 2);
-      if(!wd1 || !wd2){
-	if(throw_on_failure) throw runtime_error("BstarToTWGen: W from Bstar decay has not ==2 daughters");
-	return;
-      }
-
-      // get t daughters:
-      auto tw = t->daughter(&genparticles, 1);
-      auto tb = t->daughter(&genparticles, 2);      
-      if(!tw || !tb){
-	if(throw_on_failure) throw runtime_error("BstarToTWGen: t has not ==2 daughters");
-	return;
-      }
-      if(abs(tw->pdgId()) != 24){
-	std::swap(tw, tb);
-	if(abs(tw->pdgId()) != 24){
-	  if(throw_on_failure) throw runtime_error("BstarToTWGen: t has no W daughter");
-	  return;
+      // is top
+      else if (abs(genp.pdgId()) == 6)
+	{
+	  m_tbstar = genp.v4();
+	  auto tw = genp.daughter(&genparticles, 1);
+	  auto tb = genp.daughter(&genparticles, 2);
+	  if (abs(tw->pdgId()) != 24) std::swap(tw, tb);
+	  // if W from t decay was skipped find daughters and reconstruct it
+	  if (abs(tw->pdgId()) != 24)
+	    {
+	      if (abs(tw->pdgId()) == 5) std::swap(tw, tb);
+	      auto twd1 = tw;
+	      auto twd2 = genp.daughter(&genparticles, 3);
+	      m_tWdecay1 = twd1->v4();
+	      m_tWdecay2 = twd2->v4();
+	      m_tb = tb->v4();
+	      m_tW = m_tWdecay1 + m_tWdecay2;
+	      if (abs(twd1->pdgId()) >= 11 && abs(twd2->pdgId()) >= 11 && abs(twd1->pdgId()) < 15 && abs(twd2->pdgId()) < 15)
+		{
+		  is_tophad = false;
+		  if (twd1->charge() != 0)
+		    {
+		      m_cl = m_tWdecay1;
+		      m_nl = m_tWdecay2;
+		    }
+		  else
+		    {
+		      m_cl = m_tWdecay1;
+		      m_nl = m_tWdecay2;
+		    }
+		  if (abs(twd1->pdgId()) == 11 || abs(twd2->pdgId()) == 11) is_singlemuo = true;
+		  else if (abs(twd1->pdgId()) == 13 || abs(twd2->pdgId()) == 13) is_singleele = true;
+		}
+	      else
+		{
+		  is_tophad = true;
+		}
+	    }
+	  else
+	    {
+	      auto twd1 = tw->daughter(&genparticles, 1);
+	      auto twd2 = tw->daughter(&genparticles, 2);
+	      m_tWdecay1 = twd1->v4();
+	      m_tWdecay2 = twd2->v4();
+	      m_tb = tb->v4();
+	      m_tW = tw->v4();
+	      if (abs(twd1->pdgId()) >= 11 && abs(twd2->pdgId()) >= 11 && abs(twd1->pdgId()) < 15 && abs(twd2->pdgId()) < 15)
+		{
+		  is_tophad = false;
+		  if (twd1->charge() != 0)
+		    {
+		      m_cl = m_tWdecay1;
+		      m_nl = m_tWdecay2;
+		    }
+		  else
+		    {
+		      m_cl = m_tWdecay1;
+		      m_nl = m_tWdecay2;
+		    }
+		  if (abs(twd1->pdgId()) == 11 || abs(twd2->pdgId()) == 11) is_singlemuo = true;
+		  else if (abs(twd1->pdgId()) == 13 || abs(twd2->pdgId()) == 13) is_singleele = true;
+		}
+	      else is_tophad = true;
+	    }  
 	}
-      }
-      // get W daughters of tW:
-      auto twd1 = tw->daughter(&genparticles, 1);
-      auto twd2 = tw->daughter(&genparticles, 2);
-      if(!twd1 || !twd2){
-	if(throw_on_failure) throw runtime_error("BstarToTWGen: W from t decay has not ==2 daughters");
-	return;
-      }
-
-      // now that we collected everything, fill the member variables. 
-      m_bstar = genp;
-      m_Wbstar = *w;
-      m_tbstar = *t;
-      m_Wdecay1 = *wd1;
-      m_Wdecay2 = *wd2;
-      m_tW = *tw;
-      m_tb = *tb;
-      m_tWdecay1 = *twd1;
-      m_tWdecay2 = *twd2;
-      ++n_bstar;
+      // is W from b*
+      else if (abs(genp.pdgId()) == 24 && abs(genp.mother(&genparticles, 1)->pdgId()) != 6)
+	{
+	  m_Wbstar = genp.v4();
+	  auto wd1 = genp.daughter(&genparticles, 1);
+	  auto wd2 = genp.daughter(&genparticles, 2);
+	  m_Wdecay1 = wd1->v4();
+	  m_Wdecay2 = wd2->v4();
+	  if (abs(wd1->pdgId()) >= 11 && abs(wd2->pdgId()) >= 11 && abs(wd1->pdgId()) < 15 && abs(wd2->pdgId()) < 15)
+	    {
+	      is_whad = false;
+	      if (wd1->charge() != 0)
+		{
+		  m_cl = m_Wdecay1;
+		  m_nl = m_Wdecay2;
+		}
+	      else
+		{
+		  m_cl = m_Wdecay1;
+		  m_nl = m_Wdecay2;
+		}
+	      if (abs(wd1->pdgId()) == 11 || abs(wd2->pdgId()) == 11) is_singlemuo = true;
+	      else if (abs(wd1->pdgId()) == 13 || abs(wd2->pdgId()) == 13) is_singleele = true;
+	    }
+	  else is_whad = true;
+	}
     }
-  }
-  // check if bstar was in the event
-  if (n_bstar != 1) {
-    if(throw_on_failure)  throw runtime_error("BstarToTWGen: did not find exactly one bstar in the event");
-    return;
-  }
+  // if b* was skipped reconstruct it from daughters
+  if (!has_bstar)
+    {
+      m_bstar = m_tbstar + m_Wbstar;
+    }
 
-  // calculate decay channel by counting the number of charged leptons
-  // in the W daughters:
-  int n_e = 0, n_m = 0, n_t = 0;
-  for(const auto & wd : {m_Wdecay1, m_Wdecay2, m_tWdecay1, m_tWdecay2}){
-    int id = abs(wd.pdgId());
-    if(id == 11) ++n_e;
-    else if(id == 13) ++n_m;
-    else if(id == 15) ++n_t;
-  }
+  // Get stable Particles (except neutrinos)
+  for (unsigned int i = 0; i < genparticles.size(); ++i){
+    const GenParticle & genp = genparticles[i];
+    if ( genp.status() == 1 ){
+      if (abs(genp.pdgId() != 12) || abs(genp.pdgId() != 14) || abs(genp.pdgId() != 16) ) m_stable.push_back(genp.v4());
+      if (abs(genp.pdgId()) == 11) m_ele.push_back(genp.v4());
+      else if (abs(genp.pdgId()) == 13) m_muo.push_back(genp.v4());
+    }
+  } 
+}
 
-  // dilepton channels:
-  if(n_e == 2){
-    m_type = e_ee;
-  }
-  else if(n_e == 1 && n_m == 1){
-    m_type = e_emu;
-  }
-  else if(n_e == 1 && n_t == 1){
-    m_type = e_etau;
-  }
-  else if(n_m == 2){
-    m_type = e_mumu;
-  }
-  else if(n_m == 1 && n_t == 1){
-    m_type = e_mutau;
-  }
-  else if(n_t == 2){
-    m_type = e_tautau;
-  }
 
-  // lepton+jet channels:
-  else if(n_e == 1){
-    m_type = e_ehad;
-  }
-  else if(n_m == 1){
-    m_type = e_muhad;
-  }
-  else if(n_t == 1){
-    m_type = e_tauhad;
-  }
-
-  // hadronic:
-  else{
-    m_type = e_had;
-  }
-}   
- 
-
-GenParticle BstarToTWGen::bstar() const{
+LorentzVector BstarToTWGen::bstar() const{
   return m_bstar;
 }
 
-GenParticle BstarToTWGen::Wbstar() const{
+LorentzVector BstarToTWGen::Wbstar() const{
   return m_Wbstar;
 }
 
-GenParticle BstarToTWGen::tbstar() const{
+LorentzVector BstarToTWGen::tbstar() const{
   return m_tbstar;
 }
 
-GenParticle BstarToTWGen::Wdecay1() const{
+LorentzVector BstarToTWGen::Wdecay1() const{
   return m_Wdecay1;
 } 
 
-GenParticle BstarToTWGen::Wdecay2() const{
+LorentzVector BstarToTWGen::Wdecay2() const{
   return m_Wdecay2;
 } 
 
-GenParticle BstarToTWGen::tW() const{
+LorentzVector BstarToTWGen::tW() const{
   return m_tW;
 } 
 
-GenParticle BstarToTWGen::tb() const{
+LorentzVector BstarToTWGen::tb() const{
   return m_tb;
 }
 
-GenParticle BstarToTWGen::tWdecay1() const{
+LorentzVector BstarToTWGen::tWdecay1() const{
   return m_tWdecay1;
 } 
 
-GenParticle BstarToTWGen::tWdecay2() const{
+LorentzVector BstarToTWGen::tWdecay2() const{
   return m_tWdecay2;
 } 
 
-BstarToTWGen::E_DecayChannel BstarToTWGen::DecayChannel()  const{  
-  return m_type;
+LorentzVector BstarToTWGen::ChargedLepton() const{
+  return m_cl;
 }
 
-bool BstarToTWGen::IsPrimaryHadronicDecay()  const{
-  return abs(m_Wdecay1.pdgId()) <= 5;
+LorentzVector BstarToTWGen::Neutrino() const{
+  return m_nl;
 }
 
-bool BstarToTWGen::IsSecundaryHadronicDecay()  const{
-  return abs(m_tWdecay1.pdgId()) <= 5;
+
+vector<LorentzVector> BstarToTWGen::stable() const{
+  return m_stable;
 }
+
+vector<LorentzVector> BstarToTWGen::electrons() const{
+  return m_ele;
+}
+
+vector<LorentzVector> BstarToTWGen::muons() const{
+  return m_muo;
+}
+
 
 bool BstarToTWGen::IsSemiLeptonicDecay() const{
-  return m_type == e_ehad ||  m_type == e_muhad;  
+  return (is_tophad != is_whad);
 }
 
-
-namespace {
-    
-  bool is_charged_lepton(const GenParticle & gp){
-    int id = abs(gp.pdgId());
-    return id == 11 || id == 13 || id == 15;
-  }
-
-  bool is_neutrino(const GenParticle & gp){
-    int id = abs(gp.pdgId());
-    return id == 12 || id == 14 || id == 16;
-  }
-
+bool BstarToTWGen::IsTopHadronicDecay() const{
+  return is_tophad;
 }
 
-GenParticle BstarToTWGen::ChargedLepton() const{
-  if (m_type != e_ehad &&  m_type != e_muhad && m_type!= e_tauhad){
-    throw runtime_error("BstarToTWGen::ChargedLepton called, but this is no l+jets bstar event!");
-  }
-  for(const auto & wd : {m_Wdecay1, m_Wdecay2, m_tWdecay1, m_tWdecay2}){
-    if(is_charged_lepton(wd)) return wd;
-  }
-  throw logic_error("logic error in BstarToTWGen::ChargedLepton");
+bool BstarToTWGen::IsWHadronicDecay() const{
+  return is_whad;
 }
 
-GenParticle BstarToTWGen::Neutrino() const{
-  if (m_type != e_ehad &&  m_type != e_muhad && m_type!= e_tauhad){
-    throw runtime_error("BstarToTWGen::ChargedLepton called, but this is no l+jets ttbar event!");
-  }
-  for(const auto & wd : {m_Wdecay1, m_Wdecay2, m_tWdecay1, m_tWdecay2}){
-    if(is_neutrino(wd)) return wd;
-  }
-  throw logic_error("logic error in BstarToTWGen::Neutrino");
+bool BstarToTWGen::IsMuonDecay() const{
+  return is_singlemuo;
 }
 
-// GenParticle BstarToTWGen::TopLep() const{
-//   if(ChargedLepton().charge()>0) return Top();
-//   else return Antitop();
-// }
+bool BstarToTWGen::IsElectronDecay() const{
+  return is_singleele;
+}
 
-// GenParticle BstarToTWGen::TopHad() const{
-//   if(ChargedLepton().charge()<0) return Top();
-//   else return Antitop();
-// }
-
-// GenParticle BstarToTWGen::BLep() const{
-//   if(ChargedLepton().charge()>0) return bTop();
-//   else return bAntitop();
-// }
-
-// GenParticle BstarToTWGen::BHad() const{
-//   if(ChargedLepton().charge()<0) return bTop();
-//   else return bAntitop();
-// }
-
-// GenParticle BstarToTWGen::WLep() const{
-//   if(ChargedLepton().charge()>0) return WTop();
-//   else return WAntitop();
-// }
-
-// GenParticle BstarToTWGen::WHad() const{
-//   if(ChargedLepton().charge()<0) return WTop();
-//   else return WAntitop();
-// }
-
-// GenParticle BstarToTWGen::Q1() const{
-//   if(ChargedLepton().charge()>0) return WMinusdecay1();
-//   else return Wdecay1();
-// }
-
-// GenParticle BstarToTWGen::Q2() const{
-//   if(ChargedLepton().charge()>0) return WMinusdecay2();
-//   else return Wdecay2();
-// }
-
-
-BstarToTWGenProducer::BstarToTWGenProducer(uhh2::Context & ctx, const std::string & name, bool throw_on_failure_): throw_on_failure(throw_on_failure_){
+BstarToTWGenProducer::BstarToTWGenProducer(uhh2::Context & ctx, const std::string & name)
+{
   h_BstarToTWgen = ctx.get_handle<BstarToTWGen>(name);
 }
 
 bool BstarToTWGenProducer::process(Event & event){
-  event.set(h_BstarToTWgen, BstarToTWGen(*event.genparticles, throw_on_failure));
+  event.set(h_BstarToTWgen, BstarToTWGen(event));
   return true;
 }

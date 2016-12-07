@@ -10,9 +10,19 @@ class BstarToTWGenHists: public uhh2::Hists {
 public:
     BstarToTWGenHists(uhh2::Context & ctx, const std::string & dirname);
 
-    virtual void fill(const uhh2::Event & ev) override;
+    virtual void fill(const uhh2::Event & event) override;
+
+
 
 protected:
-    TH1F *M_bstar, *pt_bstar, *pt_top, *eta_top, *phi_top, *M_top, *pt_W1, *eta_W1, *phi_W1, *M_W1, *pt_W2, *eta_W2, *phi_W2, *M_W2, *pt_b, *eta_b, *phi_b, *M_b, *pt_ele, *eta_ele, *phi_ele, *M_ele, *pt_muo, *eta_muo, *phi_muo, *M_muo, *pt_elenu, *eta_elenu, *phi_elenu, *pt_muonu, *eta_muonu, *phi_muonu, *pt_q1, *eta_q1, *phi_q1, *M_q1, *pt_q2, *eta_q2, *phi_q2, *M_q2;
+    TH1F *M_bstar, *pt_bstar;
+    TH1F *pt_top, *eta_top, *phi_top, *M_top, *M_tophad, *M_toplep;
+    TH1F *pt_W1, *eta_W1, *phi_W1, *M_W1;
+    TH1F *pt_W2, *eta_W2, *phi_W2, *M_W2;
+    TH1F *pt_b, *eta_b, *phi_b, *M_b;
+    TH1F *pt_ele, *eta_ele, *phi_ele;
+    TH1F *pt_muo, *eta_muo, *phi_muo;
+    TH1F *cosThetastar_bstar, *cosThetastar_t, *deltaRMax;
+
     uhh2::Event::Handle<BstarToTWGen> h_BstarToTWgen;
 };

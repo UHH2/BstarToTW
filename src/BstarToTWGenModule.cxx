@@ -12,47 +12,37 @@ using namespace uhh2;
 
 namespace uhh2examples {
 
-/** \brief Example for calculating and accessing the BstarToTWGen interpretation
- * 
- */
-class BstarToTWGenModule: public AnalysisModule {
-public:
+  class BstarToTWGenModule: public AnalysisModule {
+  public:
     
     explicit BstarToTWGenModule(Context & ctx);
     virtual bool process(Event & event) override;
 
-private:
-  //std::unique_ptr<AnalysisModule> printer;
-  std::unique_ptr<AnalysisModule> BstarToTWgenprod;
-  std::unique_ptr<Hists> h_BstarToTWgenhists;
-  Event::Handle<BstarToTWGen> h_BstarToTWgen;
-};
+  private:
+    std::unique_ptr<AnalysisModule> printer;
+    std::unique_ptr<AnalysisModule> BstarToTWgenprod;
+    std::unique_ptr<Hists> h_BstarToTWgenhists;
+  };
 
 
-BstarToTWGenModule::BstarToTWGenModule(Context & ctx){
+  BstarToTWGenModule::BstarToTWGenModule(Context & ctx){
 
 
-    //printer.reset(new GenParticlesPrinter(ctx));  
+    printer.reset(new GenParticlesPrinter(ctx));  
 
-  BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen", false));
-  h_BstarToTWgen = ctx.get_handle<BstarToTWGen>("BstarToTWgen");
-  h_BstarToTWgenhists.reset(new BstarToTWGenHists(ctx, "BstarToTWgenhists"));
-}
+    BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
+    h_BstarToTWgenhists.reset(new BstarToTWGenHists(ctx, "BstarToTWgenhists"));
+  }
 
 
-bool BstarToTWGenModule::process(Event & event) {
-  //printer->process(event);
-  BstarToTWgenprod->process(event);
- 
-  const auto & BstarToTWgen = event.get(h_BstarToTWgen);
- 
-  //cout << "Decay channel is " << int(LQLQbargen.LQ().v4().M()) << endl;
+  bool BstarToTWGenModule::process(Event & event) {
+    BstarToTWgenprod->process(event);
 
-  h_BstarToTWgenhists->fill(event);
+    h_BstarToTWgenhists->fill(event);
 
-  return true;
-}
+    return true;
+  }
 
-UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWGenModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWGenModule)
 
 }

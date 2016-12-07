@@ -37,70 +37,60 @@ class BstarToTWGen {
    * decaychannel will be e_notfound. If using throw_on_failure = false, it is thus a good idea
    * to check the decaychannel.
    */
-  explicit BstarToTWGen(const std::vector<GenParticle> & genparts, bool throw_on_failure = true);
+  explicit BstarToTWGen(const uhh2::Event & event);
 
-  enum E_DecayChannel{
-    e_had, 
-    e_ehad, 
-    e_muhad,
-    e_tauhad,
-    e_ee,  
-    e_mumu,
-    e_tautau,
-    e_emu,
-    e_etau,
-    e_mutau,
-    e_notfound
-  };
+  LorentzVector bstar() const;
+  LorentzVector Wbstar() const;
+  LorentzVector tbstar() const;
+  LorentzVector Wdecay1() const;
+  LorentzVector Wdecay2() const;
+  LorentzVector tW() const;
+  LorentzVector tb() const;
+  LorentzVector tWdecay1() const;
+  LorentzVector tWdecay2() const;
+  LorentzVector ChargedLepton() const;
+  LorentzVector Neutrino() const;
 
-  GenParticle bstar() const;
-  GenParticle Wbstar() const;
-  GenParticle tbstar() const;
-  GenParticle Wdecay1() const;
-  GenParticle Wdecay2() const;
-  GenParticle tW() const;
-  GenParticle tb() const;
-  GenParticle tWdecay1() const;
-  GenParticle tWdecay2() const;
+  std::vector<LorentzVector> stable() const;
+  std::vector<LorentzVector> electrons() const;
+  std::vector<LorentzVector> muons() const;
 
-  E_DecayChannel DecayChannel() const;
+  bool IsSemiLeptonicDecay() const;
+  bool IsTopHadronicDecay() const;
+  bool IsWHadronicDecay() const;
+  bool IsMuonDecay() const;
+  bool IsElectronDecay() const;
 
-  bool IsPrimaryHadronicDecay() const;
-  bool IsSecundaryHadronicDecay() const;
-  bool IsSemiLeptonicDecay() const; 
-
-  //only for l+jets decays
-  /* GenParticle TopLep() const;  */
-  /* GenParticle TopHad() const; */
-  /* GenParticle BLep() const; */
-  /* GenParticle BHad() const;  */
-  /* GenParticle WLep() const; */
-  /* GenParticle WHad() const;  */
-  GenParticle ChargedLepton() const;
-  GenParticle Neutrino() const;
-  /* GenParticle Q1() const; */
-  /* GenParticle Q2() const;  */
-
-  
  private:
+  // void MatchHardProcess(const std::vector<GenParticle> & genparticles);
 
-  GenParticle m_bstar; 
-  GenParticle m_Wbstar; 
-  GenParticle m_tbstar; 
-  GenParticle m_Wdecay1; 
-  GenParticle m_Wdecay2; 
-  GenParticle m_tW;
-  GenParticle m_tb;
-  GenParticle m_tWdecay1;
-  GenParticle m_tWdecay2;
+  // Particles from hard process
+  LorentzVector m_bstar; 
+  LorentzVector m_Wbstar;
+  LorentzVector m_tbstar; 
+  LorentzVector m_Wdecay1;
+  LorentzVector m_Wdecay2; 
+  LorentzVector m_tW;
+  LorentzVector m_tb;
+  LorentzVector m_tWdecay1;
+  LorentzVector m_tWdecay2;
+  LorentzVector m_cl;
+  LorentzVector m_nl;
 
-  E_DecayChannel m_type;
+  // Stable particle collections
+  std::vector<LorentzVector> m_stable;
+  std::vector<LorentzVector> m_ele;
+  std::vector<LorentzVector> m_muo;
+
+  bool is_tophad, is_whad;
+  bool is_singlemuo, is_singleele;
+
 };
 
 
 class BstarToTWGenProducer: public uhh2::AnalysisModule {
  public:
-  explicit BstarToTWGenProducer(uhh2::Context & ctx, const std::string & name = "BstarToTWgen", bool throw_on_failure = true);
+  explicit BstarToTWGenProducer(uhh2::Context & ctx, const std::string & name = "BstarToTWgen");
   virtual bool process(uhh2::Event & event) override;
     
  private:
