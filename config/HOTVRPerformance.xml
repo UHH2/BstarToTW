@@ -42,11 +42,11 @@
    <ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="work"/>
    -->
 
-<JobConfiguration JobName="BstarPreSelection" OutputLevel="INFO">
+<JobConfiguration JobName="HOTVRPerformanceTest" OutputLevel="INFO">
   <Library Name="libSUHH2BstarToTW"/>
   <Package Name="SUHH2BstarToTW.par" />
 
-  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/MC_BstarToTW/presel/" PostFix="" TargetLumi="1" >  
+  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/HOTVRPerformance/" PostFix="" TargetLumi="1" >  
 
     <!-- InputData for MC_BstarToTW 1200 to 3000 LH -->
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1200LH" Cacheable="&cacheable;">
@@ -178,7 +178,7 @@
       <Item Name="ElectronCollection" Value="slimmedElectronsUSER" />
       <Item Name="MuonCollection" Value="slimmedMuonsUSER" /> 
       <Item Name="TauCollection" Value="slimmedTaus" />
-      <Item Name="JetCollection" Value="slimmedJetsAK8_SoftDrop" />
+      <Item Name="JetCollection" Value="slimmedJets" />
       <Item Name="GenJetCollection" Value="slimmedGenJets" />
       <Item Name="METName" Value="slimmedMETs" />
       <Item Name="GenParticleCollection" Value="GenParticles" />
@@ -212,7 +212,7 @@
            -->
       
       <!-- the class name of the AnalysisModule subclasses to run: -->
-      <Item Name="AnalysisModule" Value="BstarToTWPreselectionModule" /> 
+      <Item Name="AnalysisModule" Value="HOTVRPerformanceModule" /> 
       
       <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
            MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC

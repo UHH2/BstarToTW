@@ -6,67 +6,55 @@
 
 using namespace std;
 using namespace uhh2;
-using namespace uhh2examples;
 
 BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname): Hists(ctx, dirname){
   // book all histograms here
-  // jets
-  N_jets   = book<TH1F>("N_jets", "N_{jets}", 20, 0, 20);  
-  eta_jet1 = book<TH1F>("eta_jet1", "#eta^{jet 1}", 40, -2.5, 2.5);
-  eta_jet2 = book<TH1F>("eta_jet2", "#eta^{jet 2}", 40, -2.5, 2.5);
-  eta_jet3 = book<TH1F>("eta_jet3", "#eta^{jet 3}", 40, -2.5, 2.5);
-  pt_jet1  = book<TH1F>("pt_jet1", "p_{T}^{jet 1}", 40, 0, 200);
-  pt_jet2  = book<TH1F>("pt_jet2", "p_{T}^{jet 2}", 40, 0, 200);
-  pt_jet3  = book<TH1F>("pt_jet3", "p_{T}^{jet 3}", 40, 0, 200);
 
-  // leptons
-  N_mu      = book<TH1F>("N_mu", "N^{#mu}", 10, 0, 10);
-  pt_mu     = book<TH1F>("pt_mu", "p_{T}^{#mu} [GeV/c]", 40, 0, 200);
-  eta_mu    = book<TH1F>("eta_mu", "#eta^{#mu}", 40, -2.1, 2.1);
-  reliso_mu = book<TH1F>("reliso_mu", "#mu rel. Iso", 40, 0, 0.5);
+  // Bstar
+  // yet to come
 
-  // primary vertices
-  N_pv = book<TH1F>("N_pv", "N^{PV}", 50, 0, 50);
+  // HOTVR Topjets
+  N_top     = book<TH1F>("N_topjets", "N_{topjets}", 5, 0, 5);
+  M_top     = book<TH1F>("M_top", "M_{top} [GeV/c^{2}]", 40, 0, 400);
+  pt_top    = book<TH1F>("pt_top", "p_{T}^{top} [GeV/c]", 80, 0, 1600);
+  // substructure variables
+  N_subjets = book<TH1F>("N_subjets", "N_{subjets}", 10, 0, 10);
+  mpairwise = book<TH1F>("mpairwise", "m_{min}^{pairwise} [GeV/c^{2}]", 20, 0, 200);
+  fpt_1     = book<TH1F>("fpt", "f_{pt,1}", 10, 0, 1);
+
+
 }
 
 
 void BstarToTWHists::fill(const Event & event){
-  // fill the histograms. Please note the comments in the header file:
-  // 'hist' is used here a lot for simplicity, but it will be rather
-  // slow when you have many histograms; therefore, better
-  // use histogram pointers as members as in 'UHH2/common/include/ElectronHists.h'
-  
-  // Don't forget to always use the weight when filling.
   double weight = event.weight;
-  
-  std::vector<Jet>* jets = event.jets;
-  int Njets = jets->size();
-  N_jets->Fill(Njets, weight);
-  
-  if(Njets>=1){
-    eta_jet1->Fill(jets->at(0).eta(), weight);
-    pt_jet1->Fill(jets->at(0).pt(), weight);
-  }
-  if(Njets>=2){
-    eta_jet2->Fill(jets->at(1).eta(), weight);
-    pt_jet2->Fill(jets->at(1).pt(), weight);
-  }
-  if(Njets>=3){
-    eta_jet3->Fill(jets->at(2).eta(), weight);
-    pt_jet3->Fill(jets->at(2).pt(), weight);
-  }
 
+  // Topjets
+  vector<TopJet> topjets = *event.topjets;
+  N_top->Fill(topjets.size(), weight);
+  for (TopJet topjet : topjets)
+    {
+      M_top->Fill(topjet.v4().M(), weight);
+      pt_top->Fill(topjet.v4().pt(), weight);
+      vector<Jet> subjets = topjet.subjets();
+      N_subjets->Fill(subjets.size(), weight);
+      double fpt = 0;
+      double mmin = 0;
+      if (subjets.size() > 1) 
+	{
+	  fpt = subjets.at(0).v4().pt()/topjet.v4().pt();
+	  if (subjets.size() > 2)
+	    {
+	      double m01 = (subjets.at(0).v4() + subjets.at(1).v4()).M();
+	      double m02 = (subjets.at(0).v4() + subjets.at(2).v4()).M();
+	      double m12 = (subjets.at(1).v4() + subjets.at(2).v4()).M();
+	      mmin = min(min(m01, m02), m12);
+	    }
+	}
+      fpt_1->Fill(fpt, weight);
+      mpairwise->Fill(mmin, weight);
+    }
 
-  int Nmuons = event.muons->size();
-  N_mu->Fill(Nmuons, weight);
-  for (const Muon & thismu : *event.muons){
-      pt_mu->Fill(thismu.pt(), weight);
-      eta_mu->Fill(thismu.eta(), weight);
-      reliso_mu->Fill(thismu.relIso(), weight);
-  }
-  
-  int Npvs = event.pvs->size();
-  N_pv->Fill(Npvs, weight);
 }
 
 BstarToTWHists::~BstarToTWHists(){}

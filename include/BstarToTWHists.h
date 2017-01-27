@@ -2,7 +2,7 @@
 
 #include "UHH2/core/include/Hists.h"
 
-namespace uhh2examples {
+namespace uhh2 {
 
   /**  \brief Example class for booking and filling histograms
    * 
@@ -19,14 +19,13 @@ namespace uhh2examples {
     virtual void fill(const uhh2::Event & ev) override;
     virtual ~BstarToTWHists();
   protected:
-    // jet histograms
-    TH1F *N_jets, *eta_jet1, *eta_jet2, *eta_jet3, *pt_jet1, *pt_jet2, *pt_jet3;
+    // topjet histograms
+    TH1F *N_top, *M_top, *pt_top;
+    // substurcture
+    TH1F *N_subjets, *mpairwise, *fpt_1;
 
-    // lepton histograms
-    TH1F *N_mu, *eta_mu, *pt_mu, *reliso_mu;
-
-    // misc
-    TH1F *N_pv;
+    // MET
+    TH1F *met;
       };
    
 }
