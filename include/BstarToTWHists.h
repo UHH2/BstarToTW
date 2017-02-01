@@ -20,12 +20,10 @@ namespace uhh2 {
     virtual ~BstarToTWHists();
   protected:
     // topjet histograms
-    TH1F *N_top, *M_top, *pt_top;
+    TH1F *N_top, *M_top, *pt_top, *eta_top, *y_top;
     // substurcture
-    TH1F *N_subjets, *mpairwise, *fpt_1;
+    TH1F *N_subjets, *mpairwise, *fpt_1, *tau_32;
 
-    // MET
-    TH1F *met;
       };
    
 }

@@ -7,27 +7,27 @@
 	  <!ENTITY Lumi "1">
 	  <!ENTITY cacheable "False">
 	  <!-- BstarToTW 1200 to 3000 LH -->
-	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1200_LH.xml">
-	  <!ENTITY BstarToTW1400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1400_LH.xml">
-	  <!ENTITY BstarToTW1600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1600_LH.xml">
-	  <!ENTITY BstarToTW1800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1800_LH.xml">
-	  <!ENTITY BstarToTW2000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2000_LH.xml">
-	  <!ENTITY BstarToTW2200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2200_LH.xml">
-	  <!ENTITY BstarToTW2400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2400_LH.xml">
-	  <!ENTITY BstarToTW2600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2600_LH.xml">
-	  <!ENTITY BstarToTW2800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2800_LH.xml">
-	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-3000_LH.xml">
+	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1200_LH_25ns.xml">
+	  <!ENTITY BstarToTW1400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1400_LH_25ns.xml">
+	  <!ENTITY BstarToTW1600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1600_LH_25ns.xml">
+	  <!ENTITY BstarToTW1800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1800_LH_25ns.xml">
+	  <!ENTITY BstarToTW2000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2000_LH_25ns.xml">
+	  <!ENTITY BstarToTW2200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2200_LH_25ns.xml">
+	  <!ENTITY BstarToTW2400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2400_LH_25ns.xml">
+	  <!ENTITY BstarToTW2600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2600_LH_25ns.xml">
+	  <!ENTITY BstarToTW2800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2800_LH_25ns.xml">
+	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-3000_LH_25ns.xml">
 	  <!-- BstarToTW 1200 to 3000 RH -->
-	  <!ENTITY BstarToTW1200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1200_RH.xml">
-	  <!ENTITY BstarToTW1400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1400_RH.xml">
-	  <!ENTITY BstarToTW1600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1600_RH.xml">
-	  <!ENTITY BstarToTW1800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-1800_RH.xml">
-	  <!ENTITY BstarToTW2000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2000_RH.xml">
-	  <!ENTITY BstarToTW2200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2200_RH.xml">
-	  <!ENTITY BstarToTW2400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2400_RH.xml">
-	  <!ENTITY BstarToTW2600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2600_RH.xml">
-	  <!ENTITY BstarToTW2800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-2800_RH.xml">
-	  <!ENTITY BstarToTW3000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_BstarToTW_M-3000_RH.xml">
+	  <!ENTITY BstarToTW1200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1200_RH_25ns.xml">
+	  <!ENTITY BstarToTW1400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1400_RH_25ns.xml">
+	  <!ENTITY BstarToTW1600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1600_RH_25ns.xml">
+	  <!ENTITY BstarToTW1800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1800_RH_25ns.xml">
+	  <!ENTITY BstarToTW2000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2000_RH_25ns.xml">
+	  <!ENTITY BstarToTW2200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2200_RH_25ns.xml">
+	  <!ENTITY BstarToTW2400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2400_RH_25ns.xml">
+	  <!ENTITY BstarToTW2600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2600_RH_25ns.xml">
+	  <!ENTITY BstarToTW2800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-2800_RH_25ns.xml">
+	  <!ENTITY BstarToTW3000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-3000_RH_25ns.xml">
 	  ]>
 
 <!--
@@ -39,7 +39,7 @@
   <Library Name="libSUHH2BstarToTW"/>
   <Package Name="SUHH2BstarToTW.par" />
 
-  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/MC_BstarToTW_Gen_PreSel/" PostFix="" TargetLumi="1" >    
+  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/BstarToTW_GenStudies/" PostFix="" TargetLumi="1" >    
 
     <!-- InputData for MC_BstarToTW 1200 to 3000 LH -->
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1200LH" Cacheable="&cacheable;">
@@ -201,7 +201,7 @@
            -->
       
       <!-- the class name of the AnalysisModule subclasses to run: -->
-      <Item Name="AnalysisModule" Value="BstarToTWGenPreSelectionModule" /> 
+      <Item Name="AnalysisModule" Value="BstarToTWGenModule" /> 
       
       <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
            MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
@@ -209,8 +209,8 @@
       <Item Name="use_sframe_weight" Value="false" />
       
       <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
-      <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/data/MyMCPileupHistogram.root" /> 
-      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_20/src/UHH2/common/data/MyDataPileupHistogram.root" />
+      <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyMCPileupHistogram.root" /> 
+      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyDataPileupHistogram.root" />
       <!-- Some test configuration; see BstarToTWModule.cxx for how to access it: -->
       <Item Name="TestKey" Value="TestKeyValue" />
     </UserConfig>

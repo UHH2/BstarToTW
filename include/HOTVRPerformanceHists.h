@@ -1,8 +1,10 @@
 #pragma once
 
 #include "UHH2/core/include/Hists.h"
-
+#include "UHH2/core/include/TopJet.h"
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
+
+#include <vector>
 
 namespace uhh2 {
 
@@ -30,8 +32,11 @@ namespace uhh2 {
     TH1F *h_matched_pt_reco, *h_matched_M_reco, *h_unmatched_pt_reco, *h_unmatched_M_reco;
 
     TH2F *h_jet_area_vs_jet_pt;
+    
+    TH1F *hotvr_counter, *cms_counter;
 
     uhh2::Event::Handle<BstarToTWGen> h_BstarToTWgen;
+    uhh2::Event::Handle<std::vector<TopJet>> h_AK8Jets;
   };
    
 }

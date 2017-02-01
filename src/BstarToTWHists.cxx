@@ -17,11 +17,13 @@ BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname): Hists(ctx
   N_top     = book<TH1F>("N_topjets", "N_{topjets}", 5, 0, 5);
   M_top     = book<TH1F>("M_top", "M_{top} [GeV/c^{2}]", 40, 0, 400);
   pt_top    = book<TH1F>("pt_top", "p_{T}^{top} [GeV/c]", 80, 0, 1600);
+  eta_top   = book<TH1F>("eta_top", "#eta^{top}", 60, -6, 6);
+  y_top     = book<TH1F>("y_top", "y^{top}", 60, -6, 6);
   // substructure variables
   N_subjets = book<TH1F>("N_subjets", "N_{subjets}", 10, 0, 10);
   mpairwise = book<TH1F>("mpairwise", "m_{min}^{pairwise} [GeV/c^{2}]", 20, 0, 200);
   fpt_1     = book<TH1F>("fpt", "f_{pt,1}", 10, 0, 1);
-
+  tau_32    = book<TH1F>("tau32", "#tau_{3,2}", 20, 0, 1);
 
 }
 
@@ -36,6 +38,8 @@ void BstarToTWHists::fill(const Event & event){
     {
       M_top->Fill(topjet.v4().M(), weight);
       pt_top->Fill(topjet.v4().pt(), weight);
+      eta_top->Fill(topjet.v4().eta(), weight);
+      y_top->Fill(topjet.v4().Rapidity(), weight);
       vector<Jet> subjets = topjet.subjets();
       N_subjets->Fill(subjets.size(), weight);
       double fpt = 0;

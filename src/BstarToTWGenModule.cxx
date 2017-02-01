@@ -21,24 +21,23 @@ namespace uhh2examples {
   private:
     std::unique_ptr<AnalysisModule> printer;
     std::unique_ptr<AnalysisModule> BstarToTWgenprod;
-    std::unique_ptr<Hists> h_BstarToTWgenhists;
+    std::unique_ptr<Hists> h_BstarToTWGenHists;
   };
 
 
   BstarToTWGenModule::BstarToTWGenModule(Context & ctx){
 
-
     printer.reset(new GenParticlesPrinter(ctx));  
 
     BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
-    h_BstarToTWgenhists.reset(new BstarToTWGenHists(ctx, "BstarToTWgenhists"));
+    h_BstarToTWGenHists.reset(new BstarToTWGenHists(ctx, "BstarToTWGenHists"));
   }
 
 
   bool BstarToTWGenModule::process(Event & event) {
     BstarToTWgenprod->process(event);
 
-    h_BstarToTWgenhists->fill(event);
+    h_BstarToTWGenHists->fill(event);
 
     return true;
   }

@@ -16,7 +16,7 @@
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWCleaningModules.h"
-#include "UHH2/BstarToTW/include/HOTVRPerformanceSelections.h"
+#include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 #include "UHH2/BstarToTW/include/HOTVRPerformanceHists.h"
 
 using namespace std;
@@ -48,6 +48,7 @@ namespace uhh2 {
     std::unique_ptr<Hists> h_nocuts, h_cl_top, h_sel_n_top, h_sel_pt_top;
     std::unique_ptr<Hists> h_nocuts_event, h_sel_n_top_event, h_sel_pt_top_event;
     std::unique_ptr<Hists> h_performance, h_performance_pt;
+    std::unique_ptr<Hists> h_hotvr_counter, h_cms_toptag_counter;
   };
 
 
@@ -55,13 +56,6 @@ namespace uhh2 {
 
     // GenParticle Interpreter
     BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
-
-    // IDs
-    MuonId id_muo = AndId<Muon>(MuonIDMedium(), PtEtaCut(26.0, 2.4), MuonIso(0.15));
-
-    // Common Modules
-    // common.reset(new CommonModules());
-    // common->init(ctx);  
 
     // Cleaners
     cl_top.reset(new HOTVRTopCleaner()); 
@@ -96,6 +90,8 @@ namespace uhh2 {
     cl_gentop->process(event);
  
     // event selection
+    
+
     if(!sel_n_top->passes(event)) return false;
     h_sel_n_top->fill(event);
     h_sel_n_top_event->fill(event);

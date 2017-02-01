@@ -7,12 +7,14 @@
 
 using namespace std;
 using namespace uhh2;
+
 /*
- * Fill this class only after cuts are applied to ensure there is ==1 HOTVR TopJet.
+ * Fill this Hists only after cuts are applied to ensure there is >=1 HOTVR TopJet.
  */
 HOTVRPerformanceHists::HOTVRPerformanceHists(Context & ctx, const string & dirname): 
   Hists(ctx, dirname),
-  h_BstarToTWgen(ctx.get_handle<BstarToTWGen>("BstarToTWgen")) 
+  h_BstarToTWgen(ctx.get_handle<BstarToTWGen>("BstarToTWgen")),
+  h_AK8Jets(ctx.get_handle<vector<TopJet>>("slimmedJetsAK8_SoftDrop"))
 {
   // book all histograms here
 
@@ -24,6 +26,7 @@ HOTVRPerformanceHists::HOTVRPerformanceHists(Context & ctx, const string & dirna
   h_pt_reco_over_pt_gen_vs_pt  = book<TH2F>("pt_reco_over_pt_gen_vs_pt", "x= p_{T}^{reco} y=p_{T}^{reco} / p_{T}^{gen}", 32, 0, 1600., 20, 0, 2.);
   h_pt_reco_over_pt_top_vs_npv = book<TH2F>("pt_reco_over_pt_top_vs_npv", "x= N_{primary vertices} y=p_{T}^{reco} / p_{T}^{top}", 50, 0, 50., 20, 0, 2.);
   h_pt_reco_over_pt_gen_vs_npv = book<TH2F>("pt_reco_over_pt_gen_vs_npv", "x= N_{primary vertices} y=p_{T}^{reco} / p_{T}^{gen}", 50, 0, 50., 20, 0, 2.);
+  h_jet_area_vs_jet_pt         = book<TH2F>("jet_area_vs_jet_pt", "x= p_T^{reco,top} y= A_{reco_top}", 32, 0, 1600, 10, 0, 10);
 
   h_deltaR_reco_top     = book<TH1F>("deltaR_reco_top", "#Delta R_{reco,top}", 20, 0, 4);
   h_deltaR_reco_gen     = book<TH1F>("deltaR_reco_gen", "#Delta R_{reco,gen}", 20, 0, 4);
@@ -34,7 +37,9 @@ HOTVRPerformanceHists::HOTVRPerformanceHists(Context & ctx, const string & dirna
   h_unmatched_pt_reco   = book<TH1F>("unmatched_pt", "p_{T}^{reco,top} [GeV/c]", 80, 0, 1600);
   h_unmatched_M_reco    = book<TH1F>("unmatched_M", "M^{reco,top} [GeV/c^2]", 40, 0, 400);
 
-  h_jet_area_vs_jet_pt  = book<TH2F>("jet_area_vs_jet_pt", "x= p_T^{reco,top} y= A_{reco_top}", 32, 0, 1600, 10, 0, 10);  
+  // efficiency
+  hotvr_counter = book<TH1F>("hotvr_counter", "N", 1, 0, 1);
+  cms_counter   = book<TH1F>("cms_counter", "N", 1, 0, 1);
 
 }
 
@@ -48,7 +53,18 @@ void HOTVRPerformanceHists::fill(const Event & event){
   TopJet hotvrTop = event.topjets->at(0);
   GenTopJet hotvrGenTop = event.gentopjets->at(0);
   LorentzVector genTop = event.get(h_BstarToTWgen).tbstar();
+  vector<TopJet> ak8Jets = event.get(h_AK8Jets);
 
+  hotvr_counter->Fill(0., weight);
+
+  int n = 0;
+  for (TopJet topjet : ak8Jets)
+    {
+      if (topjet.pt() > 400 && 
+	  topjet.v4().Rapidity() < 2.4 &&
+	  topjet.tau3()/topjet.tau2() < 0.69) ++n;
+    }
+  if (n == 1) cms_counter->Fill(0., weight);
 
   // To Do: pt and npv binning, probably with TH2F
   double pt_reco = hotvrTop.pt();
