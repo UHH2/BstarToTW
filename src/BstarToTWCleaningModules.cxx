@@ -23,6 +23,7 @@ bool HOTVRTopCleaner::process(Event & event) {
   vector<TopJet> results;
   for (TopJet topjet : topjets)
     {
+      if (topjet.v4().Rapidity() >= 2.4 || topjet.pt() <= 200) continue;
       // double m = topjet.v4().M();
       vector<Jet> subjets = topjet.subjets();
       if (subjets.size() < nsub_min) continue;

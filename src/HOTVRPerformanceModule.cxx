@@ -18,6 +18,7 @@
 #include "UHH2/BstarToTW/include/BstarToTWCleaningModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 #include "UHH2/BstarToTW/include/HOTVRPerformanceHists.h"
+#include "UHH2/BstarToTW/include/EfficiencyHists.h"
 
 using namespace std;
 using namespace uhh2;
@@ -45,10 +46,10 @@ namespace uhh2 {
     std::unique_ptr<Selection> sel_deltaR;
  
     // Histograms
-    std::unique_ptr<Hists> h_nocuts, h_cl_top, h_sel_n_top, h_sel_pt_top;
-    std::unique_ptr<Hists> h_nocuts_event, h_sel_n_top_event, h_sel_pt_top_event;
-    std::unique_ptr<Hists> h_performance, h_performance_pt;
-    std::unique_ptr<Hists> h_hotvr_counter, h_cms_toptag_counter;
+    std::unique_ptr<Hists> h_nocuts, h_cl_top, h_sel_n_top;
+    std::unique_ptr<Hists> h_nocuts_event, h_sel_n_top_event;
+    std::unique_ptr<Hists> h_performance;
+    std::unique_ptr<Hists> h_efficiency;
   };
 
 
@@ -64,7 +65,6 @@ namespace uhh2 {
     // Selections
     sel_n_top.reset(new NHotvrTopSelection(1)); // == 1 Top
     sel_n_gentop.reset(new NHotvrGenTopSelection(1)); // == 1 genTop
-    sel_pt_top.reset(new ptHotvrTopSelection(200)); // pt_leading_top > 170 GeV
 
     // Histograms
     h_nocuts.reset(new BstarToTWHists(ctx, "No_Cuts"));
@@ -72,10 +72,8 @@ namespace uhh2 {
     h_cl_top.reset(new BstarToTWHists(ctx, "Topjet_Cleaner"));
     h_sel_n_top.reset(new BstarToTWHists(ctx, "NTop_Cut"));
     h_sel_n_top_event.reset(new EventHists(ctx, "NTop_Cut_Event"));
-    h_sel_pt_top.reset(new BstarToTWHists(ctx, "ptTop_Cut"));
-    h_sel_pt_top_event.reset(new EventHists(ctx, "ptTop_Cut_Event"));
     h_performance.reset(new HOTVRPerformanceHists(ctx, "HOTVR_Performance"));
-    h_performance_pt.reset(new HOTVRPerformanceHists(ctx, "HOTVR_Performance_pt"));
+    h_efficiency.reset(new EfficiencyHists(ctx, "Efficiency"));
   }
 
 
@@ -88,9 +86,10 @@ namespace uhh2 {
     cl_top->process(event);
     h_cl_top->fill(event);
     cl_gentop->process(event);
+
+    h_efficiency->fill(event);
  
     // event selection
-    
 
     if(!sel_n_top->passes(event)) return false;
     h_sel_n_top->fill(event);
@@ -98,11 +97,6 @@ namespace uhh2 {
 
     if(!sel_n_gentop->passes(event)) return false;
     h_performance->fill(event);
-
-    if(!sel_pt_top->passes(event)) return false;
-    h_sel_pt_top->fill(event);
-    h_sel_pt_top_event->fill(event);
-    h_performance_pt->fill(event);
 
     // Done
     return true;

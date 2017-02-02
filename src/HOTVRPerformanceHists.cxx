@@ -9,7 +9,12 @@ using namespace std;
 using namespace uhh2;
 
 /*
- * Fill this Hists only after cuts are applied to ensure there is >=1 HOTVR TopJet.
+ * WARNING: Fill this Hists only after cuts are applied to ensure
+ * there is >=1 HOTVR TopJet.
+ * 
+ * This Hists Class implements Histograms with informations about the
+ * physics performance of the HOTVR algorithm.
+ * 
  */
 HOTVRPerformanceHists::HOTVRPerformanceHists(Context & ctx, const string & dirname): 
   Hists(ctx, dirname),
@@ -32,14 +37,14 @@ HOTVRPerformanceHists::HOTVRPerformanceHists(Context & ctx, const string & dirna
   h_deltaR_reco_gen     = book<TH1F>("deltaR_reco_gen", "#Delta R_{reco,gen}", 20, 0, 4);
   h_deltaR_gen_top      = book<TH1F>("deltaR_gen_top", "#Delta R_{gen,top}", 20, 0, 4);
 
-  h_matched_pt_reco     = book<TH1F>("matched_pt", "p_{T}^{reco,top} [GeV/c]", 80, 0, 1600);
+  h_matched_pt_reco     = book<TH1F>("matched_pt", "p_{T}^{reco,top} [GeV/c]", 80, 0, 1600); // 'matched': deltaR_(reco, top) < 1.5; 'unmatched' else
   h_matched_M_reco      = book<TH1F>("matched_M", "M^{reco,top} [GeV/c^2]", 40, 0, 400);
   h_unmatched_pt_reco   = book<TH1F>("unmatched_pt", "p_{T}^{reco,top} [GeV/c]", 80, 0, 1600);
   h_unmatched_M_reco    = book<TH1F>("unmatched_M", "M^{reco,top} [GeV/c^2]", 40, 0, 400);
 
   // efficiency
-  hotvr_counter = book<TH1F>("hotvr_counter", "N", 1, 0, 1);
-  cms_counter   = book<TH1F>("cms_counter", "N", 1, 0, 1);
+  hotvr_counter = book<TH1F>("hotvr_counter", "N", 1, 0, 1); // N_events that survivied HOTVR Cuts
+  cms_counter   = book<TH1F>("cms_counter", "N", 1, 0, 1); // N_events that survived CMS Top Tagger Cuts
 
 }
 

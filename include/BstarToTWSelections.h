@@ -20,19 +20,6 @@ namespace uhh2 {
 
   };
 
-  /* ptHotvrTopSelection
-   *
-   * Select events with pt of leading top > pt_min
-   */
-  class ptHotvrTopSelection: public uhh2::Selection {
-  public:
-    ptHotvrTopSelection(double pt_min_);
-    virtual bool passes(const uhh2::Event & event) override;
-  private:
-    double pt_min;
-
-  };
-
   /* NHotvrGenTopSelection
    *
    * Select events that have at least n_min TopJets following the
