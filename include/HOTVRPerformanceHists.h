@@ -3,6 +3,7 @@
 #include "UHH2/core/include/Hists.h"
 #include "UHH2/core/include/TopJet.h"
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
+#include "UHH2/BstarToTW/include/TopTagIndexer.h"
 
 #include <vector>
 
@@ -20,22 +21,18 @@ namespace uhh2 {
     // use the same constructor arguments as Hists for forwarding:
     HOTVRPerformanceHists(uhh2::Context & ctx, const std::string & dirname);
 
-    virtual void fill(const uhh2::Event & ev) override;
+    virtual void fill(const uhh2::Event & event) override;
     virtual ~HOTVRPerformanceHists();
   protected:
     
-    TH1F *h_pt_reco_over_pt_top, *h_pt_reco_over_pt_gen;
-    TH1F *h_deltaR_reco_top, *h_deltaR_reco_gen, *h_deltaR_gen_top;
+    TH1F *N_HotvrTopjets, *Pt_HotvrTopjets, *Eta_HotvrTopjets, *M_HotvrTopjets;
+    TH1F *NSub_HotvrTopjets, *Fpt_HotvrTopjets, *Mpair_HotvrTopjets, *Tau32_HotvrTopjets; 
+    TH1F *DeltaR_Top_HotvrTopjets;
+    TH2F *jet_area_vs_jet_pt;
+    TH2F *pt_reco_over_pt_top_vs_pt, *pt_reco_over_pt_top_vs_npv;
 
-    TH2F *h_pt_reco_over_pt_top_vs_pt, *h_pt_reco_over_pt_gen_vs_pt, *h_pt_reco_over_pt_top_vs_npv, *h_pt_reco_over_pt_gen_vs_npv;
-
-    TH1F *h_matched_pt_reco, *h_matched_M_reco, *h_unmatched_pt_reco, *h_unmatched_M_reco;
-
-    TH2F *h_jet_area_vs_jet_pt;
-    
-    TH1F *hotvr_counter, *cms_counter;
-
-    uhh2::Event::Handle<BstarToTWGen> h_BstarToTWgen;
+    uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
+    uhh2::Event::Handle<TopTagIndexer> h_TopTagIndexer;
     uhh2::Event::Handle<std::vector<TopJet>> h_AK8Jets;
   };
    

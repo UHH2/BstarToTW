@@ -20,6 +20,20 @@ namespace uhh2 {
 
   };
 
+  /* MassHotvrTopSelection
+   *
+   * Selection of Topjets within Masswindow m_min < m < m_max
+   */
+  class MHotvrTopSelection: public uhh2::Selection {
+  public:
+    MHotvrTopSelection(double m_min_ = 140, double m_max_ = 220);
+    virtual bool passes(const uhh2::Event & event) override;
+  private:
+    double m_min;
+    double m_max;
+
+  };
+
   /* NHotvrGenTopSelection
    *
    * Select events that have at least n_min TopJets following the

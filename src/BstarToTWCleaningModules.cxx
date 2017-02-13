@@ -23,12 +23,17 @@ bool HOTVRTopCleaner::process(Event & event) {
   vector<TopJet> results;
   for (TopJet topjet : topjets)
     {
-      if (topjet.v4().Rapidity() >= 2.4 || topjet.pt() <= 200) continue;
-      // double m = topjet.v4().M();
+      double m = topjet.v4().M();
+      // cuts on jet parameters
+      if (abs(topjet.v4().Rapidity()) >= 2.4 || topjet.pt() <= 200 || m <= m_min || m >= m_max ) continue;
       vector<Jet> subjets = topjet.subjets();
       if (subjets.size() < nsub_min) continue;
       double fpt = subjets.at(0).v4().pt()/topjet.v4().pt();
-      double mpairwise = min(min((subjets.at(0).v4() + subjets.at(1).v4()).M(), (subjets.at(0).v4() + subjets.at(2).v4()).M()), (subjets.at(1).v4() + subjets.at(2).v4()).M());
+      double m12 = (subjets.at(0).v4() + subjets.at(1).v4()).M();
+      double m13 = (subjets.at(0).v4() + subjets.at(2).v4()).M();
+      double m23 = (subjets.at(1).v4() + subjets.at(2).v4()).M();
+      double mpairwise = min(min(m12, m13), m23);
+      // cuts on substructure parameters
       if (  fpt < fpt_max && mpairwise > mpairwise_min)	
 	{
 	  results.push_back(topjet);

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
+
+	  <!-- OutputLevel controls which messages are printed; set to VERBOSE or DEBUG for more verbosity, to WARNING or ERROR for less -->
+
+	  <!-- Configuration Variables  -->
+	  <!ENTITY NEvents "-1">
+	  <!ENTITY Lumi "1">
+	  <!ENTITY cacheable "False">
+
+	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1200_LH_25ns.xml">
+	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-3000_LH_25ns.xml">
+
+
+	  <!-- Underground -->
+
+
+	  ]>
+
+<!--
+   <ConfigParse NEventsBreak="0" FileSplit="4" AutoResubmit="5"/>
+   <ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="work_test"/>
+   -->
+
+<JobConfiguration JobName="HOTVRPerformanceTest" OutputLevel="INFO">
+  <Library Name="libSUHH2BstarToTW"/>
+  <Package Name="SUHH2BstarToTW.par" />
+
+  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/testHotvr/" PostFix="" TargetLumi="1" >  
+
+    <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1200LH" Cacheable="&cacheable;">
+      &BstarToTW1200LH;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW3000LH" Cacheable="&cacheable;">
+      &BstarToTW3000LH;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <UserConfig>
+      <!-- define which collections to read from the input. Only specify what you need to save I/O time -->
+      <Item Name="PrimaryVertexCollection" Value="offlineSlimmedPrimaryVertices" /> 
+      <Item Name="ElectronCollection" Value="slimmedElectronsUSER" />
+      <Item Name="MuonCollection" Value="slimmedMuonsUSER" /> 
+      <Item Name="TauCollection" Value="slimmedTaus" />
+      <Item Name="JetCollection" Value="slimmedJets" />
+      <Item Name="GenJetCollection" Value="slimmedGenJets" />
+      <Item Name="METName" Value="slimmedMETs" />
+      <Item Name="GenParticleCollection" Value="GenParticles" />
+      <Item Name="TopJetCollection" Value="HOTVRTopJets" />
+      <Item Name="GenTopJetCollection" Value="genHOTVRTopJets" />
+      <Item Name="additionalBranches" Value="ak8GenJetsSoftDrop slimmedJetsAK8_SoftDrop" />
+
+      <!-- The list of available collections to read in corresponds to the pointer members in event. The 'Name's to use here in the configuration are:
+           
+           PrimaryVertexCollection
+           ElectronCollection
+           MuonCollection
+           TauCollection
+           PhotonCollection
+           JetCollection
+           TopJetCollection
+           METName
+           
+           GenInfoName
+           GenJetCollection
+           GenTopJetCollection
+           GenParticleCollection
+           
+           Note that the last four are only read in for MC (InputData Type="MC"), so it is save to specify
+           them for real data, although those branches do not exist.
+           
+           As 'Value', always use the branch name (if in doubt, open the input file in ROOT).
+           
+           By default, triggers are read. To explicitly disable reading triggers, use:
+           <Item Name="readTrigger" Value="false" />
+           -->
+      
+      <!-- the class name of the AnalysisModule subclasses to run: -->
+      <Item Name="AnalysisModule" Value="HOTVRPerformanceModule" /> 
+      
+      <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
+           MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
+           event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
+      <Item Name="use_sframe_weight" Value="false" />
+      
+      <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
+      <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyMCPileupHistogram.root" /> 
+      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyDataPileupHistogram.root" />
+      <!-- Some test configuration; see BstarToTWModule.cxx for how to access it: -->
+      <Item Name="TestKey" Value="TestKeyValue" />
+    </UserConfig>
+  </Cycle>
+</JobConfiguration>

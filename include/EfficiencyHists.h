@@ -16,7 +16,7 @@ namespace uhh2 {
     virtual ~EfficiencyHists();
   protected:
     
-    TH1F *hotvr_counter, *cms_counter;
+    TH1F *all, *hotvr_counter, *cms_counter;
 
     uhh2::Event::Handle<std::vector<TopJet>> h_AK8Jets;
   };
