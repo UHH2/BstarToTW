@@ -71,13 +71,28 @@ class Tau32TopIndexCleaner: public uhh2::AnalysisModule {
     double t32_max;
   };
 
+class HotvrTopIndexCleaner: public uhh2::AnalysisModule {
+  public:
+    HotvrTopIndexCleaner(uhh2::Context &ctx, double pt_min_, double m_min_, double m_max_, double eta_max_, unsigned int nsub_min_, double fpt_max_, double mpair_min_);
+    virtual bool process(uhh2::Event &event);
+  private:
+    uhh2::Event::Handle<TopTagIndexer> h_TopTagIndexer;
+
+    double pt_min;
+    double m_min, m_max;
+    double eta_max;
+    unsigned int nsub_min;
+    double fpt_max;
+    double mpair_min;
+  };
+
   class NTopIndexSelection: public uhh2::Selection {
   public:
-    NTopIndexSelection(uhh2::Context &ctx, unsigned int n_);
+    NTopIndexSelection(uhh2::Context &ctx, unsigned int n_min_, unsigned int n_max_ = -1);
     virtual bool passes(const uhh2::Event &event);
   private:
     uhh2::Event::Handle<TopTagIndexer> h_TopTagIndexer;
-    unsigned int n;
+    unsigned int n_min, n_max;
   };
 
 }

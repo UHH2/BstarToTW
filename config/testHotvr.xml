@@ -8,8 +8,8 @@
 	  <!ENTITY Lumi "1">
 	  <!ENTITY cacheable "False">
 
-	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-1200_LH_25ns.xml">
-	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_BstarToTW_M-3000_LH_25ns.xml">
+	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1200_LH_25ns.xml">
+	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-3000_LH_25ns.xml">
 
 
 	  <!-- Underground -->

@@ -114,21 +114,6 @@ void BstarToTWGenHists::fill(const uhh2::Event & e)
   // Only lepton+jets
   if(BstarToTWgen.IsSemiLeptonicDecay())
     {
-      LorentzVector lep = BstarToTWgen.ChargedLepton();
-      if(BstarToTWgen.IsElectronDecay())
-	{
-	  pt_ele->Fill( lep.Pt(), eventweight );
-	  eta_ele->Fill( lep.eta(), eventweight );
-	  phi_ele->Fill( lep.phi(), eventweight );
-	}
-
-      if(BstarToTWgen.IsMuonDecay())
-	{
-	  pt_muo->Fill( lep.Pt(), eventweight );
-	  eta_muo->Fill( lep.eta(), eventweight );
-	  phi_muo->Fill( lep.phi(), eventweight );
-	}
-
       if(BstarToTWgen.IsWHadronicDecay())
 	{
       
@@ -136,6 +121,20 @@ void BstarToTWGenHists::fill(const uhh2::Event & e)
 	}
       else if(BstarToTWgen.IsTopHadronicDecay())
 	{     
+	  LorentzVector lep = BstarToTWgen.ChargedLepton();
+	  if(BstarToTWgen.IsElectronDecay())
+	    {
+	      pt_ele->Fill( lep.Pt(), eventweight );
+	      eta_ele->Fill( lep.eta(), eventweight );
+	      phi_ele->Fill( lep.phi(), eventweight );
+	    }
+
+	  if(BstarToTWgen.IsMuonDecay())
+	    {
+	      pt_muo->Fill( lep.Pt(), eventweight );
+	      eta_muo->Fill( lep.eta(), eventweight );
+	      phi_muo->Fill( lep.phi(), eventweight );
+	    }
 	  M_tophad->Fill( ( tWdecay1 + tWdecay2 + b ).M(), eventweight );
 
 	  // get theta*_b* and theta*_t
