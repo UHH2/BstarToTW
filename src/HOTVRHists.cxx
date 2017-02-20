@@ -27,7 +27,7 @@ HOTVRHists::HOTVRHists(Context & ctx, const string & dirname):
   N_HotvrTopjets          = book<TH1F>("N_HOTVR",          "N_{topjets}", 10,  0, 10);
   Pt_HotvrTopjets         = book<TH1F>("Pt_HOTVR",         "p_{t}^{topjet}", 80, 0, 1600);
   Eta_HotvrTopjets        = book<TH1F>("Eta_HOTVR",        "#eta^{topjet}", 30, -6, 6);
-  M_HotvrTopjets          = book<TH1F>("M_HOTVR",          "M^{topjet}", 30,  0, 300);
+  M_HotvrTopjets          = book<TH1F>("M_HOTVR",          "M^{topjet}", 60,  0, 600);
   NSub_HotvrTopjets       = book<TH1F>("NSub_HOTVR",       "N_{subjets}", 10,  0, 10);
   Fpt_HotvrTopjets        = book<TH1F>("Fpt_HOTVR",        "f_{pt, 1}", 20,  0, 1);
   Mpair_HotvrTopjets      = book<TH1F>("Mpair_HOTVR",      "M_pair", 40,  0, 200);

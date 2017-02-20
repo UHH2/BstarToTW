@@ -182,17 +182,16 @@ bool Tau32TopIndexCleaner::process(Event &event) {
 }
 
 /*
- * Index cleaner for tau32 of topjet
+ * Index cleaner for HOTVR criteria
  */
-HotvrTopIndexCleaner::HotvrTopIndexCleaner(Context &ctx, double pt_min_, double m_min_, double m_max_, double eta_max_, unsigned int nsub_min_, double fpt_max_, double mpair_min_) {
+HotvrTopIndexCleaner::HotvrTopIndexCleaner(Context &ctx, double pt_min_, double eta_max_, unsigned int nsub_min_, double fpt_max_, double mpair_min_, double tau32_max_) {
   h_TopTagIndexer = ctx.get_handle<TopTagIndexer>("TopTagIndexer");
   pt_min = pt_min_;
-  m_min = m_min_;
-  m_max = m_max_;
   eta_max = eta_max_;
   nsub_min = nsub_min_;
   fpt_max = fpt_max_;
   mpair_min = mpair_min_;
+  tau32_max = tau32_max_;
 }
 
 bool HotvrTopIndexCleaner::process(Event &event) {
@@ -203,27 +202,19 @@ bool HotvrTopIndexCleaner::process(Event &event) {
   for (int i : ind)
     { 
       TopJet topjet = topjets->at(i);
-      double pt  = topjet.v4().pt();
-      double eta = abs(topjet.v4().eta());
-      double m   = topjet.v4().M();
-
-      if (!((pt > pt_min) && 
-	    // (m_min < m && m < m_max) &&
-	    (eta < eta_max))) continue;
-
       vector<Jet> subjets = topjet.subjets();
+      double pt = topjet.v4().pt();
+      double eta = abs(topjet.v4().eta());
       unsigned int nsub = subjets.size();
-
-      if (!(nsub_min <= nsub)) continue;
-
+      if (!( (pt_min < pt) && (eta < eta_max) && (nsub_min <= nsub) )) continue;
       double ptsub = subjets.at(0).v4().pt();
       double fpt   = ptsub/pt;
       double m12   = (subjets.at(0).v4() + subjets.at(1).v4()).M();
       double m13   = (subjets.at(0).v4() + subjets.at(2).v4()).M();
       double m23   = (subjets.at(1).v4() + subjets.at(2).v4()).M();
       double mpair = min(min(m12, m13), m23);
-
-      if ((fpt < fpt_max) && (mpair_min < mpair)) selInd.push_back(i);
+      double tau32 = topjet.tau3_groomed()/topjet.tau2_groomed();
+      if ((fpt < fpt_max) && (mpair_min < mpair) && (tau32 < tau32_max)) selInd.push_back(i);
     }
   indexer.SetIndex(selInd);
   event.set(h_TopTagIndexer, indexer);

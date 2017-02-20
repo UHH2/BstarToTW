@@ -43,7 +43,7 @@ namespace uhh2 {
     std::unique_ptr<Selection> sel_NTop;
 
     // histograms
-    std::unique_ptr<AndHists> hist_nocuts, hist_nmuo, hist_pt, hist_eta, hist_m, hist_nsub, hist_fpt, hist_mpair, hist_tau32, hist_ntop;
+    std::unique_ptr<AndHists> hist_nocuts, hist_nmuo, hist_pt, hist_eta, hist_nsub, hist_fpt, hist_mpair, hist_tau32, hist_ntop_pt, hist_ntop;
     std::unique_ptr<Hists> hist_efficiency;
   };
 
@@ -55,8 +55,6 @@ namespace uhh2 {
 
     // index cleaner
     double top_pt_min         = 200.;
-    double top_m_min          = 140.;
-    double top_m_max          = 220.;
     double top_eta_max        = 2.4;
     unsigned int top_nsub_min = 3;
     double top_fpt_max        = 0.8;
@@ -64,7 +62,6 @@ namespace uhh2 {
     double top_tau32_max      = 0.69;
 
     cl_PtTop.reset(new PtTopIndexCleaner(ctx, top_pt_min));
-    cl_MTop.reset(new MTopIndexCleaner(ctx, top_m_min, top_m_max));
     cl_EtaTop.reset(new EtaTopIndexCleaner(ctx, top_eta_max));
     cl_NSubTop.reset(new NSubTopIndexCleaner(ctx, top_nsub_min));
     cl_FptTop.reset(new FptTopIndexCleaner(ctx, top_fpt_max));
@@ -75,7 +72,7 @@ namespace uhh2 {
     id_Muo = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
 
     sel_NMuo.reset(new NMuonSelection(1, -1, id_Muo));
-    sel_NTop.reset(new NTopIndexSelection(ctx, 1));
+    sel_NTop.reset(new NTopIndexSelection(ctx, 1, 1));
 
     // histogramms
     hist_nocuts.reset(new AndHists());
@@ -95,10 +92,6 @@ namespace uhh2 {
     hist_eta->add_hist(new HOTVRHists(ctx, "EtaTop_hotvr"));
     hist_eta->add_hist(new HOTVRPerformanceHists(ctx, "EtaTop_performance"));
 
-    hist_m.reset(new AndHists());
-    hist_m->add_hist(new HOTVRHists(ctx, "MTop_hotvr"));
-    hist_m->add_hist(new HOTVRPerformanceHists(ctx, "MTop_performance"));
-
     hist_nsub.reset(new AndHists());
     hist_nsub->add_hist(new HOTVRHists(ctx, "NSubTop_hotvr"));
     hist_nsub->add_hist(new HOTVRPerformanceHists(ctx, "NSubTop_performance"));
@@ -114,6 +107,10 @@ namespace uhh2 {
     hist_tau32.reset(new AndHists());
     hist_tau32->add_hist(new HOTVRHists(ctx, "Tau32Top_hotvr"));
     hist_tau32->add_hist(new HOTVRPerformanceHists(ctx, "Tau32Top_performance"));
+
+    hist_ntop_pt.reset(new AndHists());
+    hist_ntop_pt->add_hist(new HOTVRHists(ctx, "NTop_pt_hotvr"));
+    hist_ntop_pt->add_hist(new HOTVRPerformanceHists(ctx, "NTop_pt_performance"));
 
     hist_ntop.reset(new AndHists());
     hist_ntop->add_hist(new HOTVRHists(ctx, "NTop_hotvr"));
@@ -141,9 +138,6 @@ namespace uhh2 {
     if(!cl_EtaTop->process(event)) return false;
     hist_eta->fill(event);
 
-    if(!cl_MTop->process(event)) return false;
-    hist_m->fill(event);
-
     if(!cl_NSubTop->process(event)) return false;
     hist_nsub->fill(event);
 
@@ -152,6 +146,8 @@ namespace uhh2 {
 
     if(!cl_MpairTop->process(event)) return false;
     hist_mpair->fill(event);
+
+    if (sel_NTop->passes(event)) hist_ntop_pt->fill(event);
 
     if(!cl_Tau32Top->process(event)) return false;
     hist_tau32->fill(event);

@@ -26,7 +26,7 @@ namespace uhh2 {
   protected:
     TH1F *DeltaR_Top_HotvrTopjets;
     TH2F *jet_area_vs_jet_pt;
-    TH2F *pt_reco_over_pt_top_vs_pt, *pt_reco_over_pt_top_vs_npv;
+    TH2F *pt_reco_over_pt_top_vs_pt_reco, *pt_reco_over_pt_top_vs_pt_top, *pt_reco_over_pt_top_vs_npv;
 
     uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
     uhh2::Event::Handle<TopTagIndexer> h_TopTagIndexer;

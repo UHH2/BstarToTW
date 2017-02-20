@@ -32,7 +32,7 @@ namespace uhh2 {
     std::unique_ptr<AnalysisModule> TopTagIndProd;
 
     // index cleaner
-    std::unique_ptr<AnalysisModule> cl_HotvrTop, cl_Tau32Top;
+    std::unique_ptr<AnalysisModule> cl_HotvrTop, cl_EtaTop, cl_PtTop, cl_Tau32Top;
 
     // selection
     MuonId id_Muo;
@@ -53,27 +53,25 @@ namespace uhh2 {
 
     // index cleaner
     double top_pt_min         = 200.;
-    double top_m_min          = 140.;
-    double top_m_max          = 220.;
+    // double top_m_min          = 140.;
+    // double top_m_max          = 220.;
     double top_eta_max        = 2.4;
     unsigned int top_nsub_min = 3;
     double top_fpt_max        = 0.8;
     double top_mpair_min      = 50.;
     double top_t32_max        = 0.69;
 
-    cl_HotvrTop.reset(new HotvrTopIndexCleaner(ctx, top_pt_min, top_m_min, top_m_max, top_eta_max, top_nsub_min, top_fpt_max , top_mpair_min));
-    cl_Tau32Top.reset(new Tau32TopIndexCleaner(ctx, top_t32_max));
+    cl_HotvrTop.reset(new HotvrTopIndexCleaner(ctx, top_pt_min, top_eta_max, top_nsub_min, top_fpt_max , top_mpair_min, top_t32_max));
 
     // selections
     id_Muo = AndId<Muon>(MuonIDTight(), PtEtaCut(130.0, 2.4),MuonIso(0.15));
 
-    sel_NTop.reset(new NTopIndexSelection(ctx, 1));
+    sel_NTop.reset(new NTopIndexSelection(ctx, 1, 1));
     sel_NMuo.reset(new NMuonSelection(1, -1, id_Muo));
 
     // histogramms
     h_ntop_hotvr.reset(new HOTVRHists(ctx, "NTopCut_HOTVR"));
     h_ntop_performance.reset(new HOTVRPerformanceHists(ctx, "NTopCut_Performance"));
-
 
     version = ctx.get("dataset_version");
   }

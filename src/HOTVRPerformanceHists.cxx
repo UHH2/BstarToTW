@@ -28,7 +28,8 @@ HOTVRPerformanceHists::HOTVRPerformanceHists(Context & ctx, const string & dirna
   DeltaR_Top_HotvrTopjets = book<TH1F>("DeltaR_Top_HOTVR", "DeltaR_{topjet, top}", 20,  0, 4);
 
   jet_area_vs_jet_pt         = book<TH2F>("jet_area_vs_jet_pt",         " ; p_T^{reco,top}; A_{reco_top}",             32, 0, 1600, 10, 0, 10);
-  pt_reco_over_pt_top_vs_pt  = book<TH2F>("pt_reco_over_pt_top_vs_pt",  " ; p_{T}^{reco}; p_{T}^{reco} / p_{T}^{top}", 32, 0, 1600, 20, 0, 2.);
+  pt_reco_over_pt_top_vs_pt_reco  = book<TH2F>("pt_reco_over_pt_top_vs_pt_reco",  " ; p_{T}^{reco}; p_{T}^{reco} / p_{T}^{top}", 32, 0, 1600, 20, 0, 2.);
+  pt_reco_over_pt_top_vs_pt_top  = book<TH2F>("pt_reco_over_pt_top_vs_pt_top",  " ; p_{T}^{reco}; p_{T}^{reco} / p_{T}^{top}", 32, 0, 1600, 20, 0, 2.);
   pt_reco_over_pt_top_vs_npv = book<TH2F>("pt_reco_over_pt_top_vs_npv", " ; N_{pv}; p_{T}^{reco} / p_{T}^{top}",       50, 0, 50,   20, 0, 2.);
 
 }
@@ -61,7 +62,8 @@ void HOTVRPerformanceHists::fill(const Event & event){
       DeltaR_Top_HotvrTopjets->Fill(deltaR(topjet.v4(), genTop));
 
       jet_area_vs_jet_pt->Fill(pt_topjet, topjet.jetArea(), weight);
-      pt_reco_over_pt_top_vs_pt->Fill(pt_topjet, pt_topjet/pt_top, weight);
+      pt_reco_over_pt_top_vs_pt_reco->Fill(pt_topjet, pt_topjet/pt_top, weight);
+      pt_reco_over_pt_top_vs_pt_top->Fill(pt_top, pt_topjet/pt_top, weight);
       pt_reco_over_pt_top_vs_npv->Fill(npv, pt_topjet/pt_top, weight);
     }
 

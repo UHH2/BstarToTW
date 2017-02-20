@@ -47,17 +47,15 @@ void EfficiencyHists::fill(const Event & event){
   for (TopJet topjet : hotvrJets)
     {
       vector<Jet> subjets = topjet.subjets();
-      if (topjet.pt() > 200 &&
-	  abs(topjet.v4().eta()) < 2.4 &&
-	  subjets.size() >= 3 &&
-	  topjet.v4().M() > 140 && topjet.v4().M() < 220)
+      if (abs(topjet.v4().eta()) < 2.4 && subjets.size() >= 3)
 	{
 	  double fpt = subjets.at(0).pt()/topjet.pt();
 	  double m12 = (subjets.at(0).v4() + subjets.at(1).v4()).M();
 	  double m13 = (subjets.at(0).v4() + subjets.at(2).v4()).M();
 	  double m23 = (subjets.at(1).v4() + subjets.at(2).v4()).M();
 	  double mpair = min(min(m12, m13), m23);
-	  if (fpt < 0.8 && mpair > 50) ++nHOTVR;
+	  double tau32 = topjet.tau3_groomed()/topjet.tau2_groomed();
+	  if (fpt < 0.8 && mpair > 50 && tau32 < 0.69) ++nHOTVR;
 	}
     }
   if (nHOTVR == 1) hotvr_counter->Fill(0., weight);
