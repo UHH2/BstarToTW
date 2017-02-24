@@ -33,7 +33,13 @@ HOTVRHists::HOTVRHists(Context & ctx, const string & dirname):
   Mpair_HotvrTopjets      = book<TH1F>("Mpair_HOTVR",      "M_pair", 40,  0, 200);
   Tau32_HotvrTopjets      = book<TH1F>("tau32_HOTVR",      "#tau_{32}", 20,  0, 1);
 
-  DeltaR_L_HotvrTopjets   = book<TH1F>("DeltaR_L_HOTVR", "#Delta R_{l,t}", 20, 0, 4);
+  DeltaR_L_HotvrTopjets   = book<TH1F>("DeltaR_L_HOTVR",   "#Delta R_{l,t}", 20, 0, 4);
+  DeltaPhi_L_HotvrTopjets = book<TH1F>("DeltaPhi_L_HOTVR", "#Delta #phi_{l,t}", 20, 0, 4);
+
+  // b-jets
+  N_bjets_loose           = book<TH1F>("N_bjets_loose",    "N_{bjets}", 10,  0, 10);
+  N_bjets_medium          = book<TH1F>("N_bjets_medium",   "N_{bjets}", 10,  0, 10);
+  N_bjets_tight           = book<TH1F>("N_bjets_tight",    "N_{bjets}", 10,  0, 10);
 
 }
 
@@ -48,8 +54,12 @@ void HOTVRHists::fill(const Event & event){
   vector<TopJet> hotvrJets = *event.topjets;                     // hotvr topjets
   vector<int> hotvrTopTaggedInd = event.get(h_TopTagIndexer).GetIndex(); // indices of tagged hotvr topjets
   vector<Muon> muons = *event.muons;
+  vector<Jet> jets = *event.jets;
+  const CSVBTag btag_loose(CSVBTag::WP_LOOSE);
+  const CSVBTag btag_medium(CSVBTag::WP_MEDIUM);
+  const CSVBTag btag_tight(CSVBTag::WP_TIGHT);
 
-  // fill historams for HOTVR topjets
+  // fill HOTVR hists
   N_HotvrTopjets->Fill(hotvrTopTaggedInd.size(), weight);
   for (int ind : hotvrTopTaggedInd)
     {
@@ -81,8 +91,28 @@ void HOTVRHists::fill(const Event & event){
       Fpt_HotvrTopjets->Fill(fpt, weight);
       Mpair_HotvrTopjets->Fill(mpair, weight);
       Tau32_HotvrTopjets->Fill(topjet.tau3_groomed()/topjet.tau2_groomed(), weight);
-      if (muons.size() > 0) DeltaR_L_HotvrTopjets->Fill(deltaR(topjet.v4(), muons.at(0).v4()));
+      if (muons.size() > 0)
+	{
+	  DeltaR_L_HotvrTopjets->Fill(deltaR(topjet.v4(), muons.at(0).v4()));
+	  DeltaPhi_L_HotvrTopjets->Fill(deltaPhi(topjet.v4(), muons.at(0).v4()));
+	}
     }
+
+  // fill bjet hists
+  int n_loose  = 0;
+  int n_medium = 0;
+  int n_tight  = 0;
+
+  for (Jet jet : jets)
+    {
+      if (btag_loose(jet, event)) ++n_loose;
+      if (btag_medium(jet, event)) ++n_medium;
+      if (btag_tight(jet, event)) ++n_tight;
+    }
+
+  N_bjets_loose->Fill(n_loose, weight);
+  N_bjets_medium->Fill(n_medium, weight);
+  N_bjets_tight->Fill(n_tight, weight);
 
 }
 

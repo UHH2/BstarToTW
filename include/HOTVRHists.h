@@ -3,6 +3,7 @@
 #include "UHH2/core/include/Hists.h"
 #include "UHH2/core/include/TopJet.h"
 #include "UHH2/core/include/Muon.h"
+#include "UHH2/common/include/JetIds.h"
 #include "UHH2/BstarToTW/include/TopTagIndexer.h"
 
 #include <vector>
@@ -27,7 +28,9 @@ namespace uhh2 {
     
     TH1F *N_HotvrTopjets, *Pt_HotvrTopjets, *Eta_HotvrTopjets, *M_HotvrTopjets;
     TH1F *NSub_HotvrTopjets, *Fpt_HotvrTopjets, *Mpair_HotvrTopjets, *Tau32_HotvrTopjets;
-    TH1F *DeltaR_L_HotvrTopjets;
+    TH1F *DeltaR_L_HotvrTopjets, *DeltaPhi_L_HotvrTopjets;
+
+    TH1F *N_bjets_loose, *N_bjets_medium, *N_bjets_tight;
 
     uhh2::Event::Handle<TopTagIndexer> h_TopTagIndexer;
   };

@@ -7,7 +7,7 @@
 namespace uhh2 {
   class AndHists {
   public:
-    AndHists();
+    AndHists(uhh2::Context &ctx, const std::string & dirname);
 
     virtual void fill(const uhh2::Event & event);
     virtual ~AndHists();

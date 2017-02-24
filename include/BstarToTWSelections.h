@@ -6,46 +6,28 @@
 
 namespace uhh2 {
 
-  /* NHotvrTopSelection
-   *
-   * Select events that have at least n_min TopJets following the
-   * definition of HOTVR (1606.04961)
+  /** 
+   * This class selects event by requiring there to be at least n_min
+   * and maximal n_max topjets, with pt > pt_min and eta < eta_max
    */
-  class NHotvrTopSelection: public uhh2::Selection {
+  class NHotvrSelection: public uhh2::Selection {
   public:
-    NHotvrTopSelection(unsigned int n);
-    virtual bool passes(const uhh2::Event & event) override;
+    NHotvrSelection(unsigned int n_min_, unsigned int n_max_, double pt_min_, double eta_max_);
+    virtual bool passes(const uhh2::Event &event) override;
   private:
-    unsigned int n;
-
+    unsigned int n_min, n_max;
+    double pt_min, eta_max;
   };
 
-  /* MassHotvrTopSelection
-   *
-   * Selection of Topjets within Masswindow m_min < m < m_max
+  /**
+   * This class selects events by requiring MET > met_min
    */
-  class MHotvrTopSelection: public uhh2::Selection {
+  class METSelection: public uhh2::Selection {
   public:
-    MHotvrTopSelection(double m_min_ = 140, double m_max_ = 220);
-    virtual bool passes(const uhh2::Event & event) override;
+    METSelection(double met_min_);
+    virtual bool passes(const uhh2::Event &event) override;
   private:
-    double m_min;
-    double m_max;
-
-  };
-
-  /* NHotvrGenTopSelection
-   *
-   * Select events that have at least n_min TopJets following the
-   * definition of HOTVR (1606.04961)
-   */
-  class NHotvrGenTopSelection: public uhh2::Selection {
-  public:
-    NHotvrGenTopSelection(unsigned int n);
-    virtual bool passes(const uhh2::Event & event) override;
-  private:
-    unsigned int n;
-
+    double met_min;
   };
 
 }
