@@ -17,9 +17,8 @@ using namespace uhh2;
  * physics performance of the HOTVR algorithm.
  * 
  */
-HOTVRHists::HOTVRHists(Context & ctx, const string & dirname): 
-  Hists(ctx, dirname),
-  h_TopTagIndexer(ctx.get_handle<TopTagIndexer>("TopTagIndexer"))
+HOTVRHists::HOTVRHists(Context & ctx, const string & dirname, const boost::optional<TopJetId> &topjetid): 
+  Hists(ctx, dirname), m_topjetid(topjetid)
 {
   // book all histograms here
 
@@ -43,27 +42,22 @@ HOTVRHists::HOTVRHists(Context & ctx, const string & dirname):
 
 }
 
-void HOTVRHists::fill(const Event & event){  
-  // Do not fill histograms if BstarToTWgen information has not been filled
-  if(!event.is_valid(h_TopTagIndexer))
-    {
-      return;
-    }
+void HOTVRHists::fill(const Event & event) {  
+
   double weight = event.weight; // event weight
 
-  vector<TopJet> hotvrJets = *event.topjets;                     // hotvr topjets
-  vector<int> hotvrTopTaggedInd = event.get(h_TopTagIndexer).GetIndex(); // indices of tagged hotvr topjets
+  vector<TopJet> hotvrJets = *event.topjets;
   vector<Muon> muons = *event.muons;
   vector<Jet> jets = *event.jets;
-  const CSVBTag btag_loose(CSVBTag::WP_LOOSE);
-  const CSVBTag btag_medium(CSVBTag::WP_MEDIUM);
-  const CSVBTag btag_tight(CSVBTag::WP_TIGHT);
+
 
   // fill HOTVR hists
-  N_HotvrTopjets->Fill(hotvrTopTaggedInd.size(), weight);
-  for (int ind : hotvrTopTaggedInd)
+  for (TopJet topjet : hotvrJets)
     {
-      TopJet topjet = hotvrJets.at(ind);
+      if (m_topjetid)
+	{
+	  if (!(*m_topjetid)(topjet, event)) continue;
+	}
       vector<Jet> subjets = topjet.subjets();
 
       double pt_topjet = topjet.v4().pt();
@@ -91,14 +85,17 @@ void HOTVRHists::fill(const Event & event){
       Fpt_HotvrTopjets->Fill(fpt, weight);
       Mpair_HotvrTopjets->Fill(mpair, weight);
       Tau32_HotvrTopjets->Fill(topjet.tau3_groomed()/topjet.tau2_groomed(), weight);
-      if (muons.size() > 0)
-	{
-	  DeltaR_L_HotvrTopjets->Fill(deltaR(topjet.v4(), muons.at(0).v4()));
-	  DeltaPhi_L_HotvrTopjets->Fill(deltaPhi(topjet.v4(), muons.at(0).v4()));
-	}
+      DeltaR_L_HotvrTopjets->Fill(deltaR(topjet.v4(), muons.at(0).v4()));
+      DeltaPhi_L_HotvrTopjets->Fill(deltaPhi(topjet.v4(), muons.at(0).v4()));
+
     }
 
   // fill bjet hists
+
+  const CSVBTag btag_loose(CSVBTag::WP_LOOSE);
+  const CSVBTag btag_medium(CSVBTag::WP_MEDIUM);
+  const CSVBTag btag_tight(CSVBTag::WP_TIGHT);
+
   int n_loose  = 0;
   int n_medium = 0;
   int n_tight  = 0;

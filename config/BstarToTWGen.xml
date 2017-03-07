@@ -39,128 +39,108 @@
   <Library Name="libSUHH2BstarToTW"/>
   <Package Name="SUHH2BstarToTW.par" />
 
-  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/BstarToTW_GenStudies/" PostFix="" TargetLumi="1" >    
+  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/BstarToTW/RunII_80X_v3/Generator/" PostFix="" TargetLumi="1" >    
 
     <!-- InputData for MC_BstarToTW 1200 to 3000 LH -->
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1200LH" Cacheable="&cacheable;">
       &BstarToTW1200LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1400LH" Cacheable="&cacheable;">
       &BstarToTW1400LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1600LH" Cacheable="&cacheable;">
       &BstarToTW1600LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1800LH" Cacheable="&cacheable;">
       &BstarToTW1800LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2000LH" Cacheable="&cacheable;">
       &BstarToTW2000LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2200LH" Cacheable="&cacheable;">
       &BstarToTW2200LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2400LH" Cacheable="&cacheable;">
       &BstarToTW2400LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2600LH" Cacheable="&cacheable;">
       &BstarToTW2600LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2800LH" Cacheable="&cacheable;">
       &BstarToTW2800LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW3000LH" Cacheable="&cacheable;">
       &BstarToTW3000LH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <!-- InputData for MC_BstarToTW 1200 to 3000 RH -->
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1200RH" Cacheable="&cacheable;">
       &BstarToTW1200RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1400RH" Cacheable="&cacheable;">
       &BstarToTW1400RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1600RH" Cacheable="&cacheable;">
       &BstarToTW1600RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1800RH" Cacheable="&cacheable;">
       &BstarToTW1800RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2000RH" Cacheable="&cacheable;">
       &BstarToTW2000RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2200RH" Cacheable="&cacheable;">
       &BstarToTW2200RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2400RH" Cacheable="&cacheable;">
       &BstarToTW2400RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2600RH" Cacheable="&cacheable;">
       &BstarToTW2600RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW2800RH" Cacheable="&cacheable;">
       &BstarToTW2800RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW3000RH" Cacheable="&cacheable;">
       &BstarToTW3000RH;
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
     </InputData>
 
 

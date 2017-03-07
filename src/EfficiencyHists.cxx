@@ -8,57 +8,28 @@
 using namespace std;
 using namespace uhh2;
 
-EfficiencyHists::EfficiencyHists(Context & ctx, const string & dirname): 
-  Hists(ctx, dirname),
-  h_AK8Jets(ctx.get_handle<vector<TopJet>>("slimmedJetsAK8_SoftDrop"))
+EfficiencyHists::EfficiencyHists(Context & ctx, const string & dirname, const boost::optional<Event::Handle<std::vector<TopJet> > > &topjetcollection):
+  Hists(ctx, dirname), h_topjetcollection(topjetcollection)
 {
   // book all histograms here
+  All = book<TH1F>("All", "All", 1, 0, 1); 
+  Matched = book<TH1F>("Matched", "Matched", 1, 0, 1); 
 
-
-
-  // efficiency
-  all           = book<TH1F>("all", "N", 2, 0, 2);
-  hotvr_counter = book<TH1F>("hotvr_counter", "N", 2, 0, 2); // N_events that survivied HOTVR Cuts
-  cms_counter   = book<TH1F>("cms_counter", "N", 2, 0, 2); // N_events that survived CMS Top Tagger Cuts
-
+  h_bstargen = ctx.get_handle<BstarToTWGen>("BstarToTWgen");
 }
 
 void EfficiencyHists::fill(const Event & event){  
 
   double weight = event.weight;
 
-  vector<TopJet> hotvrJets = *event.topjets;
-  vector<TopJet> ak8Jets = event.get(h_AK8Jets);
+  BstarToTWGen bstargen = event.get(h_bstargen);
 
-  all->Fill(0., weight);
-
-  int nCMS = 0;
-  for (TopJet topjet : ak8Jets)
-    {
-      if (topjet.pt() > 400 && 
-	  abs(topjet.v4().Rapidity()) < 2.4 &&
-	  topjet.tau3() / topjet.tau2() < 0.69 &&
-	  topjet.softdropmass() > 110 && topjet.softdropmass() < 210)
-	++nCMS;
-    }
-  if (nCMS == 1) cms_counter->Fill(0., weight);
-
-  int nHOTVR = 0;
-  for (TopJet topjet : hotvrJets)
-    {
-      vector<Jet> subjets = topjet.subjets();
-      if (abs(topjet.v4().eta()) < 2.4 && subjets.size() >= 3)
-	{
-	  double fpt = subjets.at(0).pt()/topjet.pt();
-	  double m12 = (subjets.at(0).v4() + subjets.at(1).v4()).M();
-	  double m13 = (subjets.at(0).v4() + subjets.at(2).v4()).M();
-	  double m23 = (subjets.at(1).v4() + subjets.at(2).v4()).M();
-	  double mpair = min(min(m12, m13), m23);
-	  double tau32 = topjet.tau3_groomed()/topjet.tau2_groomed();
-	  if (fpt < 0.8 && mpair > 50 && tau32 < 0.69) ++nHOTVR;
-	}
-    }
-  if (nHOTVR == 1) hotvr_counter->Fill(0., weight);
+  const LorentzVector top = bstargen.tbstar();
+  const vector<TopJet> & topjets = h_topjetcollection ? event.get(*h_topjetcollection) : *event.topjets;
+  const LorentzVector topjet = topjets.at(0).v4();
+  All->Fill(0., weight);
+  // ToDo: find better way for matching
+  if(deltaPhi(top, topjet) < M_PI/2) Matched->Fill(0., weight);
 }
 
 EfficiencyHists::~EfficiencyHists(){}

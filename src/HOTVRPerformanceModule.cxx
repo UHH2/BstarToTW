@@ -3,138 +3,126 @@
 
 #include "UHH2/core/include/AnalysisModule.h"
 #include "UHH2/core/include/Event.h"
+#include "UHH2/core/include/Jet.h"
+#include "UHH2/core/include/TopJet.h"
 
-#include "UHH2/common/include/CommonModules.h"
-#include "UHH2/common/include/CleaningModules.h"
-#include "UHH2/common/include/MuonIds.h"
+#include "UHH2/common/include/TopJetIds.h"
 #include "UHH2/common/include/NSelections.h"
-#include "UHH2/common/include/MuonHists.h"
+#include "UHH2/common/include/JetHists.h"
 
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
-#include "UHH2/BstarToTW/include/TopTagIndexer.h"
-#include "UHH2/BstarToTW/include/IndexerTools.h"
+#include "UHH2/BstarToTW/include/BstarToTWGenSelections.h"
+#include "UHH2/BstarToTW/include/HOTVRIds.h"
 #include "UHH2/BstarToTW/include/HOTVRHists.h"
-#include "UHH2/BstarToTW/include/HOTVRPerformanceHists.h"
-#include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/EfficiencyHists.h"
+
+#include <vector>
 
 using namespace std;
 using namespace uhh2;
 
 namespace uhh2 {
 
+  /** \brief Module for comparing HOTVR with other top taggers.
+   *
+   * The efficiency of different top taggers are tested by applying
+   * the corresponding TopJetIds and requiring ==1 tagged topjet. The
+   * number of events passing this selection will then be filled into
+   * a histogram, to calculate efficiencies.
+   *
+   */
   class HOTVRPerformanceModule: public AnalysisModule {
   public:
     
     explicit HOTVRPerformanceModule(Context & ctx);
     virtual bool process(Event & event) override;
 
-  private:  
-    // additional modules
-    std::unique_ptr<AnalysisModule> BstarToTWGenProd, TopTagIndProd;
+  private:
+    std::unique_ptr<AnalysisModule> BstarToTWgenprod; // gen particle interpreter
+    std::unique_ptr<Selection> sel_semilep; // select only semi-leptonic events on generator level.
+    Event::Handle<vector<TopJet>> h_ak8jets; // handle for ak8_SoftDrop collection
+    std::unique_ptr<Hists> hist_hotvr, hist_ak8;
 
-    // index cleaner
-    std::unique_ptr<AnalysisModule> cl_PtEtaTop, cl_MTop, cl_NSubTop, cl_FptTop, cl_MpairTop, cl_Tau32Top;
+    // HOTVR
+    TopJetId id_hotvrtoptag;
+    std::unique_ptr<Selection> sel_hotvrtoptag;
+    std::unique_ptr<Hists> hist_hotvrtoptag;
+    std::unique_ptr<TopJetHists> hist_cmstoptag;
 
-    // selection
-    MuonId id_Muo;
+    // CMSTopTag ungroomed
+    TopJetId id_cmstoptag_ungroomed;
+    std::unique_ptr<Selection> sel_cmstoptag_ungroomed;
+    std::unique_ptr<Hists> hist_cmstoptag_ungroomed;
 
-    std::unique_ptr<Selection> sel_NMuo;
-    std::unique_ptr<Selection> sel_NTop;
+    // CMSTopTag groomed
+    TopJetId id_cmstoptag_groomed;
+    std::unique_ptr<Selection> sel_cmstoptag_groomed;
+    std::unique_ptr<Hists> hist_cmstoptag_groomed;
 
-    // histograms
-    std::unique_ptr<AndHists> hist_nocuts, hist_nmuo, hist_pt_eta, hist_nsub, hist_fpt, hist_mpair, hist_tau32, hist_ntop_pt, hist_ntop;
-    std::unique_ptr<Hists> hist_efficiency;
   };
 
   HOTVRPerformanceModule::HOTVRPerformanceModule(Context & ctx) {
+ 
+    BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
+    sel_semilep.reset(new SemiLepSelection(ctx));
+    
+    std::string ak8jets_name = "slimmedJetsAK8_SoftDrop";
 
-    // additional modules
-    BstarToTWGenProd.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
-    TopTagIndProd.reset(new TopTagIndexerProducer(ctx, "TopTagIndexer"));
+    h_ak8jets = ctx.get_handle<vector<TopJet>>(ak8jets_name);
 
-    // index cleaner
-    double top_pt_min         = 200.;
-    double top_eta_max        = 2.4;
-    unsigned int top_nsub_min = 3;
-    double top_fpt_max        = 0.8;
-    double top_mpair_min      = 50.;
-    double top_tau32_max      = 0.69;
+    hist_hotvr.reset(new HOTVRHists(ctx, "HOTVR_Jets"));
+    hist_ak8.reset(new TopJetHists(ctx, "AK8_Jets", 4, ak8jets_name));
+    hist_cmstoptag.reset(new TopJetHists(ctx, "CMSTopTag_Jets", 4, ak8jets_name));
 
-    cl_PtEtaTop.reset(new PtEtaTopIndexCleaner(ctx, top_pt_min, top_eta_max));
-    cl_NSubTop.reset(new NSubTopIndexCleaner(ctx, top_nsub_min));
-    cl_FptTop.reset(new FptTopIndexCleaner(ctx, top_fpt_max));
-    cl_MpairTop.reset(new MpairTopIndexCleaner(ctx, top_mpair_min));
-    cl_Tau32Top.reset(new Tau32TopIndexCleaner(ctx, top_tau32_max));
+    // HOTVR
+    id_hotvrtoptag = HOTVRTopTag(); // default settings for HOTVRTopTag, see HOTVRId.h
+    sel_hotvrtoptag.reset(new NTopJetSelection(1,1, id_hotvrtoptag));
+    hist_hotvrtoptag.reset(new EfficiencyHists(ctx, "HOTVRTopTag_Efficiencies"));
 
-    // selections
-    id_Muo = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
+    // CMSTopTag ungroomed
+    id_cmstoptag_ungroomed = CMSTopTag(); // default settings for CMSTopTag, see TopJetIds.h
+    sel_cmstoptag_ungroomed.reset(new NTopJetSelection(1, 1, id_cmstoptag_ungroomed, h_ak8jets));
+    hist_cmstoptag_ungroomed.reset(new EfficiencyHists(ctx, "CMSTopTag_ungroomed_Efficiencies",  h_ak8jets));
+    hist_cmstoptag->set_TopJetId(id_cmstoptag_ungroomed);
 
-    sel_NMuo.reset(new NMuonSelection(1, -1, id_Muo));
-    sel_NTop.reset(new NTopIndexSelection(ctx, 1, 1));
-
-    // histogramms
-    hist_nocuts.reset(new AndHists(ctx, "NoCuts"));
-    hist_nocuts->add_hist(new HOTVRPerformanceHists(ctx, "NoCuts_performance"));
-
-    hist_nmuo.reset(new AndHists(ctx, "NMuon"));
-    hist_nmuo->add_hist(new HOTVRPerformanceHists(ctx, "NMuo_performance"));
-
-    hist_pt_eta.reset(new AndHists(ctx, "PtEtaTop"));
-    hist_pt_eta->add_hist(new HOTVRPerformanceHists(ctx, "PtEtaTop_performance"));
-
-    hist_nsub.reset(new AndHists(ctx, "NSubTop"));
-    hist_nsub->add_hist(new HOTVRPerformanceHists(ctx, "NSubTop_performance"));
-
-    hist_fpt.reset(new AndHists(ctx, "FptTop"));
-    hist_fpt->add_hist(new HOTVRPerformanceHists(ctx, "FptTop_performance"));
-
-    hist_mpair.reset(new AndHists(ctx, "MpairTop"));
-    hist_mpair->add_hist(new HOTVRPerformanceHists(ctx, "MpairTop_performance"));
-
-    hist_tau32.reset(new AndHists(ctx, "Tau32Top"));
-    hist_tau32->add_hist(new HOTVRPerformanceHists(ctx, "Tau32Top_performance"));
-
-    hist_ntop_pt.reset(new AndHists(ctx, "NTop_pt"));
-    hist_ntop_pt->add_hist(new HOTVRPerformanceHists(ctx, "NTop_pt_performance"));
-
-    hist_ntop.reset(new AndHists(ctx, "NTop"));
-    hist_ntop->add_hist(new HOTVRPerformanceHists(ctx, "NTop_performance"));
-
-    hist_efficiency.reset(new EfficiencyHists(ctx, "Efficiency"));
-
+    // CMSTopTag groomed
+    id_cmstoptag_groomed = CMSTopTag(CMSTopTag::MassType::groomed); // as above but uses groomed mass
+    sel_cmstoptag_groomed.reset(new NTopJetSelection(1, 1, id_cmstoptag_groomed, h_ak8jets));
+    hist_cmstoptag_groomed.reset(new EfficiencyHists(ctx, "CMSTopTag_groomed_Efficiencies",  h_ak8jets));
   }
 
   bool HOTVRPerformanceModule::process(Event & event) {
-    // initialize additional modules
-    BstarToTWGenProd->process(event);
-    TopTagIndProd->process(event);
-    hist_efficiency->fill(event);
-    hist_nocuts->fill(event);
+    BstarToTWgenprod->process(event);
+    // vector<TopJet> ak8jets = event.get(h_ak8jets);
+    
+    // cout << "N Jets = " << ak8jets.size() << endl;
+    // for (TopJet topjet : ak8jets)
+    //   {
+    // 	vector<Jet> subjets = topjet.subjets();
+    // 	cout << "N subjets = " << subjets.size() << endl;
+    // 	if(subjets.size() < 3) continue;
+	
+    // 	float mjet = topjet.v4().M();
+    // 	cout << "mjet = " << mjet << endl;
 
-    // index cleaner
-    if(!sel_NMuo->passes(event)) return false;
-    hist_nmuo->fill(event);
+    // 	double m12 = (subjets.at(0).v4() + subjets.at(1).v4()).M();
+    // 	double m13 = (subjets.at(0).v4() + subjets.at(2).v4()).M();
+    // 	double m23 = (subjets.at(1).v4() + subjets.at(2).v4()).M();
+    // 	double mmin = min(min(m12, m13), m23);
+    // 	cout << "mmin = " << mmin << endl;
+    //   }
 
-    if(!cl_PtEtaTop->process(event)) return false;
-    hist_pt_eta->fill(event);
+    // Only semi-leptonic channel
+    if(!sel_semilep->passes(event)) return false;
+    hist_hotvr->fill(event);
+    hist_ak8->fill(event);
 
-    if(!cl_NSubTop->process(event)) return false;
-    hist_nsub->fill(event);
+    if(sel_hotvrtoptag->passes(event)) hist_hotvrtoptag->fill(event);
 
-    if(!cl_FptTop->process(event)) return false;
-    hist_fpt->fill(event);
+    if(sel_cmstoptag_ungroomed->passes(event)) hist_cmstoptag_ungroomed->fill(event);
 
-    if(!cl_MpairTop->process(event)) return false;
-    hist_mpair->fill(event);
+    if(sel_cmstoptag_groomed->passes(event)) hist_cmstoptag_groomed->fill(event);
 
-    if (sel_NTop->passes(event)) hist_ntop_pt->fill(event);
-
-    if(!cl_Tau32Top->process(event)) return false;
-    hist_tau32->fill(event);
-
-    if(!sel_NTop->passes(event)) return false;
-    hist_ntop->fill(event);
 
     // done
     return true;

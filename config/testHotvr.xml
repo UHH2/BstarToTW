@@ -26,7 +26,7 @@
   <Library Name="libSUHH2BstarToTW"/>
   <Package Name="SUHH2BstarToTW.par" />
 
-  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/analysis/testHotvr/" PostFix="" TargetLumi="1" >  
+  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/config/test/" PostFix="" TargetLumi="1" >  
 
     <InputData Lumi="&Lumi;" NEventsMax="&NEvents;" Type="MC" Version="BstarToTW1200LH" Cacheable="&cacheable;">
       &BstarToTW1200LH;
