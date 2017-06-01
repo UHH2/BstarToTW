@@ -5,21 +5,26 @@
 #include "UHH2/core/include/Event.h"
 
 #include "UHH2/common/include/CommonModules.h"
+#include "UHH2/common/include/CleaningModules.h"
 #include "UHH2/common/include/MCWeight.h"
-#include "UHH2/common/include/MuonIds.h"
 #include "UHH2/common/include/TopJetIds.h"
+#include "UHH2/common/include/JetIds.h"
 #include "UHH2/common/include/NSelections.h"
-#include "UHH2/common/include/TriggerSelection.h"
+#include "UHH2/common/include/TTbarReconstruction.h"
+#include "UHH2/common/include/JetHists.h"
 
-#include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 #include "UHH2/BstarToTW/include/HOTVRIds.h"
+#include "UHH2/BstarToTW/include/HOTVRJetCorrectionHists.h"
+
+#include "UHH2/BstarToTW/include/BstarToTWGen.h"
+#include "UHH2/BstarToTW/include/BstarToTWSelections.h"
+#include "UHH2/BstarToTW/include/BstarToTWReconstruction.h"
+#include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
+#include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
 #include "UHH2/BstarToTW/include/AndHists.h"
-#include "UHH2/BstarToTW/include/HOTVRHists.h"
-#include "UHH2/BstarToTW/include/CutflowHists.h"
 
 /* ToDo:
- * - Add b-tag selection
- *
+ * - Add chi2 selection
  */
 
 
@@ -35,245 +40,215 @@ namespace uhh2 {
     virtual bool process(Event & event) override;
 
   private:  
+    std::string dataset_name;
 
-    // additional Modules
+    // --- Additional Modules
+    // Common Modules
     std::unique_ptr<CommonModules> common;
+    // Bstar Reconsturction
+    std::unique_ptr<AnalysisModule> BstarToTWgenprod;
+    std::unique_ptr<AnalysisModule> primary_lep, bstar_reco, bstar_disc, bstar_matchdisc;
 
     // Scale factors
-    std::unique_ptr<AnalysisModule> sf_muo_id, sf_muo_iso, sf_muo_trigger;
+    std::unique_ptr<AnalysisModule> sf_muo_id, sf_muo_iso, sf_muo_trigger, sf_btag;
 
-    // Object Ids
-    MuonId id_muo;
-    TopJetId id_hotvr, id_hotvr_deltaphi;
-    TopJetId id_hotvr_only_fpt, id_hotvr_only_mpair, id_hotvr_only_mjet; // Ids for every single HOTVR parameter
-    TopJetId id_hotvr_fpt_mpair, id_hotvr_fpt_mjet, id_hotvr_mpair_mjet; // Id for combinations of two HOTVR parameters
+    // --- Cleaner
+    std::unique_ptr<AnalysisModule> cl_toptag, cl_toplep;
 
-    // Selections
-    std::unique_ptr<Selection> sel_met, sel_ntop;
-    std::unique_ptr<Selection> sel_hotvr_only_fpt, sel_hotvr_only_mpair, sel_hotvr_only_mjet; // selections for every single HOTVR parameter
-    std::unique_ptr<Selection> sel_hotvr_fpt_mpair, sel_hotvr_fpt_mjet, sel_hotvr_mpair_mjet; // selections for combinations of two HOTVR parameters
-    std::unique_ptr<Selection> sel_hotvr, sel_hotvr_deltaphi;
+    // --- Selections
+    std::unique_ptr<Selection> sel_toptag, veto_ele, sel_muo, sel_btag;
+    std::unique_ptr<Selection> sel_tau32_cr;
 
-    // Hists
-    std::unique_ptr<AndHists> hist_presel, hist_metcut, hist_ntop;
-    std::unique_ptr<AndHists> hist_only_fpt, hist_only_mpair, hist_only_mjet;
-    std::unique_ptr<AndHists> hist_fpt_mpair, hist_fpt_mjet, hist_mpair_mjet; 
-    std::unique_ptr<AndHists> hist_hotvr, hist_hotvr_deltaphi;
-    std::unique_ptr<CutflowHists> cutflow;
+    // --- Histograms
+    std::unique_ptr<Hists> hist_hotvr_jec;
+    std::unique_ptr<Hists> hist_presel, hist_sel_toptag, hist_veto_ele, hist_sel_muo, hist_sel_btag;
+
+    std::unique_ptr<Hists> hist_bstar_reco, hist_bstar_matchreco;
+    std::unique_ptr<Hists> hist_BTagMCEfficiency, hist_tau32MCEfficiency;
+
+    // Scans
+    std::vector<std::unique_ptr<Selection>> sel_tau32, sel_chi2;
+    std::vector<std::unique_ptr<Hists>> hist_tau32, hist_chi2;
+    int n_tau32, n_chi2;
+    
 
   };
 
   BstarToTWAnalysisModule::BstarToTWAnalysisModule(Context & ctx) {
+    dataset_name = ctx.get("dataset_version");
 
-    // --- Setup Additional Modules
+    // --- Kinematic Variables --- //
+    double deltaPhi_min = M_PI/2;  // minimum delta phi between muon and top
+
+    double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
+    double top_m_min     = 140.;   // minimum topjet mass
+    double top_m_max     = 220.;   // maximum topjet mass
+    double top_mpair_min = 50.;    // minimum pairwise mass of first three subjets
+    double top_tau32_max = 0.58;   // maximum nsubjetiness tau_3/2
+
+    CSVBTag::wp btag_wp = CSVBTag::WP_MEDIUM;
+
+    // --- Object IDs --- //
+    // TopJetId id_toptag = HOTVRTopTag(top_fpt_max, 0, FLT_MAX, top_mpair_min); // hotvr top tag without mass cut
+    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max), DeltaPhiCut(deltaPhi_min)); // hotvr top tag with tau_3/2 and delta phi
+    JetId id_btag = CSVBTag(btag_wp);
+
+
+    // --- Setup Additional Modules --- //
+    // - Common Modules - //
     common.reset(new CommonModules());
     common->disable_jec();
     common->disable_jersmear();
     common->init(ctx);
 
-    // --- Scale Factors
+    // - Bstar reconstruction - //
+    primary_lep.reset(new PrimaryLepton(ctx));
+    bstar_reco.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, "BstarToTWReconstruction", id_toptag));
+    bstar_disc.reset(new BstarToTWChi2Discriminator(ctx, "BstarToTWReconstruction"));
+    if (dataset_name.find("BstarToTW") == 0)
+      {
+	BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
+	bstar_matchdisc.reset(new BstarToTWMatchDiscriminator(ctx, "BstarToTWReconstruction"));
+      }
+
+    // - Scale Factors - //
     sf_muo_id.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonID_EfficienciesAndSF_average_RunBtoH.root", "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta", 1, "tightID"));
-    sf_muo_iso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonIso_EfficienciesAndSF_average_RunBtoH.root", "TightISO_TightID_pt_eta", 1, "tightID"));
+    sf_muo_iso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonIso_EfficienciesAndSF_average_RunBtoH.root", "TightISO_TightID_pt_eta", 1, "iso"));
     sf_muo_trigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonTrigger_EfficienciesAndSF_average_RunBtoH.root", "IsoMu24_OR_IsoTkMu24_PtEtaBins", 0.5, "trigger"));
+    // sf_btag.reset(new MCBTagScaleFactor(ctx, btag_wp));
+   
+    // --- Cleaner ---
 
-    // --- Variables for Selections
-    double muo_pt_min  = 130.;     // minimum muon pt
-    double muo_eta_max = 2.4;      // maximum muon eta
-    id_muo = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, muo_eta_max));
+    // --- Selections --- //
+    // - TopTag - //
+    sel_toptag.reset(new NTopJetSelection(1, 1, id_toptag));
+    sel_tau32_cr.reset(new NTopJetSelection(2, 2, id_toptag));
 
-    double met_min = 60.;          // minimum missing transvere energy
+    // - Leptons - //
+    veto_ele.reset(new NElectronSelection(0, 0));
+    sel_muo.reset(new NMuonSelection(1, 1));
 
-    double deltaPhi_min = M_PI/2;  // minimum delta phi between muon and top
+    // - BTag - //
+    sel_btag.reset(new NJetSelection(1, 1, id_btag));
 
-    double top_pt_min    = 200.;   // minimum top jet pt
-    double top_eta_max   = 2.4;    // maximum top jet eta
-    double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
-    double top_m_min     = 140.;   // minimum jet mass
-    double top_m_max     = 220.;   // maximum jet mass
-    double top_mpair_min = 50.;    // minimum pairwise mass of first three subjets
+    // --- Histograms --- //
+    // - HOTVR JEC - //
+    hist_hotvr_jec.reset(new HOTVRJetCorrectionHists(ctx, "HOTVR_JEC"));
 
-    id_hotvr = AndId<TopJet>(HOTVRTopTag(top_fpt_max,
-					 top_m_min, 
-					 top_m_max, 
-					 top_mpair_min),
-			     PtEtaCut(top_pt_min, top_eta_max));
-
-    id_hotvr_deltaphi  = AndId<TopJet>(HOTVRTopTag(top_fpt_max,
-						   top_m_min, 
-						   top_m_max, 
-						   top_mpair_min),
-				       DeltaPhiCut(deltaPhi_min),
-				       PtEtaCut(top_pt_min, top_eta_max));
-
-    // only fpt
-    id_hotvr_only_fpt   = AndId<TopJet>(HOTVRTopTag(top_fpt_max,
-						    0, 
-						    FLT_MAX, 
-						    0),
-					PtEtaCut(top_pt_min, top_eta_max)); 
-
-    // only mpair
-    id_hotvr_only_mpair = AndId<TopJet>(HOTVRTopTag(FLT_MAX,
-						    0, 
-						    FLT_MAX, 
-						    top_mpair_min),
-					PtEtaCut(top_pt_min, top_eta_max)); 
-
-    // only mjet
-    id_hotvr_only_mjet  = AndId<TopJet>(HOTVRTopTag(FLT_MAX,
-						    top_m_min, 
-						    top_m_max, 
-						    0),
-					PtEtaCut(top_pt_min, top_eta_max)); 
-
-    // fpt && mpair
-    id_hotvr_fpt_mpair  = AndId<TopJet>(HOTVRTopTag(top_fpt_max,
-						    0, 
-						    FLT_MAX, 
-						    top_mpair_min),
-					PtEtaCut(top_pt_min, top_eta_max)); 
-
-    // fpt && mjet
-    id_hotvr_fpt_mjet   = AndId<TopJet>(HOTVRTopTag(top_fpt_max,
-						    top_m_min, 
-						    top_m_max, 
-						    0),
-					PtEtaCut(top_pt_min, top_eta_max));
-
-    // mpair && mjet
-    id_hotvr_mpair_mjet = AndId<TopJet>(HOTVRTopTag(FLT_MAX,
-						    top_m_min, 
-						    top_m_max, 
-						    top_mpair_min),
-					PtEtaCut(top_pt_min, top_eta_max)); 
-    //*/
-
-    // --- Selections
-    // MET selection
-    sel_met.reset(new METSelection(met_min));
-
-    // Kinematic selections
-
-    // HOTVR selections
-    sel_ntop.reset(new NTopJetSelection(1, 1, id_hotvr));
-
-    sel_hotvr_only_fpt.reset(new NTopJetSelection(1, -1, id_hotvr_only_fpt));
-    sel_hotvr_only_mpair.reset(new NTopJetSelection(1, -1, id_hotvr_only_mpair));
-    sel_hotvr_only_mjet.reset(new NTopJetSelection(1, -1, id_hotvr_only_mjet));
-
-    sel_hotvr_fpt_mpair.reset(new NTopJetSelection(1, -1, id_hotvr_fpt_mpair));
-    sel_hotvr_fpt_mjet.reset(new NTopJetSelection(1, -1, id_hotvr_fpt_mjet));
-    sel_hotvr_mpair_mjet.reset(new NTopJetSelection(1, -1, id_hotvr_mpair_mjet));
-
-    sel_hotvr.reset(new NTopJetSelection(1, -1, id_hotvr));
-    sel_hotvr_deltaphi.reset(new NTopJetSelection(1, -1, id_hotvr_deltaphi));
-
-
-    // --- Hists
+    // - Cuts - //
     hist_presel.reset(new AndHists(ctx, "PreSel"));
-    hist_metcut.reset(new AndHists(ctx, "METCut"));
-    hist_ntop.reset(new AndHists(ctx, "NTopCut"));
+    hist_sel_toptag.reset(new AndHists(ctx, "1TopTag", id_toptag));
+    hist_veto_ele.reset(new AndHists(ctx, "ElectronVeto"));
+    hist_sel_muo.reset(new AndHists(ctx, "1Muon"));
+    hist_sel_btag.reset(new AndHists(ctx, "1BtagLoose"));
 
-    hist_only_fpt.reset(new AndHists(ctx, "only_fpt"));
-    hist_only_fpt->add_hist(new HOTVRHists(ctx, "only_fpt_HOTVR_tagged", id_hotvr_only_fpt));
-    hist_only_mpair.reset(new AndHists(ctx, "only_mpai"));
-    hist_only_mpair->add_hist(new HOTVRHists(ctx, "only_mpair_HOTVR_tagged", id_hotvr_only_mpair));
-    hist_only_mjet.reset(new AndHists(ctx, "only_mjet"));
-    hist_only_mjet->add_hist(new HOTVRHists(ctx, "only_mjet_HOTVR_tagged", id_hotvr_only_mjet));
+    // - Scale Factors - //
+    hist_BTagMCEfficiency.reset(new BTagMCEfficiencyHists(ctx, "BTagMCEfficiency", btag_wp));
+    hist_tau32MCEfficiency.reset(new AndHists(ctx, "Tau32_CR", id_toptag));
 
-    hist_fpt_mpair.reset(new AndHists(ctx, "fpt_mpair"));
-    hist_fpt_mpair->add_hist(new HOTVRHists(ctx, "fpt_mapir_HOTVR_tagged", id_hotvr_fpt_mpair));
-    hist_fpt_mjet.reset(new AndHists(ctx, "fpt_mjet"));
-    hist_fpt_mjet->add_hist(new HOTVRHists(ctx, "fpt_mjet_HOTVR_tagged", id_hotvr_fpt_mjet));
-    hist_mpair_mjet.reset(new AndHists(ctx, "mpair_mjet"));
-    hist_mpair_mjet->add_hist(new HOTVRHists(ctx, "mpair_mjet_HOTVR_tagged", id_hotvr_mpair_mjet));
+    // - Reconstruction - //
+    hist_bstar_reco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWReco", "BstarToTWReconstruction", "Chi2"));
+    hist_bstar_matchreco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWMatchedReco", "BstarToTWReconstruction", "Match"));
+   
+    // --- Scans --- //
 
-    hist_hotvr.reset(new AndHists(ctx, "HOTVRCuts"));
-    hist_hotvr->add_hist(new HOTVRHists(ctx, "HOTVRCuts_HOTVR_tagged", id_hotvr));
-    hist_hotvr_deltaphi.reset(new AndHists(ctx, "DeltaPhhiCuts"));
-    hist_hotvr_deltaphi->add_hist(new HOTVRHists(ctx, "DeltaPhiCuts_HOTVR_tagged", id_hotvr));
-		     
-    cutflow.reset(new CutflowHists(ctx, "Cutflow"));
+    // - tau_3/2 Scan - //
+    // n_tau32 = 11;
+    // for (int i = 0; i < n_chi2; ++i)
+    //   {
+    // 	std::unique_ptr<Selection> sel;
+    // 	sel.reset(new NTopJetSelectionSelection(1, 1, AndId<TopJet>(id_toptag, Tau32Groomed(0.65 - i*0.01))));
+    // 	sel_chi2.push_back(std::move(sel));
+    // 	std::unique_ptr<Hists> hist;
+    // 	hist.reset(new BstarToTWHypothesisHists(ctx, "Tau32_Reco" + to_string(i), "BstarToTWReconstruction", "Chi2"));
+    // 	hist_chi2.push_back(std::move(hist));
+    //   }
+
+    // - Chi2 Scan - //
+    // n_chi2 = 6;
+    // double chi2[n_chi2] = {1, 5, 10, 15, 20, 30};
+    // for (int i = 0; i < n_chi2; ++i)
+    //   {
+    // 	std::unique_ptr<Selection> sel;
+    // 	sel.reset(new Chi2Selection(ctx, "BstarToTWReconstruction", chi2[i]));
+    // 	sel_chi2.push_back(std::move(sel));
+    // 	std::unique_ptr<Hists> hist;
+    // 	hist.reset(new BstarToTWHypothesisHists(ctx, "Chi2_Reco" + to_string(i), "BstarToTWReconstruction", "Chi2"));
+    // 	hist_chi2.push_back(std::move(hist));
+    //   }
 
   }
 
   bool BstarToTWAnalysisModule::process(Event & event) {
 
-    // after PreSel
+    // -- after PreSel -- //
+    // apply scale factors for muons and trigger
     sf_muo_id->process(event);
     sf_muo_iso->process(event);
     sf_muo_trigger->process(event);
-
-    // if(!cl_pteta->process(event)) return false; // all events should pass this.
-    if(!common->process(event)) return false;
+    common->process(event);
+    
     hist_presel->fill(event);
-    cutflow->fill(event, 0);
 
+    // if(!event.isRealData)
+    //   {
+    // 	hist_hotvr_jec->fill(event);
+    //   }
 
-    // MET Cut
-    if (!sel_met->passes(event)) return false;
-    hist_metcut->fill(event);
-    cutflow->fill(event, 1);
+    // -- TopTag Cut -- //    
+    // Fill tau_3/2 controll region
+    if(!sel_tau32_cr->passes(event)) hist_tau32MCEfficiency->fill(event);
 
-    // HOTVR Cuts
-    if(sel_hotvr_only_fpt->passes(event))
+    // Cut on TopTag
+    if(!sel_toptag->passes(event)) return false;
+    hist_sel_toptag->fill(event);
+
+    // -- Bstar Reconstructinon -- //	
+    primary_lep->process(event);
+    bstar_reco->process(event);
+    bstar_disc->process(event);
+    hist_bstar_reco->fill(event);
+    if (dataset_name.find("BstarToTW") == 0)
       {
-	hist_only_fpt->fill(event);
-	cutflow->fill(event, 2);
+    	BstarToTWgenprod->process(event);
+
+    	bstar_matchdisc->process(event);
+    	hist_bstar_matchreco->fill(event);
       }
 
-    if(sel_hotvr_only_mpair->passes(event))
-      {
-	hist_only_mpair->fill(event);
-	cutflow->fill(event, 3);
-      }
+    // -- Tau32 Scan -- //
+    // for (int i = 0; i < n_tau32; ++i)
+    //   {
+    // 	if (sel_tau32.at(i)->passes(event))
+    // 	  {
+    // 	    hist_tau32.at(i)->fill(event);
+    // 	  }
+    //   }
 
-    if(sel_hotvr_only_mjet->passes(event))
-      {
-	hist_only_mjet->fill(event);
-	cutflow->fill(event, 4);
-      }
+    // -- Chi2 Scan -- //
+    // for (int i = 0; i < n_chi2; ++i)
+    //   {
+    // 	if (sel_chi2.at(i)->passes(event))
+    // 	  {
+    // 	    hist_chi2.at(i)->fill(event);
+    // 	  }
+    //   }
 
-    if(sel_hotvr_fpt_mpair->passes(event))
-      {
-	hist_fpt_mpair->fill(event);
-	cutflow->fill(event, 5);
-      }
+    // -- Electron Veto -- //
+    if (!veto_ele->passes(event)) return false;
+    hist_veto_ele->fill(event);
 
-    if(sel_hotvr_fpt_mjet->passes(event))
-      {
-	hist_fpt_mjet->fill(event);
-	cutflow->fill(event, 6);
-      }
+    // -- Muon Cut -- //
+    if (!sel_muo->passes(event)) return false;
+    hist_sel_muo->fill(event);
 
-    if(sel_hotvr_mpair_mjet->passes(event))
-      {
-	hist_mpair_mjet->fill(event);
-	cutflow->fill(event, 7);
-      }
-
-    if(sel_hotvr->passes(event))
-      {
-	hist_hotvr->fill(event);
-	cutflow->fill(event, 8);
-      }
-
-    if(sel_hotvr_deltaphi->passes(event))
-      {
-	hist_hotvr_deltaphi->fill(event);
-	cutflow->fill(event, 8);
-      }
-
-    // N_Top Cut
-    if(sel_ntop->passes(event))
-      {
-	hist_ntop->fill(event);
-	cutflow->fill(event, 9);
-      }
-
-
-
-     // done
+    // -- BTag Cut -- //
+    hist_BTagMCEfficiency->fill(event);
+    if (!sel_btag->passes(event)) return false;
+    // sf_btag->process(event);
+    hist_sel_btag->fill(event);
+   
+    // -- Done -- //
     return true;
   }
 

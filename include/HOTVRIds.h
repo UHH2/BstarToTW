@@ -4,6 +4,7 @@
 #include "UHH2/common/include/ObjectIdUtils.h"
 #include "UHH2/common/include/JetIds.h"
 
+#include "UHH2/BstarToTW/include/BstarToTWGen.h"
 
 /** \brief HOTVR top tagger
  * 
@@ -26,6 +27,16 @@ class HOTVRTopTag {
 
 };
 
+class LepOverlap {
+ public: 
+  explicit LepOverlap(bool clacRadius = true);
+  bool operator()(const TopJet &topjet, const uhh2::Event &event) const;
+
+ private:
+  bool m_calcRadius;
+
+};
+
 class DeltaPhiCut {
  public: 
   explicit DeltaPhiCut(double deltaphi_lower = M_PI/2);
@@ -33,5 +44,53 @@ class DeltaPhiCut {
 
  private:
   double m_deltaphi_lower;
+
+};
+
+class Tau32Groomed {
+ public: 
+  explicit Tau32Groomed(double tau32_upper);
+  bool operator()(const TopJet &topjet, const uhh2::Event &event) const;
+
+ private:
+  double m_tau32_upper;
 };
   
+class bTag {
+ public:
+  explicit bTag(JetId jetid);
+  bool operator()(const TopJet &topjet, const uhh2::Event &event) const;
+
+ private:
+  JetId m_jetid;
+};
+
+class GenMatch {
+ public:
+  explicit GenMatch(uhh2::Context &ctx);
+  bool operator()(const TopJet &topjet, const uhh2::Event &event) const;
+ private:
+  uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
+};
+
+class GenDeltaPhiCut {
+ public: 
+  explicit GenDeltaPhiCut(uhh2::Context &ctx, double deltaphi_lower = M_PI/2);
+  bool operator()(const TopJet &topjet, const uhh2::Event &event) const;
+
+ private:
+  uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
+  double m_deltaphi_lower;
+
+};
+
+class GenLepOverlap {
+ public: 
+  explicit GenLepOverlap(uhh2::Context &ctx, bool clacRadius = true);
+  bool operator()(const TopJet &topjet, const uhh2::Event &event) const;
+
+ private:
+  bool m_calcRadius;
+  uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
+
+};

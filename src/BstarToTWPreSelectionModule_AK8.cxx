@@ -17,7 +17,6 @@
 
 #include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
-#include "UHH2/BstarToTW/include/HOTVRJetCorrectionHists.h"
 #include "UHH2/BstarToTW/include/HOTVRJetCorrector.h"
 
 using namespace std;
@@ -25,10 +24,10 @@ using namespace uhh2;
 
 namespace uhh2 {
 
-  class BstarToTWPreSelectionModule: public AnalysisModule {
+  class BstarToTWPreSelectionModule_AK8: public AnalysisModule {
   public:
     
-    explicit BstarToTWPreSelectionModule(Context & ctx);
+    explicit BstarToTWPreSelectionModule_AK8(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
@@ -50,14 +49,14 @@ namespace uhh2 {
     std::unique_ptr<Selection> sel_ntop;
 
     // Hists
-    std::unique_ptr<Hists> hist_nocuts, hist_trigger, hist_hotvr_jec, hist_cleaner, hist_nmuo, hist_met, hist_st, hist_ntop;
+    std::unique_ptr<AndHists> hist_nocuts, hist_trigger, hist_cleaner, hist_nmuo, hist_met, hist_st, hist_ntop;
 
 
     bool is_mc;
 
   };
 
-  BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
+  BstarToTWPreSelectionModule_AK8::BstarToTWPreSelectionModule_AK8(Context & ctx) {
 
     is_mc = ctx.get("dataset_type") == "MC";
 
@@ -74,7 +73,7 @@ namespace uhh2 {
     double jet_pt_min  = 30.0;
     double jet_eta_max = 2.5;
 
-    double top_pt_min = 200.0;
+    double top_pt_min = 400.0;
     double top_eta_max = 2.5;
 
 
@@ -92,7 +91,6 @@ namespace uhh2 {
     common->set_jet_id(id_jet);
     common->init(ctx);
 
-    jec_topjet.reset(new HOTVRJetCorrector(ctx));
 
     // Cleaner
     cl_topjet.reset(new TopJetCleaner(ctx, id_topjet));
@@ -109,7 +107,6 @@ namespace uhh2 {
     // Hists
     hist_nocuts.reset(new AndHists(ctx, "NoCuts"));
     hist_trigger.reset(new AndHists(ctx, "Trigger"));
-    hist_hotvr_jec.reset(new HOTVRJetCorrectionHists(ctx, "HOTVR_JEC"));
     hist_cleaner.reset(new AndHists(ctx, "Cleaning"));
     hist_nmuo.reset(new AndHists(ctx, "1MuonCut"));
     hist_met.reset(new AndHists(ctx, "50METCut"));
@@ -117,7 +114,7 @@ namespace uhh2 {
     hist_ntop.reset(new AndHists(ctx, "1TopJetCut"));
   }
 
-  bool BstarToTWPreSelectionModule::process(Event & event) {
+  bool BstarToTWPreSelectionModule_AK8::process(Event & event) {
 
     if(!is_mc)
       {
@@ -132,8 +129,6 @@ namespace uhh2 {
 
     // Cleaner
     if(!common->process(event)) return false;
-    jec_topjet->process(event);
-    hist_hotvr_jec->fill(event);
     cl_topjet->process(event);
     hist_cleaner->fill(event);
 
@@ -152,13 +147,13 @@ namespace uhh2 {
     // Topjet Selection
     if(!sel_ntop->passes(event)) return false;
     hist_ntop->fill(event);
-
+    
 
 
     // done
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWPreSelectionModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWPreSelectionModule_AK8)
 
 }

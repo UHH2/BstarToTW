@@ -22,7 +22,9 @@ protected:
     TH1F *pt_b, *eta_b, *phi_b, *M_b;
     TH1F *pt_ele, *eta_ele, *phi_ele;
     TH1F *pt_muo, *eta_muo, *phi_muo;
-    TH1F *cosThetastar_bstar, *cosThetastar_t, *deltaRMax;
+    TH1F *deltaRMax;
+    TH1F *deltaRtW, *deltaRtmu, *deltaPhitW, *deltaPhitmu, *deltaPttW;
+    TH2F *PtTop_vs_deltaRMax;
 
     uhh2::Event::Handle<BstarToTWGen> h_BstarToTWgen;
 };

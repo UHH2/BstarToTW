@@ -22,7 +22,22 @@ namespace uhh2 {
 
 
     uhh2::Event::Handle<BstarToTWGen> h_bstargen;
-     boost::optional<Event::Handle<std::vector<TopJet>>> h_topjetcollection;
+    boost::optional<Event::Handle<std::vector<TopJet>>> h_topjetcollection;
   };
-   
+
+
+  class GenEfficiencyHists: public uhh2::Hists {
+  public:
+    GenEfficiencyHists(uhh2::Context & ctx, const std::string & dirname, const boost::optional<Event::Handle<std::vector<GenTopJet>>> &gentopjetcollection = boost::none);
+
+    virtual void fill(const uhh2::Event & ev) override;
+    virtual ~GenEfficiencyHists();
+  protected:
+    
+    TH1F *All, *Matched;
+
+
+    uhh2::Event::Handle<BstarToTWGen> h_bstargen;
+    boost::optional<Event::Handle<std::vector<GenTopJet>>> h_gentopjetcollection;
+  };
 }

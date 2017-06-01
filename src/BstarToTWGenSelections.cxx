@@ -10,3 +10,10 @@ bool SemiLepSelection::passes(const Event &event) {
   return gen.IsSemiLeptonicDecay();
 }
 
+MuonChannelSelection::MuonChannelSelection(Context &ctx) {
+  h_BstarToTWGen = ctx.get_handle<BstarToTWGen>("BstarToTWgen");
+}
+bool MuonChannelSelection::passes(const Event &event) {
+  BstarToTWGen gen = event.get(h_BstarToTWGen);
+  return (gen.IsMuonDecay() && gen.IsTopHadronicDecay());
+}

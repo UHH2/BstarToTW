@@ -15,5 +15,12 @@ namespace uhh2 {
     uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
   };
 
+  class MuonChannelSelection: public uhh2::Selection {
+  public:
+    MuonChannelSelection(uhh2::Context &ctx);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    uhh2::Event::Handle<BstarToTWGen> h_BstarToTWGen;
+  };
 
 }

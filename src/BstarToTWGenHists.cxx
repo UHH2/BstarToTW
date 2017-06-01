@@ -15,10 +15,10 @@ BstarToTWGenHists::BstarToTWGenHists(uhh2::Context & ctx, const std::string & di
   M_bstar  = book<TH1F>( "M_bstar", " M^{b*} [GeV/c^{2}]; M^{b*} [GeV/c^{2}]; N_{Events} ", 100, 0, 4000 );
   pt_bstar = book<TH1F>( "pt_bstar", " p_{T}^{b*} [GeV/c]; p_{T}^{b*} [GeV/c]; N_{Events} ", 50, 0, 1000 );
 
-  pt_top   = book<TH1F>( "pt_top", " p_{T}^{top} [GeV/c]; p_{T}^{top} [GeV/c]; N_{Events} ", 50, 0, 2000 );
+  pt_top   = book<TH1F>( "pt_top", " p_{T}^{top} [GeV/c]; p_{T}^{top} [GeV/c]; N_{Events} ", 40, 0, 1600 );
   eta_top  = book<TH1F>( "eta_top", " #eta^{top}; #eta^{top}; N_{Events} ", 20, -5, 5 );
   phi_top  = book<TH1F>( "phi_top", " #phi^{top}; #phi^{top}; N_{Events} ", 25, -M_PI, M_PI );
-  M_top    = book<TH1F>( "M_top", " M^{top} [GeV/c^{2}]; M^{top} [GeV/c^{2}]; N_{Events} ", 100, 150, 200 );
+  M_top    = book<TH1F>( "M_top", " M^{top} [GeV/c^{2}]; M^{top} [GeV/c^{2}]; N_{Events} ",  40,  0, 400);
   M_tophad = book<TH1F>( "M_tophad", " M^{top,had} [GeV/c^{2}]; M^{top,had} [GeV/c^{2}]; N_{Events} ", 100, 150, 200 );
   M_toplep = book<TH1F>( "M_toplep", " M^{top,lep} [GeV/c^{2}]; M^{top,lep} [GeV/c^{2}]; N_{Events} ", 100, 150, 200 );
 
@@ -45,9 +45,15 @@ BstarToTWGenHists::BstarToTWGenHists(uhh2::Context & ctx, const std::string & di
   eta_muo = book<TH1F>( "eta_muo", " #eta^{#mu}; #eta^{#mu}; N_{Events} ", 20, -5, 5 );
   phi_muo = book<TH1F>( "phi_muo", " #phi^{#mu}; #phi^{#mu}; N_{Events} ", 25, -M_PI, M_PI );
 
-  cosThetastar_bstar = book<TH1F>( "cosThetastar_bstar", "cos(#theta *_{b*})", 20, -1, 1);
-  cosThetastar_t = book<TH1F>( "cosThetastar_t", "cos(#theta *_{t})", 20, -1, 1);
-  deltaRMax = book<TH1F>( "deltaRMax", "#Delta R_{max}", 20, 0, 2);
+  deltaRMax = book<TH1F>( "deltaRMax", "#Delta R_{max}", 60, 0, 3);
+  PtTop_vs_deltaRMax = book<TH2F>( "PtTop_vs_deltaRMax", "PtTop_vs_deltaRMax", 40, 0, 1600, 20, 0, 2 );
+
+  deltaRtW  = book<TH1F>( "deltaRtW", "#Delta R_{t,W}", 40, 0, 4);
+  deltaRtmu = book<TH1F>( "deltaRtmu", "#Delta R_{t,#mu}", 40, 0, 4);
+  deltaPhitW  = book<TH1F>( "deltaPhitW", "#Delta #phi_{t,W}", 40, 0, 4);
+  deltaPhitmu = book<TH1F>( "deltaPhitmu", "#Delta #phi_{t,#mu}", 40, 0, 4);
+
+  deltaPttW = book<TH1F>( "deltaPttW", "#Delta pt_{t,W}", 400, -400, 400);
 }
 
 void BstarToTWGenHists::fill(const uhh2::Event & e)
@@ -83,6 +89,7 @@ void BstarToTWGenHists::fill(const uhh2::Event & e)
 
   // --------------------------------------------------------------
   // Fill histograms
+
   // Bstar
   M_bstar->Fill( bstar.M(), eventweight );
   pt_bstar->Fill( bstar.Pt(), eventweight );
@@ -110,13 +117,13 @@ void BstarToTWGenHists::fill(const uhh2::Event & e)
   eta_b->Fill( b.eta(), eventweight );
   phi_b->Fill( b.phi(), eventweight );  
   M_b->Fill( b.M(), eventweight );
- 
+
   // Only lepton+jets
   if(BstarToTWgen.IsSemiLeptonicDecay())
     {
       if(BstarToTWgen.IsWHadronicDecay())
 	{
-      
+ 
 	  M_toplep->Fill( ( tWdecay1 + tWdecay2 + b ).M(), eventweight );
 	}
       else if(BstarToTWgen.IsTopHadronicDecay())
@@ -134,22 +141,32 @@ void BstarToTWGenHists::fill(const uhh2::Event & e)
 	      pt_muo->Fill( lep.Pt(), eventweight );
 	      eta_muo->Fill( lep.eta(), eventweight );
 	      phi_muo->Fill( lep.phi(), eventweight );
+
+	      double delPhi = (W1.Phi() - top.Phi());
+	      if (delPhi < 0) delPhi += 2*M_PI;
+
+	      deltaRtW->Fill(deltaR(top, W1), eventweight);
+	      deltaRtmu->Fill(deltaR(top, lep), eventweight);
+	      deltaPhitW->Fill(delPhi, eventweight);
+	      deltaPhitmu->Fill(deltaPhi(top, lep), eventweight);
+
+	      deltaPttW->Fill((top.Pt()-W1.Pt()), eventweight);
+
+	      double dRMax = max( max(deltaR(b, tWdecay1), deltaR(b, tWdecay2)), deltaR(tWdecay1, tWdecay2));
+	      deltaRMax->Fill(dRMax, eventweight);
+	      PtTop_vs_deltaRMax->Fill(top.Pt(), dRMax, eventweight);
 	    }
 	  M_tophad->Fill( ( tWdecay1 + tWdecay2 + b ).M(), eventweight );
 
-	  // get theta*_b* and theta*_t
-	  tW2.Boost(-ttop.BoostVector());
-	  double thetastar_t = tW2.Angle(ttop.Vect());
+	  // // get theta*_b* and theta*_t
+	  // tW2.Boost(-ttop.BoostVector());
+	  // double thetastar_t = tW2.Angle(ttop.Vect());
 
-	  ttop.Boost(-tbstar.BoostVector());
-	  double thetastar_bstar = ttop.Angle(tbstar.Vect());
+	  // ttop.Boost(-tbstar.BoostVector());
+	  // double thetastar_bstar = ttop.Angle(tbstar.Vect());
 
-	  cosThetastar_bstar->Fill( cos(thetastar_bstar), eventweight );
-	  cosThetastar_t->Fill( cos(thetastar_t), eventweight );
 
-	  double dRMax = max( max(deltaR(b, tWdecay1), deltaR(b, tWdecay2)), deltaR(tWdecay1, tWdecay2));
-	  deltaRMax->Fill(dRMax, eventweight);
+
 	}
-
     }
 }

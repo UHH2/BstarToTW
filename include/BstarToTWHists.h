@@ -1,8 +1,9 @@
 #pragma once
 
 #include "UHH2/core/include/Hists.h"
+#include "UHH2/common/include/LuminosityHists.h"
 
-namespace uhh2 {
+
 
   /**  \brief Example class for booking and filling histograms
    * 
@@ -11,6 +12,8 @@ namespace uhh2 {
    * many histograms. Therefore, it is recommended to use histogram
    * pointers as member data instead, like in 'common/include/ElectronHists.h'.
    */
+
+namespace uhh2 {
   class BstarToTWHists: public uhh2::Hists {
   public:
     // use the same constructor arguments as Hists for forwarding:
@@ -19,10 +22,11 @@ namespace uhh2 {
     virtual void fill(const uhh2::Event & ev) override;
     virtual ~BstarToTWHists();
   protected:
-    // topjet histograms
-    TH1F *N_top, *M_top, *pt_top, *eta_top, *y_top;
-    // substurcture
-    TH1F *N_subjets, *mpairwise, *fpt_1, *tau_32;
+    std::vector<run_lumi> upper_binborders;
+    double lumi_per_bin;
+
+    TH1F *MET, *HT_lep, *HT_jet, *ST;
+    TH2F *LumiBlock_vs_NPV;
 
       };
    

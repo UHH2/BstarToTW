@@ -60,8 +60,8 @@ BstarToTWGen::BstarToTWGen(const Event & event)
 		      m_cl = m_tWdecay1;
 		      m_nl = m_tWdecay2;
 		    }
-		  if (abs(twd1->pdgId()) == 11 || abs(twd2->pdgId()) == 11) is_singlemuo = true;
-		  else if (abs(twd1->pdgId()) == 13 || abs(twd2->pdgId()) == 13) is_singleele = true;
+		  if (abs(twd1->pdgId()) == 11 || abs(twd2->pdgId()) == 11) is_singleele = true;
+		  else if (abs(twd1->pdgId()) == 13 || abs(twd2->pdgId()) == 13) is_singlemuo = true;
 		}
 	      else
 		{
@@ -89,8 +89,8 @@ BstarToTWGen::BstarToTWGen(const Event & event)
 		      m_cl = m_tWdecay1;
 		      m_nl = m_tWdecay2;
 		    }
-		  if (abs(twd1->pdgId()) == 11 || abs(twd2->pdgId()) == 11) is_singlemuo = true;
-		  else if (abs(twd1->pdgId()) == 13 || abs(twd2->pdgId()) == 13) is_singleele = true;
+		  if (abs(twd1->pdgId()) == 11 || abs(twd2->pdgId()) == 11) is_singleele = true;
+		  else if (abs(twd1->pdgId()) == 13 || abs(twd2->pdgId()) == 13) is_singlemuo = true;
 		}
 	      else is_tophad = true;
 	    }  
@@ -116,8 +116,8 @@ BstarToTWGen::BstarToTWGen(const Event & event)
 		  m_cl = m_Wdecay1;
 		  m_nl = m_Wdecay2;
 		}
-	      if (abs(wd1->pdgId()) == 11 || abs(wd2->pdgId()) == 11) is_singlemuo = true;
-	      else if (abs(wd1->pdgId()) == 13 || abs(wd2->pdgId()) == 13) is_singleele = true;
+	      if (abs(wd1->pdgId()) == 11 || abs(wd2->pdgId()) == 11) is_singleele = true;
+	      else if (abs(wd1->pdgId()) == 13 || abs(wd2->pdgId()) == 13) is_singlemuo = true;
 	    }
 	  else is_whad = true;
 	}

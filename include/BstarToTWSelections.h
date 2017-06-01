@@ -2,7 +2,9 @@
 
 #include "UHH2/core/include/fwd.h"
 #include "UHH2/core/include/Selection.h"
+
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
+#include "UHH2/BstarToTW/include/BstarToTWHypothesis.h"
 
 namespace uhh2 {
 
@@ -28,6 +30,27 @@ namespace uhh2 {
     virtual bool passes(const uhh2::Event &event) override;
   private:
     double met_min;
+  };
+
+  /**
+   * This class selects events by requiring ST > ST_min
+   */
+  class STSelection: public uhh2::Selection {
+  public:
+    STSelection(double st_min);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_st_min;
+  };
+
+  class Chi2Selection: public uhh2::Selection {
+  public:
+    Chi2Selection(uhh2::Context &ctx, std::string label, double chi2_max);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_chi2_max;
+    uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;    
+
   };
 
 }

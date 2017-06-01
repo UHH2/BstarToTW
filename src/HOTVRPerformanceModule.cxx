@@ -1,20 +1,16 @@
-#include <iostream>
-#include <memory>
-
 #include "UHH2/core/include/AnalysisModule.h"
 #include "UHH2/core/include/Event.h"
-#include "UHH2/core/include/Jet.h"
-#include "UHH2/core/include/TopJet.h"
 
+#include "UHH2/common/include/CommonModules.h"
 #include "UHH2/common/include/TopJetIds.h"
+#include "UHH2/common/include/MuonIds.h"
+#include "UHH2/common/include/CleaningModules.h"
 #include "UHH2/common/include/NSelections.h"
-#include "UHH2/common/include/JetHists.h"
 
-#include "UHH2/BstarToTW/include/BstarToTWGen.h"
-#include "UHH2/BstarToTW/include/BstarToTWGenSelections.h"
 #include "UHH2/BstarToTW/include/HOTVRIds.h"
-#include "UHH2/BstarToTW/include/HOTVRHists.h"
-#include "UHH2/BstarToTW/include/EfficiencyHists.h"
+#include "UHH2/BstarToTW/include/HOTVRPerformanceHists.h"
+#include "UHH2/BstarToTW/include/HOTVRJetCorrector.h"
+#include "UHH2/BstarToTW/include/AndHists.h"
 
 #include <vector>
 
@@ -38,96 +34,119 @@ namespace uhh2 {
     virtual bool process(Event & event) override;
 
   private:
-    std::unique_ptr<AnalysisModule> BstarToTWgenprod; // gen particle interpreter
-    std::unique_ptr<Selection> sel_semilep; // select only semi-leptonic events on generator level.
+
     Event::Handle<vector<TopJet>> h_ak8jets; // handle for ak8_SoftDrop collection
-    std::unique_ptr<Hists> hist_hotvr, hist_ak8;
+    std::unique_ptr<AnalysisModule> jec_hotvr;
 
-    // HOTVR
-    TopJetId id_hotvrtoptag;
-    std::unique_ptr<Selection> sel_hotvrtoptag;
-    std::unique_ptr<Hists> hist_hotvrtoptag;
-    std::unique_ptr<TopJetHists> hist_cmstoptag;
+    // Cleaner
+    std::unique_ptr<AnalysisModule> cl_muo, cl_hotvr, cl_ak8;
 
-    // CMSTopTag ungroomed
-    TopJetId id_cmstoptag_ungroomed;
-    std::unique_ptr<Selection> sel_cmstoptag_ungroomed;
-    std::unique_ptr<Hists> hist_cmstoptag_ungroomed;
+    // Selections
+    std::unique_ptr<Selection> sel_muo;
+    std::unique_ptr<Selection> tt_hotvr, tt_cms3, tt_cms1, tt_cms03, tt_cms01;
 
-    // CMSTopTag groomed
-    TopJetId id_cmstoptag_groomed;
-    std::unique_ptr<Selection> sel_cmstoptag_groomed;
-    std::unique_ptr<Hists> hist_cmstoptag_groomed;
-
+    // Histograms
+    std::unique_ptr<Hists> hist_sel_muo;
+    std::unique_ptr<Hists> hist_tt_hotvr, hist_tt_cms3, hist_tt_cms1, hist_tt_cms03, hist_tt_cms01;
+    
   };
 
   HOTVRPerformanceModule::HOTVRPerformanceModule(Context & ctx) {
- 
-    BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
-    sel_semilep.reset(new SemiLepSelection(ctx));
-    
-    std::string ak8jets_name = "slimmedJetsAK8_SoftDrop";
 
+    std::string ak8jets_name = "slimmedJetsAK8_SoftDrop";
     h_ak8jets = ctx.get_handle<vector<TopJet>>(ak8jets_name);
 
-    hist_hotvr.reset(new HOTVRHists(ctx, "HOTVR_Jets"));
-    hist_ak8.reset(new TopJetHists(ctx, "AK8_Jets", 4, ak8jets_name));
-    hist_cmstoptag.reset(new TopJetHists(ctx, "CMSTopTag_Jets", 4, ak8jets_name));
+    jec_hotvr.reset(new HOTVRJetCorrector(ctx));
 
-    // HOTVR
-    id_hotvrtoptag = HOTVRTopTag(); // default settings for HOTVRTopTag, see HOTVRId.h
-    sel_hotvrtoptag.reset(new NTopJetSelection(1,1, id_hotvrtoptag));
-    hist_hotvrtoptag.reset(new EfficiencyHists(ctx, "HOTVRTopTag_Efficiencies"));
+    // Kinematic variables
+    double muo_pt_min = 50.0;
+    double muo_eta_max = 2.4;
+    double muo_iso_max = 0.15;
+   
+    double top_pt_min = 200.0;
+    double top_eta_max = 2.5;
 
-    // CMSTopTag ungroomed
-    id_cmstoptag_ungroomed = CMSTopTag(); // default settings for CMSTopTag, see TopJetIds.h
-    sel_cmstoptag_ungroomed.reset(new NTopJetSelection(1, 1, id_cmstoptag_ungroomed, h_ak8jets));
-    hist_cmstoptag_ungroomed.reset(new EfficiencyHists(ctx, "CMSTopTag_ungroomed_Efficiencies",  h_ak8jets));
-    hist_cmstoptag->set_TopJetId(id_cmstoptag_ungroomed);
+    // Cleaner
+    MuonId id_muo = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, muo_eta_max), MuonIso(muo_iso_max));
+    cl_muo.reset(new MuonCleaner(id_muo));
+    
+    
+    // TopJetId id_topjet = AndId<TopJet>(PtEtaCut(top_pt_min, top_eta_max), DeltaPhiCut(M_PI/2));
+    TopJetId id_topjet = PtEtaCut(top_pt_min, top_eta_max);
+    cl_hotvr.reset(new TopJetCleaner(ctx, id_topjet));
+    cl_ak8.reset(new TopJetCleaner(ctx, id_topjet, ak8jets_name));
 
-    // CMSTopTag groomed
-    id_cmstoptag_groomed = CMSTopTag(CMSTopTag::MassType::groomed); // as above but uses groomed mass
-    sel_cmstoptag_groomed.reset(new NTopJetSelection(1, 1, id_cmstoptag_groomed, h_ak8jets));
-    hist_cmstoptag_groomed.reset(new EfficiencyHists(ctx, "CMSTopTag_groomed_Efficiencies",  h_ak8jets));
+    // Selections
+    sel_muo.reset(new NMuonSelection(1, -1));
+    hist_sel_muo.reset(new AndHists(ctx, "MuonCut"));
+
+    // HOTVR Top Tagger
+    TopJetId id_hotvr = AndId<TopJet>(HOTVRTopTag(), Tau32Groomed(0.81));
+    tt_hotvr.reset(new NTopJetSelection(1, -1, id_hotvr));
+    hist_tt_hotvr.reset(new AndHists(ctx, "HOTVR"));
+
+    // CMS Top Tagger
+    // 3% misstag
+    TopJetId id_cms3 = AndId<TopJet>(Type2TopTag(105,220, Type2TopTag::MassType::groomed), Tau32(0.81));
+    tt_cms3.reset(new NTopJetSelection(1, -1, id_cms3, h_ak8jets));
+    hist_tt_cms3.reset(new AndHists(ctx, "CMS3"));
+
+    // 1% misstag
+    TopJetId id_cms1 = AndId<TopJet>(Type2TopTag(105,220, Type2TopTag::MassType::groomed), Tau32(0.67));
+    tt_cms1.reset(new NTopJetSelection(1, -1, id_cms1, h_ak8jets));
+    hist_tt_cms1.reset(new AndHists(ctx, "CMS1"));
+
+    // 0.3% misstag
+    TopJetId id_cms03 = AndId<TopJet>(Type2TopTag(105,220, Type2TopTag::MassType::groomed), Tau32(0.54));
+    tt_cms03.reset(new NTopJetSelection(1, -1, id_cms03, h_ak8jets));
+    hist_tt_cms03.reset(new AndHists(ctx, "CMS03"));
+
+    // 0.1% misstag
+    TopJetId id_cms01 = AndId<TopJet>(Type2TopTag(105,220, Type2TopTag::MassType::groomed), Tau32(0.46));
+    tt_cms01.reset(new NTopJetSelection(1, -1, id_cms01, h_ak8jets));
+    hist_tt_cms01.reset(new AndHists(ctx, "CMS01"));
+
   }
 
   bool HOTVRPerformanceModule::process(Event & event) {
-    BstarToTWgenprod->process(event);
-    // vector<TopJet> ak8jets = event.get(h_ak8jets);
     
-    // cout << "N Jets = " << ak8jets.size() << endl;
-    // for (TopJet topjet : ak8jets)
-    //   {
-    // 	vector<Jet> subjets = topjet.subjets();
-    // 	cout << "N subjets = " << subjets.size() << endl;
-    // 	if(subjets.size() < 3) continue;
-	
-    // 	float mjet = topjet.v4().M();
-    // 	cout << "mjet = " << mjet << endl;
+    // cl_muo->process(event);
+    // if(!sel_muo->passes(event)) return false;
+    hist_sel_muo->fill(event);
 
-    // 	double m12 = (subjets.at(0).v4() + subjets.at(1).v4()).M();
-    // 	double m13 = (subjets.at(0).v4() + subjets.at(2).v4()).M();
-    // 	double m23 = (subjets.at(1).v4() + subjets.at(2).v4()).M();
-    // 	double mmin = min(min(m12, m13), m23);
-    // 	cout << "mmin = " << mmin << endl;
-    //   }
+    jec_hotvr->process(event);
 
-    // Only semi-leptonic channel
-    if(!sel_semilep->passes(event)) return false;
-    hist_hotvr->fill(event);
-    hist_ak8->fill(event);
+    cl_hotvr->process(event);
+    cl_ak8->process(event);
 
-    if(sel_hotvrtoptag->passes(event)) hist_hotvrtoptag->fill(event);
+    if(tt_hotvr->passes(event))
+      {
+	hist_tt_hotvr->fill(event);
+      }
 
-    if(sel_cmstoptag_ungroomed->passes(event)) hist_cmstoptag_ungroomed->fill(event);
+    if(tt_cms3->passes(event))
+      {
+	hist_tt_cms3->fill(event);
+      }
 
-    if(sel_cmstoptag_groomed->passes(event)) hist_cmstoptag_groomed->fill(event);
+    if(tt_cms1->passes(event))
+      {
+	hist_tt_cms1->fill(event);
+      }
 
+    if(tt_cms03->passes(event))
+      {
+	hist_tt_cms03->fill(event);
+      }
 
-    // done
+    if(tt_cms01->passes(event))
+      {
+	hist_tt_cms01->fill(event);
+      }
+ 
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(HOTVRPerformanceModule)
+ UHH2_REGISTER_ANALYSIS_MODULE(HOTVRPerformanceModule)
 
 }

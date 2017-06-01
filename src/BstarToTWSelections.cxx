@@ -1,4 +1,5 @@
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
+#include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/core/include/Event.h"
 #include "UHH2/core/include/TopJet.h"
 #include "UHH2/core/include/Jet.h"
@@ -35,4 +36,43 @@ METSelection::METSelection(double met_min_) {
 
 bool METSelection::passes(const Event &event) {
   return (met_min < event.met->pt());
+}
+
+STSelection::STSelection(double st_min):
+  m_st_min(st_min) {}
+
+bool STSelection::passes(const Event &event) {
+  auto met = event.met->pt();
+
+  double ht = 0.0;
+  double ht_jets = 0.0;
+  double ht_lep = 0.0;
+  for(const auto & jet : *event.jets){
+    ht_jets += jet.pt();
+  }
+  for(const auto & electron : *event.electrons){
+    ht_lep += electron.pt();
+  }
+  for(const auto & muon : *event.muons){
+    ht_lep += muon.pt();
+  }
+
+  ht = ht_lep + ht_jets + met;
+
+  
+  return ht > m_st_min;
+}
+
+Chi2Selection::Chi2Selection(Context &ctx, string label, double chi2_max):
+  m_chi2_max(chi2_max),
+  h_hyp(ctx.get_handle<vector<BstarToTWHypothesis>>(label)) {}
+
+bool Chi2Selection::passes(const Event &event) {
+  const BstarToTWHypothesis *hyp = get_best_hypothesis(event.get(h_hyp), "Chi2");
+  if (hyp)
+    {
+      double chi2 = hyp->get_discriminator("Chi2");
+      return chi2 < m_chi2_max;
+    }
+  return false;
 }
