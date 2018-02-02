@@ -3,6 +3,8 @@
 #include "UHH2/core/include/fwd.h"
 #include "UHH2/core/include/Selection.h"
 
+#include "UHH2/common/include/TopJetIds.h"
+
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesis.h"
 
@@ -51,6 +53,30 @@ namespace uhh2 {
     double m_chi2_max;
     uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;    
 
+  };
+
+  class LeadingTopJetSelection: public uhh2::Selection {
+  public:
+    LeadingTopJetSelection(TopJetId id_topjet);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    TopJetId m_id_topjet;
+  };
+
+  class NGenJetSelection: public uhh2::Selection {
+  public:
+    NGenJetSelection(unsigned int n_min_, unsigned int n_max_);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    unsigned int n_min, n_max;
+  };
+
+  class HOTVRLeptonCleaner: public uhh2::AnalysisModule {
+  public:
+    HOTVRLeptonCleaner(double deltaRmin);
+    virtual bool process(uhh2::Event &event) override;
+  private:
+    double m_deltaRmin;
   };
 
 }

@@ -76,3 +76,35 @@ bool Chi2Selection::passes(const Event &event) {
     }
   return false;
 }
+
+LeadingTopJetSelection::LeadingTopJetSelection(TopJetId id_topjet):
+  m_id_topjet(id_topjet){}
+
+bool LeadingTopJetSelection::passes(const Event &event) {
+  return (m_id_topjet(event.topjets->at(0), event));
+}
+
+NGenJetSelection::NGenJetSelection(unsigned int n_min_, unsigned int n_max_):
+  n_min(n_min_),
+  n_max(n_max_) {}
+
+bool NGenJetSelection::passes(const Event &event) {
+  return (n_min < event.genjets->size() && event.genjets->size() < n_max);
+}
+
+HOTVRLeptonCleaner::HOTVRLeptonCleaner(double deltaRmin) :
+  m_deltaRmin(deltaRmin) {}
+
+bool HOTVRLeptonCleaner::process(Event &event) {
+  std::vector<TopJet> result;
+  if (!event.muons->size() > 0) return true;
+  Muon muon = event.muons->at(0);
+  for(const TopJet & topjet : *event.topjets){
+    if(deltaR(topjet, muon) > m_deltaRmin){
+      result.push_back(topjet);
+    }
+  }
+  std::swap(result, *event.topjets);
+  
+  return true;  
+}

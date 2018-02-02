@@ -45,14 +45,26 @@ BstarToTWChi2Discriminator::BstarToTWChi2Discriminator(Context & ctx, const std:
   h_hyps = ctx.get_handle<vector<BstarToTWHypothesis>>(rechyps_name);
 
   // from fits to matched distribution
-  m_mtop_mean  = 170;
-  m_mtop_sigma =  17;
+  m_mtop_mean  = 179.9;
+  m_mtop_sigma =  17.7;
+
+  // m_deltaPhi_mean = M_PI;
+  // m_deltaPhi_sigma = 0.105;
+
+  // m_deltaPt_mean = -19.988;
+  // m_deltaPt_sigma = 54.090;
+  // over p_T
+  // m_deltaPt_mean = -0.028;
+  // m_deltaPt_sigma = 0.081;
 
   m_deltaPhi_mean = M_PI;
-  m_deltaPhi_sigma = 0.108;
+  m_deltaPhi_sigma = 0.0589;
 
-  m_deltaPt_mean = -0.099;
-  m_deltaPt_sigma = 0.095;
+  // m_deltaPt_mean = -19.36;
+  // m_deltaPt_sigma = 53.89;
+
+  m_deltaPt_mean = -0.0267;
+  m_deltaPt_sigma = 0.0611;
 
 }
 
@@ -69,13 +81,16 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
       if (deltaPhi_reco < 0) deltaPhi_reco += 2*M_PI;
       const double chi2_deltaPhi = pow((deltaPhi_reco - m_deltaPhi_mean) / m_deltaPhi_sigma, 2);
 
+      // double deltaPt_reco = (hyp.get_topjet().pt() - hyp.get_w().pt());
+      // const double chi2_deltaPt = pow((deltaPt_reco - m_deltaPt_mean) / m_deltaPt_sigma, 2);
       double deltaPt_reco = (hyp.get_topjet().pt() - hyp.get_w().pt()) / hyp.get_topjet().pt();
       const double chi2_deltaPt = pow((deltaPt_reco - m_deltaPt_mean) / m_deltaPt_sigma, 2);
 
       hyp.set_discriminator("Chi2_top", chi2_mtop);
       hyp.set_discriminator("Chi2_deltaPhi", chi2_deltaPhi);
       hyp.set_discriminator("Chi2_deltaPt", chi2_deltaPt);
-      hyp.set_discriminator("Chi2", chi2_mtop + chi2_deltaPhi + chi2_deltaPt);
+      hyp.set_discriminator("Chi2", chi2_deltaPhi + chi2_deltaPt);
+      hyp.set_discriminator("Chi2_with_mass", chi2_mtop + chi2_deltaPhi + chi2_deltaPt);
     }
 
   return true;
@@ -102,14 +117,14 @@ bool BstarToTWMatchDiscriminator::process(uhh2::Event & event){
   for(auto & hyp: hyps)
     {
       float deltaR_top = deltaR(bstartotwgen.tbstar(), hyp.get_topjet());
-      if (deltaR_top >= 0.3)
+      if (deltaR_top >= 0.2)
 	{
 	  hyp.set_discriminator(config.discriminator_label, infinity);
 	  continue;
 	}
 
       float deltaR_lep = deltaR(bstartotwgen.ChargedLepton(), hyp.get_lepton());
-      if (deltaR_lep >= 0.3)
+      if (deltaR_lep >= 0.2)
 	{
 	  hyp.set_discriminator(config.discriminator_label, infinity);
 	  continue;

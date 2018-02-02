@@ -55,7 +55,7 @@ DeltaPhiCut::DeltaPhiCut(double deltaphi_lower):
 bool DeltaPhiCut::operator()(const TopJet &topjet, const Event &event) const {
   if(event.muons->size() < 1) return false;
   LorentzVector muon = event.muons->at(0).v4();
-  return ( deltaPhi(muon, topjet.v4()) > m_deltaphi_lower );
+  return ( abs(deltaPhi(muon, topjet.v4())) > m_deltaphi_lower );
 }
 
 Tau32Groomed::Tau32Groomed(double tau32_upper):

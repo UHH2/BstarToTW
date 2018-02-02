@@ -25,9 +25,9 @@ namespace uhh2 {
     std::vector<run_lumi> upper_binborders;
     double lumi_per_bin;
 
-    TH1F *MET, *HT_lep, *HT_jet, *ST;
+    TH1F *MET, *HT_lep, *HT_jet, *ST, *rho;
     TH2F *LumiBlock_vs_NPV;
 
-      };
+  };
    
 }

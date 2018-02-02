@@ -83,10 +83,11 @@ BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname):
   // book all histograms here
 
   // Event variables
-  MET = book<TH1F>("MET", "MET [GeV/c]", 50, 0, 1000);
+  MET = book<TH1F>("MET", "#slash{E}_{T} [GeV/c]", 20, 0, 1000);
   HT_lep = book<TH1F>("HT_lep", "HT_{lep} [GeV/c]", 70, 0, 3500);
   HT_jet = book<TH1F>("HT_jet", "HT_{jet} [GeV/c]", 70, 0, 3500);
   ST = book<TH1F>("ST", "S_{T} [GeV/c]", 80, 0, 4000);
+  rho = book<TH1F>("rho", "#rho [GeV/c]", 12, 0, 65);
 
   LumiBlock_vs_NPV = book<TH2F>("LumiBlock_vs_NPV", "LumiBlock_vs_NPV",
 				nbins, 0, ( int(total_lumi / lumi_per_bin) + 1)*lumi_per_bin,
@@ -132,7 +133,7 @@ void BstarToTWHists::fill(const Event & event){
       int ibin = distance(upper_binborders.begin(), it);
       LumiBlock_vs_NPV->Fill(ibin*lumi_per_bin, event.pvs->size(), weight);
     }
-
+  rho->Fill(event.rho, weight);
 }
 
 BstarToTWHists::~BstarToTWHists(){}

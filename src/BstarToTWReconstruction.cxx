@@ -5,7 +5,7 @@ using namespace std;
 
 BstarToTWReconstruction::BstarToTWReconstruction(Context & ctx, const NeutrinoReconstructionMethod & neutrinofunction, const string & label, TopJetId tjetid):
   m_neutrinofunction(neutrinofunction),
-  h_recohyps(ctx.declare_event_output<vector<BstarToTWHypothesis>>(label)),
+  h_recohyps(ctx.get_handle<vector<BstarToTWHypothesis>>(label)),
   h_primlep(ctx.get_handle<FlavorParticle>("PrimaryLepton")),
   m_topjetid(tjetid) {}
 

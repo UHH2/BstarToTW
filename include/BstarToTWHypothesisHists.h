@@ -22,14 +22,15 @@ public:
 
 protected:
     TH1F *Discriminator, *Discriminator_2, *Discriminator_3;
-    TH1F *Bstar_reco_M, *Bstar_reco_Pt;
+    TH1F *Bstar_reco_M, *Bstar_reco_M_unbinned, *Bstar_reco_Pt;
     TH1F *W_reco_M, *W_reco_Pt;
     TH1F *Top_reco_M, *Top_reco_Pt;
-    TH1F *DeltaR_top_W, *DeltaPhi_top_W, *DeltaPt_top_W, *DeltaPt_top_W_over_pt;
+    TH1F *DeltaR_top_W, *DeltaPhi_top_W, *DeltaPt_top_W, *DeltaPt_top_W_over_pt, *PtTop_over_PtW;
     TH2F *Discriminator_vs_M_bstar;
 
 
     uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyps;
+    std::string m_name;
     std::string m_discriminator_name;
     
 };

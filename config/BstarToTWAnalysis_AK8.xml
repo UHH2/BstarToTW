@@ -3,10 +3,10 @@
 
 
 	  <!ENTITY TargetLumi      "35867">
-	  <!ENTITY SELdir          "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/Analysis/">
+	  <!ENTITY SELdir          "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/Analysis_AK8/">
 	  <!ENTITY b_Cacheable     "False">
 	  <!ENTITY NEVT            "-1">
-	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/Preselection"> 
+	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/Preselection_AK8"> 
 	  <!ENTITY PRESELfilename  "uhh2.AnalysisModuleRunner"> 
 	  <!ENTITY PROOFdir        "/nfs/dust/cms/user/froehlia/.proof2">
 
@@ -113,7 +113,7 @@
 
 <!--
    <ConfigParse NEventsBreak="0" FileSplit="1" AutoResubmit="4"/>
-   <ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_analysis"/>
+   <ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_analysisAK8"/>
    -->
 
 <JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
@@ -664,8 +664,8 @@
       <Item Name="JetCollection" Value="slimmedJets" />
       <Item Name="METName" Value="slimmedMETs" />
       <Item Name="GenJetCollection" Value="slimmedGenJets" /> 
-      <Item Name="TopJetCollection" Value="HOTVRTopJets" />
-      <Item Name="GenTopJetCollection" Value="genHOTVRTopJets" />
+      <Item Name="TopJetCollection" Value="slimmedJetsAK8_SoftDrop" />
+      <!-- <Item Name="GenTopJetCollection" Value="genHOTVRTopJets" /> -->
       <Item Name="GenParticleCollection" Value="GenParticles" />
       <Item Name="GenInfoName" Value="genInfo" />
 
@@ -700,7 +700,7 @@
            -->
       
       <!-- the class name of the AnalysisModule subclasses to run: -->
-      <Item Name="AnalysisModule" Value="BstarToTWAnalysisModule" /> 
+      <Item Name="AnalysisModule" Value="BstarToTWAnalysisModule_AK8" /> 
       
       <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
            MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
@@ -732,7 +732,6 @@
 
       <Item Name="Systematic_BTag"        Value="central" />
       <Item Name="Systematic_TopTag"      Value="central" />
-      <Item Name="Systematic_L1"          Value="central" />
 
       <Item Name="Systematic_PU"          Value="central" />
       
