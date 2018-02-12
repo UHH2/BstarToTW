@@ -162,7 +162,7 @@ namespace uhh2 {
     hist_cleaner->fill(event);
 
     // Muon selection
-    if(!sel_nele->passes(event) && !sel_nmuo->passes(event)) return false;
+    if(!sel_nele->passes(event) || !sel_nmuo->passes(event)) return false;
     cl_ele->process(event);
     if(!sel_nele->passes(event)) return false;
     hist_nele->fill(event);
@@ -185,10 +185,10 @@ namespace uhh2 {
 	else if(event.run <= runnr_FlateG) jec_subj_FlateG->process(event);
 	else if(event.run > runnr_FlateG)  jec_subj_H->process(event);
       }
-    if (is_mc)
-      {
-	hist_jec_corr->fill(event);
-      }
+    // if (is_mc)
+    //   {
+    // 	hist_jec_corr->fill(event);
+    //   }
 
     cl_topjet->process(event);
     hist_topcleaner->fill(event);

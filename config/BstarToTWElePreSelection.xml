@@ -84,14 +84,20 @@
 	  <!ENTITY WZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WZ.xml">
 	  <!ENTITY ZZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_ZZ.xml">
 
-	  <!ENTITY QCDPT15to20 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt15to20_EMEnriched.xml">
-	  <!ENTITY QCDPT20to30 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt20to30_EMEnriched.xml">
-	  <!ENTITY QCDPT30to50 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt30to50_EMEnriched.xml">
-	  <!ENTITY QCDPT50to80 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt50to80_EMEnriched.xml">
-	  <!ENTITY QCDPT80to120 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt80to120_EMEnriched.xml">
-	  <!ENTITY QCDPT120to170 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt120to170_EMEnriched.xml">
-	  <!ENTITY QCDPT170to300 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt170to300_EMEnriched.xml">
-	  <!ENTITY QCDPT300toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt300to470_EMEnriched.xml">
+	  <!ENTITY QCDPT20to30EM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt20to30_EMEnriched.xml">
+	  <!ENTITY QCDPT30to50EM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt30to50_EMEnriched.xml">
+	  <!ENTITY QCDPT50to80EM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt50to80_EMEnriched.xml">
+	  <!ENTITY QCDPT80to120EM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt80to120_EMEnriched.xml">
+	  <!ENTITY QCDPT120to170EM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt120to170_EMEnriched.xml">
+	  <!ENTITY QCDPT170to300EM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt170to300_EMEnriched.xml">
+	  <!ENTITY QCDPT300toInfEM SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt300toInf_EMEnriched.xml">
+
+	  <!ENTITY QCDPT15to20b SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt_15to20_bcToE.xml">
+	  <!ENTITY QCDPT20to30b SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt_20to30_bcToE.xml">
+	  <!ENTITY QCDPT30to80b SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt_30to80_bcToE.xml">
+	  <!ENTITY QCDPT80to170b SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt_80to170_bcToE.xml">
+	  <!ENTITY QCDPT170to250b SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt_170to250_bcToE.xml">
+	  <!ENTITY QCDPT250toInfb SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt_250toInf_bcToE.xml">
 
 
 	  <!ENTITY DATA_B_v2 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/DATA_SingleElectron_Run2016Bv2_23Sep.xml">
@@ -577,50 +583,80 @@
 
 
 
-  <InputData Lumi="1.084" NEventsMax="&NEVT;" Type="MC" Version="QCDPT15to20" Cacheable="&b_Cacheable;">
-    &QCDPT15to20;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
-  <InputData Lumi="10.633" NEventsMax="&NEVT;" Type="MC" Version="QCDPT20to30" Cacheable="&b_Cacheable;">
-    &QCDPT20to30;
+  <InputData Lumi="1.722" NEventsMax="&NEVT;" Type="MC" Version="QCDPT20to30_EM" Cacheable="&b_Cacheable;">
+    &QCDPT20to30EM;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
   
-  <InputData Lumi="18.121" NEventsMax="&NEVT;" Type="MC" Version="QCDPT30to50" Cacheable="&b_Cacheable;">
-    &QCDPT30to50;
+  <InputData Lumi="0.476" NEventsMax="&NEVT;" Type="MC" Version="QCDPT30to50_EM" Cacheable="&b_Cacheable;">
+    &QCDPT30to50EM;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="45.272" NEventsMax="&NEVT;" Type="MC" Version="QCDPT50to80" Cacheable="&b_Cacheable;">
-    &QCDPT50to80;
+  <InputData Lumi="8.120" NEventsMax="&NEVT;" Type="MC" Version="QCDPT50to80_EM" Cacheable="&b_Cacheable;">
+    &QCDPT50to80EM;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
   
-  <InputData Lumi="129.942" NEventsMax="&NEVT;" Type="MC" Version="QCDPT80to120" Cacheable="&b_Cacheable;">
-    &QCDPT80to120;
+  <InputData Lumi="84.771" NEventsMax="&NEVT;" Type="MC" Version="QCDPT80to120_EM" Cacheable="&b_Cacheable;">
+    &QCDPT80to120EM;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="319.273" NEventsMax="&NEVT;" Type="MC" Version="QCDPT120to170" Cacheable="&b_Cacheable;">
-    &QCDPT120to170;
+  <InputData Lumi="1006.420" NEventsMax="&NEVT;" Type="MC" Version="QCDPT120to170_EM" Cacheable="&b_Cacheable;">
+    &QCDPT120to170EM;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
   
-  <InputData Lumi="918.217" NEventsMax="&NEVT;" Type="MC" Version="QCDPT170to300" Cacheable="&b_Cacheable;">
-    &QCDPT170to300;
+  <InputData Lumi="613.497" NEventsMax="&NEVT;" Type="MC" Version="QCDPT170to300_EM" Cacheable="&b_Cacheable;">
+    &QCDPT170to300EM;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="9953.519" NEventsMax="&NEVT;" Type="MC" Version="QCDPT300toInf" Cacheable="&b_Cacheable;">
-    &QCDPT300to470;
+  <InputData Lumi="5461.578" NEventsMax="&NEVT;" Type="MC" Version="QCDPT300toInf_EM" Cacheable="&b_Cacheable;">
+    &QCDPT300toInfEM;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="10.548" NEventsMax="&NEVT;" Type="MC" Version="QCDPT20to30_bcToE" Cacheable="&b_Cacheable;">
+    &QCDPT15to20b;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+  
+  <InputData Lumi="33.098" NEventsMax="&NEVT;" Type="MC" Version="QCDPT30to50_bcToE" Cacheable="&b_Cacheable;">
+    &QCDPT20to30b;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="37.789" NEventsMax="&NEVT;" Type="MC" Version="QCDPT50to80_bcToE" Cacheable="&b_Cacheable;">
+    &QCDPT30to80b;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+  
+  <InputData Lumi="393.038" NEventsMax="&NEVT;" Type="MC" Version="QCDPT80to120_bcToE" Cacheable="&b_Cacheable;">
+    &QCDPT80to170b;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="3612.916" NEventsMax="&NEVT;" Type="MC" Version="QCDPT120to170_bcToE" Cacheable="&b_Cacheable;">
+    &QCDPT170to250b;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+  
+  <InputData Lumi="13727.433" NEventsMax="&NEVT;" Type="MC" Version="QCDPT170to300_bcToE" Cacheable="&b_Cacheable;">
+    &QCDPT250toInfb;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>

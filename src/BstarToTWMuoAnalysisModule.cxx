@@ -37,10 +37,10 @@ using namespace uhh2;
 
 namespace uhh2 {
 
-  class BstarToTWAnalysisModule: public AnalysisModule {
+  class BstarToTWMuoAnalysisModule: public AnalysisModule {
   public:
     
-    explicit BstarToTWAnalysisModule(Context & ctx);
+    explicit BstarToTWMuoAnalysisModule(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
@@ -101,7 +101,7 @@ namespace uhh2 {
 
   };
 
-  BstarToTWAnalysisModule::BstarToTWAnalysisModule(Context & ctx) {
+  BstarToTWMuoAnalysisModule::BstarToTWMuoAnalysisModule(Context & ctx) {
 
 
     dataset_name = ctx.get("dataset_version");
@@ -261,7 +261,7 @@ namespace uhh2 {
 
   }
 
-  bool BstarToTWAnalysisModule::process(Event & event) {
+  bool BstarToTWMuoAnalysisModule::process(Event & event) {
 
     // -- after PreSel -- //
     // apply scale factors for muons and trigger
@@ -275,18 +275,21 @@ namespace uhh2 {
 
     common->process(event);
     primary_lep->process(event);
-    cl_topjet->process(event);
-    if(!sel_ntop->passes(event)) return false;
 
-    w_reco->process(event);
-    w_disc->process(event);
-    // Validation of JEC
-    if(sel_1top->passes(event) && sel_antibtag_medium->passes(event))
-      {
-	hist_w_reco->fill(event);
-	hist_jec_validation->fill(event);
-      }
     hist_presel->fill(event);
+
+    // cl_topjet->process(event);
+    // if(!sel_ntop->passes(event)) return false;
+
+    // w_reco->process(event);
+    // w_disc->process(event);
+    // // Validation of JEC
+    // if(sel_1top->passes(event) && sel_antibtag_medium->passes(event))
+    //   {
+    // 	hist_w_reco->fill(event);
+    // 	hist_jec_validation->fill(event);
+    //   }
+
 
 
     // -- Tau32 Scan -- //
@@ -352,6 +355,6 @@ namespace uhh2 {
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWAnalysisModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWMuoAnalysisModule)
 
 }

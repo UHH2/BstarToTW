@@ -124,7 +124,7 @@ namespace uhh2 {
     trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
     trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
     sel_nmuo.reset(new NMuonSelection(1, 1));
-    sel_nele.reset(new NElectronSelection(0,0));
+    sel_nele.reset(new NElectronSelection(0, 0));
     sel_met.reset(new METSelection(met_min));
     sel_st.reset(new STSelection(st_min));
     sel_ntop.reset(new NTopJetSelection(1, -1));
@@ -162,7 +162,7 @@ namespace uhh2 {
     hist_cleaner->fill(event);
 
     // Muon selection & additional lepton veto
-    if(!sel_nmuo->passes(event) && !sel_nele->passes(event)) return false;
+    if(!sel_nmuo->passes(event) || !sel_nele->passes(event)) return false;
     cl_muon->process(event);
     if(!sel_nmuo->passes(event)) return false;
     hist_nmuo->fill(event);
@@ -185,10 +185,10 @@ namespace uhh2 {
 	else if(event.run <= runnr_FlateG) jec_subj_FlateG->process(event);
 	else if(event.run > runnr_FlateG)  jec_subj_H->process(event);
       }
-    if (is_mc)
-      {
-	hist_jec_corr->fill(event);
-      }
+    // if (is_mc)
+    //   {
+    // 	hist_jec_corr->fill(event);
+    //   }
 
     cl_topjet->process(event);
     hist_topcleaner->fill(event);
