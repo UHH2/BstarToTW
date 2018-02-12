@@ -1,0 +1,18 @@
+# Put temporary objects in 'obj', (test) binaries in 'bin',
+# and other stuff (such as test root files) in tmp.
+obj/*
+*~
+*.root
+*.png
+*.gif
+*.pyc
+*.tar.gz
+*.o
+*.d
+*.txt
+*.log
+*/obj
+*/bin
+*/tmp
+*.root
+*/config/work*/
