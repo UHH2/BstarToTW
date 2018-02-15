@@ -135,7 +135,7 @@ void HOTVRHists::fill(const Event & event) {
 	  a_sub1  = subjets.at(0).jetArea();
 	  pt_sub2 = subjets.at(1).v4().pt();
 	  a_sub2  = subjets.at(1).jetArea();
-	  for (int i = 0; i < subjets.size(); ++i)
+	  for (unsigned int i = 0; i < subjets.size(); ++i)
 	    {
 	      pt_sub3 = subjets.at(i).v4().pt();
 	      a_sub3  = subjets.at(i).jetArea();

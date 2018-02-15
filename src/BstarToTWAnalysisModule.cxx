@@ -37,14 +37,16 @@ using namespace uhh2;
 
 namespace uhh2 {
 
-  class BstarToTWMuoAnalysisModule: public AnalysisModule {
+  class BstarToTWAnalysisModule: public AnalysisModule {
   public:
     
-    explicit BstarToTWMuoAnalysisModule(Context & ctx);
+    explicit BstarToTWAnalysisModule(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
     std::string dataset_name;
+
+    bool is_ele, is_muo;
 
     // --- Additional Modules --- //
     // Common Modules
@@ -55,19 +57,15 @@ namespace uhh2 {
     std::unique_ptr<AndHists> hist_jec_validation;
 
     // Scale factors & Uncertainties
-    std::unique_ptr<AnalysisModule> sf_muon_id, sf_muon_iso, sf_muon_trigger, sf_muon_trk;
-    std::string sys_muon_id, sys_muon_iso, sys_muon_trigger, sys_muon_trk;
+    std::unique_ptr<AnalysisModule> sf_muo_id, sf_muo_iso, sf_muo_trigger, sf_muo_trk;
+    std::unique_ptr<AnalysisModule> sf_ele_id, sf_ele_rec;
     std::unique_ptr<AnalysisModule> sf_btag_tight;
-    std::string sys_btag_tight;
     std::unique_ptr<AnalysisModule> sf_top_pt_reweight;
     bool do_top_pt_reweight;
     std::unique_ptr<AnalysisModule> sf_toptag;
-    std::string sys_toptag;
     std::unique_ptr<AnalysisModule> scale_variation;
     std::unique_ptr<AnalysisModule> L1_variation;
-    string sys_L1;
     bool do_scale_variation, do_pdf_variations;
-    string sys_pu;
     std::unique_ptr<Hists> pdf_variations;
 
     // --- Selections and Histogramms --- //
@@ -101,24 +99,13 @@ namespace uhh2 {
 
   };
 
-  BstarToTWMuoAnalysisModule::BstarToTWMuoAnalysisModule(Context & ctx) {
+  BstarToTWAnalysisModule::BstarToTWAnalysisModule(Context & ctx) {
 
 
     dataset_name = ctx.get("dataset_version");
 
-    
-    do_scale_variation = (ctx.get("ScaleVariationMuR") == "up" || ctx.get("ScaleVariationMuR") == "down") || (ctx.get("ScaleVariationMuF") == "up" || ctx.get("ScaleVariationMuF") == "down");
-    do_pdf_variations  = ctx.get("b_PDFUncertainties") == "true";
-    do_top_pt_reweight = ctx.get("b_TopPtReweight") == "true";
-
-    sys_muon_id      = ctx.get("Systematic_MuonID");
-    sys_muon_trigger = ctx.get("Systematic_MuonTrigger");
-    sys_muon_iso     = ctx.get("Systematic_MuonIso");
-    sys_muon_trk     = ctx.get("Systematic_MuonTrk");
-    sys_btag_tight   = ctx.get("Systematic_BTag");
-    sys_toptag       = ctx.get("Systematic_TopTag");
-    sys_L1           = ctx.get("Systematic_L1");
-    sys_pu           = ctx.get("Systematic_PU");
+    is_ele = ctx.get("analysis_channel") == "ELECTRON";
+    is_muo = ctx.get("analysis_channel") == "MUON";
 
     // --- Selection Variables --- //
     double deltaPhi_min = M_PI/2;  // minimum delta phi between muon and top
@@ -154,11 +141,58 @@ namespace uhh2 {
 
 
     // --- Setup Additional Modules --- //
+
+
     // - Common Modules - //
+    string sys_pu = ctx.get("Systematic_PU");
     common.reset(new CommonModules());
     common->disable_jec();
     common->disable_jersmear();
     common->init(ctx, sys_pu);
+
+    // -- Scale Factors & Uncertainties -- //
+    do_scale_variation = (ctx.get("ScaleVariationMuR") == "up" || ctx.get("ScaleVariationMuR") == "down") || (ctx.get("ScaleVariationMuF") == "up" || ctx.get("ScaleVariationMuF") == "down");
+    scale_variation.reset(new MCScaleVariation(ctx));
+
+    do_pdf_variations = ctx.get("b_PDFUncertainties") == "true";
+    pdf_variations.reset(new BstarToTWPDFHists(ctx, "PDF_variations", true, do_pdf_variations));
+
+    do_top_pt_reweight = ctx.get("b_TopPtReweight") == "true";
+    sf_top_pt_reweight.reset(new TopPtReweight(ctx, 0.0615, -0.0005, "", "", do_top_pt_reweight, 1.0)); // https://twiki.cern.ch/twiki/bin/view/CMS/TopPtReweighting
+
+    // - Muon Scale Factors - //
+    string sys_muo_id      = ctx.get("Systematic_MuonID");
+    string sys_muo_trigger = ctx.get("Systematic_MuonTrigger");
+    string sys_muo_iso     = ctx.get("Systematic_MuonIso");
+    string sys_muo_trk     = ctx.get("Systematic_MuonTrk");
+    string path_sf_muo_id      = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonID_EfficienciesAndSF_average_RunBtoH.root";
+    string path_sf_muo_iso     = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonIso_EfficienciesAndSF_average_RunBtoH.root";
+    string path_sf_muo_trigger = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonTrigger_EfficienciesAndSF_average_RunBtoH.root";
+    string path_sf_muo_trk     = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/Tracking_EfficienciesAndSF_BCDEFGH.root";
+
+    sf_muo_id.reset(new MCMuonScaleFactor(ctx, path_sf_muo_id, "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta", 1, "tightID", true, sys_muo_id));
+    sf_muo_iso.reset(new MCMuonScaleFactor(ctx, path_sf_muo_iso, "TightISO_TightID_pt_eta", 1, "iso", true, sys_muo_iso));
+    sf_muo_trigger.reset(new MCMuonScaleFactor(ctx, path_sf_muo_trigger, "IsoMu24_OR_IsoTkMu24_PtEtaBins", 0.5, "trigger", true, sys_muo_trigger));
+    sf_muo_trk.reset(new MCMuonTrkScaleFactor(ctx, path_sf_muo_trk, 1, "track", sys_muo_trk, "muons"));
+
+    // - Electron Scale Factors - //
+    string sys_ele_id  = ctx.get("Systematic_ElectronID");
+    string sys_ele_rec = ctx.get("Systematic_ElectronRec");
+    string path_sf_ele_id  = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/egammaEffi.txt_EGM2D_CutBased_Tight_ID.root";
+    string path_sf_ele_rec = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/egammaEffi.txt_EGM2D_RecEff_Moriond17.root";
+    sf_ele_id.reset(new MCElecScaleFactor(ctx, path_sf_ele_id, 1, "TightID", sys_ele_id));
+    sf_ele_rec.reset(new MCElecScaleFactor(ctx, path_sf_ele_rec, 1, "RecEff", sys_ele_rec));
+    // Add Electron Trigger Effeciency SF
+
+    string sys_btag_tight   = ctx.get("Systematic_BTag");
+    sf_btag_tight.reset(new MCBTagScaleFactor(ctx, btag_wp_tight, "jets", sys_btag_tight, "mujets", "incl", "MCBtagEfficienciesTight"));
+
+    string sys_toptag       = ctx.get("Systematic_TopTag");
+    string path_sf_toptag = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/TopTagMCEfficiency.root";
+    sf_toptag.reset(new HOTVRScaleFactor(ctx, "BstarToTW", id_toptag, path_sf_toptag, sys_toptag));
+    string sys_L1           = ctx.get("Systematic_L1");
+    string path_L1_variation = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/HOTVR_L1Uncertainty.root";
+    L1_variation.reset(new HOTVRPileUpUncertainty(ctx, path_L1_variation, sys_L1 ));
 
     // - Bstar reconstruction - //
     primary_lep.reset(new PrimaryLepton(ctx));
@@ -174,22 +208,6 @@ namespace uhh2 {
     hist_bstar_reco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWReco", "BstarToTWReconstruction", "Chi2"));
     hist_w_reco.reset(new BstarToTWHypothesisHists(ctx, "WReco", "WReconstruction", "Chi2"));
     hist_bstar_matchreco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWMatchedReco", "BstarToTWReconstruction", "Match"));
-
-    // - Scale Factors & Uncertainties - //
-    sf_muon_id.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonID_EfficienciesAndSF_average_RunBtoH.root", "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta", 1, "tightID", true, sys_muon_id));
-    sf_muon_iso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonIso_EfficienciesAndSF_average_RunBtoH.root", "TightISO_TightID_pt_eta", 1, "iso", true, sys_muon_iso));
-    sf_muon_trigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonTrigger_EfficienciesAndSF_average_RunBtoH.root", "IsoMu24_OR_IsoTkMu24_PtEtaBins", 0.5, "trigger", true, sys_muon_trigger));
-    sf_muon_trk.reset(new MCMuonTrkScaleFactor(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/Tracking_EfficienciesAndSF_BCDEFGH.root", 1, "track", sys_muon_trk, "muons"));
-
-    sf_btag_tight.reset(new MCBTagScaleFactor(ctx, btag_wp_tight, "jets", sys_btag_tight, "mujets", "incl", "MCBtagEfficienciesTight"));
-
-    sf_top_pt_reweight.reset(new TopPtReweight(ctx, 0.0615, -0.0005, "", "", do_top_pt_reweight, 1.0)); // https://twiki.cern.ch/twiki/bin/view/CMS/TopPtReweighting
-
-    sf_toptag.reset(new HOTVRScaleFactor(ctx, "BstarToTW", id_toptag, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/config/TopTagMCEfficiency.root", sys_toptag));
-   
-    scale_variation.reset(new MCScaleVariation(ctx));
-    L1_variation.reset(new HOTVRPileUpUncertainty(ctx, "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/config/HOTVR_L1Uncertainty.root", sys_L1 ));
-    pdf_variations.reset(new BstarToTWPDFHists(ctx, "PDF_variations", true, do_pdf_variations));
 
     // --- Selections and Histogramms --- //
     hist_presel.reset(new AndHists(ctx, "PreSel"));
@@ -261,14 +279,24 @@ namespace uhh2 {
 
   }
 
-  bool BstarToTWMuoAnalysisModule::process(Event & event) {
+  bool BstarToTWAnalysisModule::process(Event & event) {
 
     // -- after PreSel -- //
     // apply scale factors for muons and trigger
-    sf_muon_id->process(event);
-    sf_muon_iso->process(event);
-    sf_muon_trigger->process(event);
-    sf_muon_trk->process(event);
+    if (is_muo)
+      {
+	sf_muo_id->process(event);
+	sf_muo_iso->process(event);
+	sf_muo_trigger->process(event);
+	sf_muo_trk->process(event);
+      }
+    if (is_ele)
+      {
+	sf_ele_id->process(event);
+	sf_ele_rec->process(event);
+	// sf_ele_trigger->process(event);
+      }
+
     L1_variation->process(event);
     if(do_scale_variation) scale_variation->process(event);
     if(do_top_pt_reweight) sf_top_pt_reweight->process(event);   
@@ -355,6 +383,6 @@ namespace uhh2 {
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWMuoAnalysisModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWAnalysisModule)
 
 }

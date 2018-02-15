@@ -156,4 +156,5 @@ bool CMSTTScaleFactor::process(Event &event) {
       else if (m_sys_direction == "down")
 	event.weight *= 1.07-0.03;
     }
+  return true;
 }

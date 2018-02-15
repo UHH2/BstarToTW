@@ -11,8 +11,4 @@ obj/*
 *.d
 *.txt
 *.log
-*/obj
-*/bin
-*/tmp
-*.root
-*/config/work*/
+*config/work*/

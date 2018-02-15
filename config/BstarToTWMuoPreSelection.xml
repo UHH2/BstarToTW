@@ -122,7 +122,6 @@
 
 <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&PRESELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
   
- 
 
   <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B_v2" Cacheable="&b_Cacheable;">
     &DATA_B_v2;
@@ -697,7 +696,7 @@
             -->
             
             <!-- the class name of the AnalysisModule subclasses to run: -->
-            <Item Name="AnalysisModule" Value="BstarToTWMuoPreSelectionModule" /> 
+            <Item Name="AnalysisModule" Value="BstarToTWPreSelectionModule" /> 
             
             <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
                  MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
@@ -713,8 +712,9 @@
 	    <Item Name="jecsmear_direction" Value="nominal" />
 	    <Item Name="jersmear_direction" Value="nominal" />
             
-            <!-- Some test configuration; see BstarToTWModule.cxx for how to access it: -->
-            <Item Name="TestKey" Value="TestKeyValue" />
+	    <!-- Channel? ELECTRON or MUON -->
+	    <Item Name="analysis_channel" Value="MUON"/>
+
         </UserConfig>
     </Cycle>
 </JobConfiguration>
