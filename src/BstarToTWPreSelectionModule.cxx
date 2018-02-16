@@ -18,9 +18,10 @@
 #include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
-#include "UHH2/BstarToTW/include/HOTVRHists.h"
-#include "UHH2/BstarToTW/include/HOTVRJetCorrectionHists.h"
-#include "UHH2/BstarToTW/include/HOTVRJetCorrector.h"
+
+#include "UHH2/HOTVR/include/HOTVRHists.h"
+#include "UHH2/HOTVR/include/HOTVRJetCorrectionHists.h"
+#include "UHH2/HOTVR/include/HOTVRJetCorrector.h"
 
 using namespace std;
 using namespace uhh2;

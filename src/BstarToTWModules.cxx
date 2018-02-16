@@ -116,3 +116,26 @@ bool ElectronTriggerWeights::process(Event & event){
 return true;
 }
 
+
+CMSTTScaleFactor::CMSTTScaleFactor(Context &ctx, string signal_name, TString sys_direction){
+
+  string dataset_name = ctx.get("dataset_version");
+  m_do_weight = (dataset_name.find("TTbar") != std::string::npos || dataset_name.find(signal_name) != std::string::npos);
+
+  if(sys_direction != "central" && sys_direction != "up" && sys_direction != "down") throw runtime_error("HOTVRScaleFactor: Invalid sys_direction specified.");
+  m_sys_direction = sys_direction;
+
+}
+
+bool CMSTTScaleFactor::process(Event &event) {
+  if (m_do_weight)
+    {
+      if (m_sys_direction == "central")
+	event.weight *= 1.07;
+      else if (m_sys_direction == "up")
+	event.weight *= 1.07+0.05;
+      else if (m_sys_direction == "down")
+	event.weight *= 1.07-0.03;
+    }
+  return true;
+}

@@ -1,11 +1,14 @@
 #include "UHH2/BstarToTW/include/AndHists.h"
-#include "UHH2/BstarToTW/include/BstarToTWHists.h"
-#include "UHH2/BstarToTW/include/HOTVRHists.h"
+
 #include "UHH2/common/include/LuminosityHists.h"
 #include "UHH2/common/include/EventHists.h"
 #include "UHH2/common/include/ElectronHists.h"
 #include "UHH2/common/include/MuonHists.h"
 #include "UHH2/common/include/JetHists.h"
+
+#include "UHH2/BstarToTW/include/BstarToTWHists.h"
+
+#include "UHH2/HOTVR/include/HOTVRHists.h"
 
 
 using namespace std;

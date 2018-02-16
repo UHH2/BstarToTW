@@ -14,10 +14,10 @@
 #include "UHH2/common/include/JetHists.h"
 #include "UHH2/common/include/TopPtReweight.h"
 
-#include "UHH2/BstarToTW/include/HOTVRHists.h"
-#include "UHH2/BstarToTW/include/HOTVRIds.h"
-#include "UHH2/BstarToTW/include/HOTVRScaleFactor.h"
-#include "UHH2/BstarToTW/include/HOTVRPileUpUncertainty.h"
+#include "UHH2/HOTVR/include/HOTVRHists.h"
+#include "UHH2/HOTVR/include/HOTVRIds.h"
+#include "UHH2/HOTVR/include/HOTVRScaleFactor.h"
+#include "UHH2/HOTVR/include/HOTVRPileUpUncertainty.h"
 
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
@@ -123,15 +123,15 @@ namespace uhh2 {
 
     // - Object IDs - //
     // TopJetId id_toptag = HOTVRTopTag(top_fpt_max, 0, FLT_MAX, top_mpair_min); // hotvr top tag without mass cut
-    TopJetId id_topjet =  AndId<TopJet>(PtEtaCut(top_pt_min, top_eta_max), DeltaPhiCut(deltaPhi_min));
+    TopJetId id_topjet =  AndId<TopJet>(PtEtaCut(top_pt_min, top_eta_max), DeltaPhiCut(ctx, deltaPhi_min));
     cl_topjet.reset(new TopJetCleaner(ctx, id_topjet));
     sel_ntop.reset(new NTopJetSelection(1, -1));
     sel_1top.reset(new NTopJetSelection(1, 1));
 
-    TopJetId id_toptag_without_tau32 = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), DeltaPhiCut(deltaPhi_min));
+    TopJetId id_toptag_without_tau32 = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), DeltaPhiCut(ctx, deltaPhi_min));
     TopJetId id_toptag_without_deltaphi = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max));
     TopJetId id_toptag_only_HOTVR = HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min);
-    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max), DeltaPhiCut(deltaPhi_min)); // hotvr top tag with tau_3/2 and delta phi
+    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max), DeltaPhiCut(ctx, deltaPhi_min)); // hotvr top tag with tau_3/2 and delta phi
     // TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max)); // hotvr top tag with tau_3/2 and without delta phi
 
     CSVBTag::wp btag_wp_tight = CSVBTag::WP_TIGHT;
@@ -245,7 +245,7 @@ namespace uhh2 {
     // for (int i = 0; i < n_tau32; ++i)
     //   {
     // 	std::unique_ptr<Selection> sel, sel2;
-    // 	TopJetId id = AndId<TopJet>(HOTVRTopTag(top_fpt_max, 105 + i*5, 220, top_mpair_min), DeltaPhiCut(deltaPhi_min), Tau32Groomed(0.56));
+    // 	TopJetId id = AndId<TopJet>(HOTVRTopTag(top_fpt_max, 105 + i*5, 220, top_mpair_min), DeltaPhiCut(ctx, deltaPhi_min), Tau32Groomed(0.56));
     // 	sel.reset(new NTopJetSelection(1, 1, id));
     // 	sel_tau32.push_back(std::move(sel));
 

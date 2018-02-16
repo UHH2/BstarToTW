@@ -8,7 +8,8 @@
 #include "UHH2/common/include/PrimaryLepton.h"
 
 #include "UHH2/BstarToTW/include/BstarToTWHypothesis.h"
-#include "UHH2/BstarToTW/include/HOTVRIds.h"
+
+#include "UHH2/HOTVR/include/HOTVRIds.h"
 
 
 typedef std::function< std::vector<LorentzVector> (const LorentzVector & lepton, const LorentzVector & met)> NeutrinoReconstructionMethod;

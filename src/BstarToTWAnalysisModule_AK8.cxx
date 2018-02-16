@@ -14,11 +14,11 @@
 #include "UHH2/common/include/JetHists.h"
 #include "UHH2/common/include/TopPtReweight.h"
 
-#include "UHH2/BstarToTW/include/HOTVRHists.h"
-#include "UHH2/BstarToTW/include/HOTVRIds.h"
-#include "UHH2/BstarToTW/include/HOTVRScaleFactor.h"
+#include "UHH2/HOTVR/include/HOTVRHists.h"
+#include "UHH2/HOTVR/include/HOTVRIds.h"
 
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
+#include "UHH2/BstarToTW/include/BstarToTWModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 #include "UHH2/BstarToTW/include/BstarToTWReconstruction.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
@@ -132,7 +132,7 @@ namespace uhh2 {
     sel_ntop.reset(new NTopJetSelection(1, -1));
 
     double tau32_wp = .57;
-    TopJetId id_toptag =  AndId<TopJet>(Type2TopTag(top_m_min, top_m_max, Type2TopTag::MassType::groomed), Tau32(tau32_wp), DeltaPhiCut(deltaPhi_min));  
+    TopJetId id_toptag =  AndId<TopJet>(Type2TopTag(top_m_min, top_m_max, Type2TopTag::MassType::groomed), Tau32(tau32_wp), DeltaPhiCut(ctx, deltaPhi_min));  
 
     CSVBTag::wp btag_wp_tight = CSVBTag::WP_TIGHT;
     JetId id_btag_tight  = CSVBTag(btag_wp_tight);
@@ -205,7 +205,7 @@ namespace uhh2 {
     // for (int i = 0; i < n_tau32; ++i)
     //   {
     // 	std::unique_ptr<Selection> sel, sel2;
-    // 	TopJetId id = AndId<TopJet>(HOTVRTopTag(top_fpt_max, 105 + i*5, 220, top_mpair_min), DeltaPhiCut(deltaPhi_min), Tau32Groomed(0.56));
+    // 	TopJetId id = AndId<TopJet>(HOTVRTopTag(top_fpt_max, 105 + i*5, 220, top_mpair_min), DeltaPhiCut(ctx, deltaPhi_min), Tau32Groomed(0.56));
     // 	sel.reset(new NTopJetSelection(1, 1, id));
     // 	sel_tau32.push_back(std::move(sel));
 

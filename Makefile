@@ -1,5 +1,5 @@
 LIBRARY := SUHH2BstarToTW
-USERLDFLAGS := -lSUHH2core -lSUHH2common -lGenVector -lSUHH2JetMETObjects -L/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/lhapdf/6.1.6-ikhhed/lib -lLHAPDF 
+USERLDFLAGS := -lSUHH2core -lSUHH2common -lSUHH2HOTVR -lGenVector -lSUHH2JetMETObjects -L/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/lhapdf/6.1.6-ikhhed/lib -lLHAPDF 
 
 USERCXXFLAGS := -I/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/lhapdf/6.1.6-ikhhed/include/ 
 
