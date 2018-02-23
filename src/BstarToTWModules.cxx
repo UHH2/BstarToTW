@@ -20,7 +20,7 @@ ElectronTriggerWeights::ElectronTriggerWeights(Context & ctx, TString path_, TSt
   Eff_lowpt_DATA.reset((TGraphAsymmErrors*)file->Get("gr_lowpt_eta_DATA_eff"));					 
   Eff_highpt_DATA.reset((TGraphAsymmErrors*)file->Get("gr_highpt_eta_DATA_eff"));					 
   
-  if(SysDirection != "nominal" && SysDirection != "up" && SysDirection != "down") throw runtime_error("In LQToTopMuModules.cxx, ElectronTriggerWeights.process(): Invalid SysDirection specified.");
+  if(SysDirection != "nominal" && SysDirection != "up" && SysDirection != "down") throw runtime_error("In BstarToTWModules.cxx, ElectronTriggerWeights.process(): Invalid SysDirection specified.");
   
 }
 
@@ -30,7 +30,7 @@ bool ElectronTriggerWeights::process(Event & event){
 
   const auto ele = event.electrons->at(0);
   double eta = ele.eta();
-  if(fabs(eta) > 2.4) throw runtime_error("In LQToTopMuModules.cxx, ElectronTriggerWeights.process(): Ele-|eta| > 2.4 is not supported at the moment.");
+  if(fabs(eta) > 2.4) throw runtime_error("In BstarToTWModules.cxx, ElectronTriggerWeights.process(): Ele-|eta| > 2.4 is not supported at the moment.");
 
 
   //find right bin in eta
@@ -57,7 +57,7 @@ bool ElectronTriggerWeights::process(Event & event){
       if(keep_going) idx++;
     }
   }
-  else throw runtime_error("In LQToTopMuModules.cxx, ElectronTriggerWeights.process(): Electron has pt<30. Clean electron collection before applying weights.");
+  else throw runtime_error("In BstarToTWModules.cxx, ElectronTriggerWeights.process(): Electron has pt<30. Clean electron collection before applying weights.");
 
   //access efficiencies for MC and DATA, possibly accout for systematics = statistical + add. 2% up/down
   double eff_data = -1, eff_mc = -1, dummy_x;
