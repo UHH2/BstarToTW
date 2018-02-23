@@ -97,7 +97,7 @@ namespace uhh2 {
     MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
     MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
 
-    ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto_noIso, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+    ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
     ElectronId id_ele_tight = AndId<Electron>(ElectronID_Spring16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
 
     JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_LOOSE), PtEtaCut(jet_pt_min, jet_eta_max)); // jet ID
@@ -227,7 +227,8 @@ namespace uhh2 {
 
     // --- HOTVR JEC
     // hist_pileup->fill(event);
-    if (is_mc) jec_subj_mc->process(event);
+    if (is_mc) 
+      jec_subj_mc->process(event);
     else
       {
 	if(event.run <= runnr_BCD)         jec_subj_BCD->process(event);

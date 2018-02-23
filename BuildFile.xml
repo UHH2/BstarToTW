@@ -2,5 +2,4 @@
 <use name="boost" />
 <use name="UHH2/common" />
 <use name="UHH2/core" />
-<use name="fastjet" />
-<use name="fastjet-contrib"/>
+<use name="UHH2/HOTVR" />

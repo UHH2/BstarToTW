@@ -700,7 +700,7 @@
            -->
       
       <!-- the class name of the AnalysisModule subclasses to run: -->
-      <Item Name="AnalysisModule" Value="BstarToTWMuoAnalysisModule" /> 
+      <Item Name="AnalysisModule" Value="BstarToTWAnalysisModule" /> 
       
       <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
            MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
@@ -714,8 +714,8 @@
       <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyDataPileupHistogram_72383.root" />
       <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyDataPileupHistogram_66017.root" />
 
-      <Item Name="MCBtagEfficienciesMedium" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/config/BTagMCEfficiencyMedium.root" />
-      <Item Name="MCBtagEfficienciesTight" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/config/BTagMCEfficiencyTight.root" />
+      <Item Name="MCBtagEfficienciesMedium" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BTagMCEfficiencyMedium.root" />
+      <Item Name="MCBtagEfficienciesTight" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BTagMCEfficiencyHistsTight_Muon.root" />
       <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/CSVv2_Moriond17_B_H.csv" />
 
       <!-- Keys for uncertainties -->
@@ -736,8 +736,9 @@
 
       <Item Name="Systematic_PU"          Value="central" />
       
-      <!-- Some test configuration; see BstarToTWModule.cxx for how to access it: -->
-      <Item Name="TestKey" Value="TestKeyValue" />
+      <!-- Channel? ELECTRON or MUON -->
+      <Item Name="analysis_channel" Value="MUON"/>
+
     </UserConfig>
   </Cycle>
 </JobConfiguration>

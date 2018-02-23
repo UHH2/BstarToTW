@@ -625,37 +625,37 @@
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="10.548" NEventsMax="&NEVT;" Type="MC" Version="QCDPT20to30_bcToE" Cacheable="&b_Cacheable;">
+  <InputData Lumi="10.548" NEventsMax="&NEVT;" Type="MC" Version="QCDPT15to20_bcToE" Cacheable="&b_Cacheable;">
     &QCDPT15to20b;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
   
-  <InputData Lumi="33.098" NEventsMax="&NEVT;" Type="MC" Version="QCDPT30to50_bcToE" Cacheable="&b_Cacheable;">
+  <InputData Lumi="33.098" NEventsMax="&NEVT;" Type="MC" Version="QCDPT20to30_bcToE" Cacheable="&b_Cacheable;">
     &QCDPT20to30b;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="37.789" NEventsMax="&NEVT;" Type="MC" Version="QCDPT50to80_bcToE" Cacheable="&b_Cacheable;">
+  <InputData Lumi="37.789" NEventsMax="&NEVT;" Type="MC" Version="QCDPT30to80_bcToE" Cacheable="&b_Cacheable;">
     &QCDPT30to80b;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
   
-  <InputData Lumi="393.038" NEventsMax="&NEVT;" Type="MC" Version="QCDPT80to120_bcToE" Cacheable="&b_Cacheable;">
+  <InputData Lumi="393.038" NEventsMax="&NEVT;" Type="MC" Version="QCDPT80to170_bcToE" Cacheable="&b_Cacheable;">
     &QCDPT80to170b;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="3612.916" NEventsMax="&NEVT;" Type="MC" Version="QCDPT120to170_bcToE" Cacheable="&b_Cacheable;">
+  <InputData Lumi="3612.916" NEventsMax="&NEVT;" Type="MC" Version="QCDPT170to250_bcToE" Cacheable="&b_Cacheable;">
     &QCDPT170to250b;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
   
-  <InputData Lumi="13727.433" NEventsMax="&NEVT;" Type="MC" Version="QCDPT170to300_bcToE" Cacheable="&b_Cacheable;">
+  <InputData Lumi="13727.433" NEventsMax="&NEVT;" Type="MC" Version="QCDPT250toInf_bcToE" Cacheable="&b_Cacheable;">
     &QCDPT250toInfb;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />

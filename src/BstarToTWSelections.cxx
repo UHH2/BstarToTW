@@ -97,7 +97,7 @@ HOTVRLeptonCleaner::HOTVRLeptonCleaner(double deltaRmin) :
 
 bool HOTVRLeptonCleaner::process(Event &event) {
   std::vector<TopJet> result;
-  if (!event.muons->size() > 0) return true;
+  if (!(event.muons->size() > 0)) return true;
   Muon muon = event.muons->at(0);
   for(const TopJet & topjet : *event.topjets){
     if(deltaR(topjet, muon) > m_deltaRmin){
