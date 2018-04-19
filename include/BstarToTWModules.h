@@ -31,3 +31,4 @@ class CMSTTScaleFactor : public uhh2::AnalysisModule {
   bool m_do_weight;
   TString m_sys_direction;
 };
+

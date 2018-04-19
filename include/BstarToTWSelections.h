@@ -55,13 +55,6 @@ namespace uhh2 {
 
   };
 
-  class LeadingTopJetSelection: public uhh2::Selection {
-  public:
-    LeadingTopJetSelection(TopJetId id_topjet);
-    virtual bool passes(const uhh2::Event &event) override;
-  private:
-    TopJetId m_id_topjet;
-  };
 
   class NGenJetSelection: public uhh2::Selection {
   public:
@@ -70,13 +63,4 @@ namespace uhh2 {
   private:
     unsigned int n_min, n_max;
   };
-
-  class HOTVRLeptonCleaner: public uhh2::AnalysisModule {
-  public:
-    HOTVRLeptonCleaner(double deltaRmin);
-    virtual bool process(uhh2::Event &event) override;
-  private:
-    double m_deltaRmin;
-  };
-
 }

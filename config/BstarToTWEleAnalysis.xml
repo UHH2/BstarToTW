@@ -723,8 +723,8 @@
       <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyDataPileupHistogram_72383.root" />
       <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MyDataPileupHistogram_66017.root" />
 
-      <Item Name="MCBtagEfficienciesMedium" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BTagMCEfficiencyMedium.root" />
       <Item Name="MCBtagEfficienciesTight" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BTagMCEfficiencyHistsTight_Electron.root" />
+      <Item Name="MCBtagEfficienciesLoose" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BTagMCEfficiencyHistsLoose_Electron.root" />
       <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/CSVv2_Moriond17_B_H.csv" />
 
       <!-- Keys for uncertainties -->

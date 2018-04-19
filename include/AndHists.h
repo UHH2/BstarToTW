@@ -7,9 +7,8 @@
 
 #include <vector>
 #include <TH1F.h>
-
-namespace uhh2 {
-  class AndHists: public Hists {
+namespace uhh2{
+  class AndHists: public uhh2::Hists {
   public:
     AndHists(uhh2::Context &ctx, const std::string & dirname, const boost::optional<TopJetId> &id_topjet = boost::none);
 
