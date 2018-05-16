@@ -94,13 +94,14 @@ namespace uhh2 {
 
 
     // IDs
-    MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
-    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
-
+    // MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
+    // MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
+    MuonId id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), MuonID(Muon::Selector::PFIsoTight));
+    MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), MuonID(Muon::Selector::PFIsoTight));
     ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
     ElectronId id_ele_tight = AndId<Electron>(ElectronID_Spring16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
 
-    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_LOOSE), PtEtaCut(jet_pt_min, jet_eta_max)); // jet ID
+    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT_LEPVETO), PtEtaCut(jet_pt_min, jet_eta_max)); // jet ID
     TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe also deltaPhiCut ??
 
     // Additional Modules

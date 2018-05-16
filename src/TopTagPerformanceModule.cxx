@@ -104,10 +104,12 @@ namespace uhh2 {
     double ele_pt_min  = 30.0;
     double jet_pt_min  = 30.0;
     double jet_eta_max = 2.4;
-    MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    // MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    MuonId id_muo_loose = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), MuonID(Muon::Selector::PFIsoTight));
+    // MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), MuonID(Muon::Selector::PFIsoTight));
     ElectronId id_ele = AndId<Electron>(ElectronID_Spring16_veto_noIso, PtEtaCut(ele_pt_min, lep_eta_max));
-    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_LOOSE), PtEtaCut(jet_pt_min, jet_eta_max));
+    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT_LEPVETO), PtEtaCut(jet_pt_min, jet_eta_max));
 
     common.reset(new CommonModules());
     common->switch_jetlepcleaner(true);

@@ -25,6 +25,19 @@
 
 using namespace std;
 using namespace uhh2;
+namespace JERFiles {
+  extern const std::vector<std::string> Fall17_17Nov2017_V6_L123_AK8PFchs_MC;
+
+  extern const std::vector<std::string> Fall17_17Nov2017_V6_B_L123_AK8PFchs_DATA;
+  
+  extern const std::vector<std::string> Fall17_17Nov2017_V6_C_L123_AK8PFchs_DATA;
+  
+  extern const std::vector<std::string> Fall17_17Nov2017_V6_D_L123_AK8PFchs_DATA;
+  
+  extern const std::vector<std::string> Fall17_17Nov2017_V6_E_L123_AK8PFchs_DATA;
+  
+  extern const std::vector<std::string> Fall17_17Nov2017_V6_F_L123_AK8PFchs_DATA;
+}
 
 namespace uhh2 {
 
@@ -38,7 +51,7 @@ namespace uhh2 {
 
     // Common Modules
     std::unique_ptr<CommonModules> common;
-    std::unique_ptr<AnalysisModule> jec_topj_mc, jec_topj_BCD, jec_topj_EFearly, jec_topj_FlateG, jec_topj_H;
+    std::unique_ptr<AnalysisModule> jec_topj_mc, jec_topj_B, jec_topj_C, jec_topj_D, jec_topj_E, jec_topj_F;
 
     // Cleaner
     std::unique_ptr<AnalysisModule> cl_muon;
@@ -47,7 +60,7 @@ namespace uhh2 {
     // Selections
     bool is_data;
     std::unique_ptr<Selection> sel_lumi;
-    std::unique_ptr<Selection> trig_IsoMu24, trig_IsoTkMu24;
+    std::unique_ptr<Selection> trig_IsoMu27;//, trig_IsoTkMu24;
     std::unique_ptr<Selection> sel_nmuo;
     std::unique_ptr<Selection> sel_met;
     std::unique_ptr<Selection> sel_st;
@@ -58,9 +71,10 @@ namespace uhh2 {
 
     bool is_mc;
 
-    const int runnr_BCD = 276811;
-    const int runnr_EFearly = 278802;
-    const int runnr_FlateG = 280385;
+    const int runnr_B = 299329; 
+    const int runnr_C = 302029; 
+    const int runnr_D = 303434; 
+    const int runnr_E = 304797; 
 
   };
 
@@ -86,10 +100,12 @@ namespace uhh2 {
 
 
     // IDs
-    MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    // MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    MuonId id_muo_loose = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose),MuonID(Muon::Selector::PFIsoTight));
+    // MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), MuonID(Muon::Selector::PFIsoTight));
     ElectronId id_ele = AndId<Electron>(ElectronID_Spring16_veto_noIso, PtEtaCut(ele_pt_min, lep_eta_max));
-    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_LOOSE), PtEtaCut(jet_pt_min, jet_eta_max));
+    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT_LEPVETO), PtEtaCut(jet_pt_min, jet_eta_max));
     TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max);
 
     // Additional Modules
@@ -98,18 +114,20 @@ namespace uhh2 {
     common->set_muon_id(id_muo_loose);
     common->set_electron_id(id_ele);
     common->set_jet_id(id_jet);
+    if(is_mc) common->disable_metfilters();
     common->init(ctx);
 
     if(is_mc)
       {	
-	jec_topj_mc.reset(new TopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK8PFchs_MC));
+	jec_topj_mc.reset(new TopJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V6_L123_AK8PFchs_MC));
       }
     else
       { 
- 	jec_topj_BCD.reset(new TopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK8PFchs_DATA));
-    	jec_topj_EFearly.reset(new TopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK8PFchs_DATA));
-    	jec_topj_FlateG.reset(new TopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK8PFchs_DATA));
-    	jec_topj_H.reset(new TopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK8PFchs_DATA));
+ 	jec_topj_B.reset(new TopJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V6_B_L123_AK8PFchs_DATA));
+    	jec_topj_C.reset(new TopJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V6_C_L123_AK8PFchs_DATA));
+    	jec_topj_D.reset(new TopJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V6_D_L123_AK8PFchs_DATA));
+    	jec_topj_E.reset(new TopJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V6_E_L123_AK8PFchs_DATA));
+    	jec_topj_F.reset(new TopJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V6_F_L123_AK8PFchs_DATA));
       }
 
     // Cleaner
@@ -118,8 +136,8 @@ namespace uhh2 {
 
     // Selections
     sel_lumi.reset(new LumiSelection(ctx));
-    trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
-    trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
+    trig_IsoMu27.reset(new TriggerSelection("HLT_IsoMu27_v*"));
+    // trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
     sel_nmuo.reset(new NMuonSelection(1, 1));
     sel_met.reset(new METSelection(met_min));
     sel_st.reset(new STSelection(st_min));
@@ -128,7 +146,6 @@ namespace uhh2 {
     // Hists
     hist_nocuts.reset(new AndHists(ctx, "NoCuts"));
     hist_trigger.reset(new AndHists(ctx, "Trigger"));
-
     hist_cleaner.reset(new AndHists(ctx, "Cleaning"));
     hist_nmuo.reset(new AndHists(ctx, "1MuonCut"));
     hist_met.reset(new AndHists(ctx, "50METCut"));
@@ -148,7 +165,7 @@ namespace uhh2 {
     hist_nocuts->fill(event);
 
     // Trigger
-    if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
+    if(!trig_IsoMu27->passes(event)) return false;
     hist_trigger->fill(event);
 
     // Cleaner
@@ -173,10 +190,11 @@ namespace uhh2 {
     if (is_mc) jec_topj_mc->process(event);
     else
       {
-	if(event.run <= runnr_BCD)         jec_topj_BCD->process(event);
-	else if(event.run < runnr_EFearly) jec_topj_EFearly->process(event); //< is correct, not <= 
-	else if(event.run <= runnr_FlateG) jec_topj_FlateG->process(event);
-	else if(event.run > runnr_FlateG)  jec_topj_H->process(event);
+	if(event.run <= runnr_B)      jec_topj_B->process(event);
+	else if(event.run <= runnr_C) jec_topj_C->process(event);
+	else if(event.run <= runnr_D) jec_topj_D->process(event);
+	else if(event.run <= runnr_E) jec_topj_E->process(event);
+	else if(event.run >  runnr_E) jec_topj_F->process(event);
       }
     cl_topjet->process(event);
     hist_topcleaner->fill(event);
@@ -192,3 +210,39 @@ namespace uhh2 {
   UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWPreSelectionModule_AK8)
 
 }
+
+const std::vector<std::string> JERFiles::Fall17_17Nov2017_V6_L123_AK8PFchs_MC = {
+  "JECDatabase/textFiles/Fall17_17Nov2017_V6_MC/Fall17_17Nov2017_V6_MC_L1FastJet_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017_V6_MC/Fall17_17Nov2017_V6_MC_L2Relative_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017_V6_MC/Fall17_17Nov2017_V6_MC_L3Absolute_AK8PFchs.txt",
+};
+const std::vector<std::string> JERFiles::Fall17_17Nov2017_V6_B_L123_AK8PFchs_DATA = {
+  "JECDatabase/textFiles/Fall17_17Nov2017B_V6_DATA/Fall17_17Nov2017B_V6_DATA_L1FastJet_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017B_V6_DATA/Fall17_17Nov2017B_V6_DATA_L2Relative_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017B_V6_DATA/Fall17_17Nov2017B_V6_DATA_L3Absolute_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017B_V6_DATA/Fall17_17Nov2017B_V6_DATA_L2L3Residual_AK8PFchs.txt",
+};
+const std::vector<std::string> JERFiles::Fall17_17Nov2017_V6_C_L123_AK8PFchs_DATA = {
+  "JECDatabase/textFiles/Fall17_17Nov2017C_V6_DATA/Fall17_17Nov2017C_V6_DATA_L1FastJet_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017C_V6_DATA/Fall17_17Nov2017C_V6_DATA_L2Relative_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017C_V6_DATA/Fall17_17Nov2017C_V6_DATA_L3Absolute_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017C_V6_DATA/Fall17_17Nov2017C_V6_DATA_L2L3Residual_AK8PFchs.txt",
+};
+const std::vector<std::string> JERFiles::Fall17_17Nov2017_V6_D_L123_AK8PFchs_DATA = {
+  "JECDatabase/textFiles/Fall17_17Nov2017D_V6_DATA/Fall17_17Nov2017D_V6_DATA_L1FastJet_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017D_V6_DATA/Fall17_17Nov2017D_V6_DATA_L2Relative_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017D_V6_DATA/Fall17_17Nov2017D_V6_DATA_L3Absolute_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017D_V6_DATA/Fall17_17Nov2017D_V6_DATA_L2L3Residual_AK8PFchs.txt",
+};
+const std::vector<std::string> JERFiles::Fall17_17Nov2017_V6_E_L123_AK8PFchs_DATA = {
+  "JECDatabase/textFiles/Fall17_17Nov2017E_V6_DATA/Fall17_17Nov2017E_V6_DATA_L1FastJet_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017E_V6_DATA/Fall17_17Nov2017E_V6_DATA_L2Relative_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017E_V6_DATA/Fall17_17Nov2017E_V6_DATA_L3Absolute_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017E_V6_DATA/Fall17_17Nov2017E_V6_DATA_L2L3Residual_AK8PFchs.txt",
+};
+const std::vector<std::string> JERFiles::Fall17_17Nov2017_V6_F_L123_AK8PFchs_DATA = {
+  "JECDatabase/textFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_L1FastJet_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_L2Relative_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_L3Absolute_AK8PFchs.txt",
+  "JECDatabase/textFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_L2L3Residual_AK8PFchs.txt",
+};
