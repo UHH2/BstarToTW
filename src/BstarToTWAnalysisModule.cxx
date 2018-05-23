@@ -19,6 +19,7 @@
 #include "UHH2/HOTVR/include/HOTVRScaleFactor.h"
 #include "UHH2/HOTVR/include/HOTVRPileUpUncertainty.h"
 
+#include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
@@ -26,7 +27,6 @@
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWPDFHists.h"
-#include "UHH2/BstarToTW/include/AndHists.h"
 
 
 using namespace std;
@@ -55,6 +55,7 @@ namespace uhh2 {
     // Common Modules
     std::unique_ptr<CommonModules> common;
     std::unique_ptr<AnalysisModule> cl_topjet;
+    std::unique_ptr<AnalysisModule> background_reweight;
     // Bstar Reconsturction
     std::unique_ptr<AnalysisModule> BstarToTWgenprod;
     std::unique_ptr<AnalysisModule> primary_lep;
@@ -118,8 +119,8 @@ namespace uhh2 {
 
     // --- Flags --- //
     dataset_name = ctx.get("dataset_version");
-    is_ele = ctx.get("analysis_channel") == "ELECTRON";
-    is_muo = ctx.get("analysis_channel") == "MUON";
+    is_ele = ctx.get("analysis_channel") == "Electron";
+    is_muo = ctx.get("analysis_channel") == "Muon";
 
 
     // --- Selection Variables --- //
@@ -211,7 +212,6 @@ namespace uhh2 {
     string path_L1_variation = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/HOTVR_L1Uncertainty.root";
     L1_variation.reset(new HOTVRPileUpUncertainty(ctx, path_L1_variation, sys_L1 ));
 
-
     // --- Bstar reconstruction --- //
     reco_1toptag.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, "1TopTagReconstruction", id_toptag));
     disc_1toptag.reset(new BstarToTWChi2Discriminator(ctx, "1TopTagReconstruction"));
@@ -226,6 +226,9 @@ namespace uhh2 {
     // hist_reco_cr.reset(new BstarToTWHypothesisHists(ctx, "CRReco", "CR_Reconstruction", "Chi2"));
     hist_bstar_matchreco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWMatchedReco", "1TopTagReconstruction", "Match"));
 
+    string sys_background_reweight = "";//ctx.get("Systematic_BG");
+    string path_background_reweight = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_"+ctx.get("analysis_channel")+".root";
+    background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_background_reweight,"0TopTagReconstruction","Chi2",sys_background_reweight));
 
     // --- Selections and Histogramms --- //
     hist_presel.reset(new AndHists(ctx, "PreSel"));
@@ -359,12 +362,12 @@ namespace uhh2 {
 	return false;
       }
 
-    // - Signal Region - //
+    
     else if (sel_1btag->passes(event)) 
       {
 	sf_btag->process(event);
 	hist_sel_1btag->fill(event);
-
+	// - Signal Region - //
 	if(sel_1toptag->passes(event))
 	  {	    
 	    // -- Bstar Reconstructinon -- //	
@@ -383,12 +386,14 @@ namespace uhh2 {
 	    if (do_pdf_variations) pdf_variations->fill(event);
 	    hist_sel_1btag1toptag20chi2->fill(event);
 	  }
+	// - Non-top control Region - //
 	else if (sel_1antitoptag->passes(event) && veto_toptag->passes(event))
 	  {
 	    reco_0toptag->process(event);
 	    disc_0toptag->process(event);
 	    hist_sel_1btag0toptag->fill(event);
 	    if (sel_0toptag20chi2->passes(event))
+	      background_reweight->process(event);
 	      hist_sel_1btag0toptag20chi2->fill(event);
 	  }
 

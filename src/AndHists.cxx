@@ -14,6 +14,7 @@
 
 using namespace std;
 using namespace uhh2;
+namespace uhh2 {
 AndHists::AndHists(Context &ctx, const string & dirname, const boost::optional<TopJetId> &id_topjet):
   Hists(ctx, dirname+"_Counter")
 {
@@ -64,4 +65,5 @@ AndHists::~AndHists() {
       delete hists_vector[i];
     }
   hists_vector.clear();
+}
 }

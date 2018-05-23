@@ -745,7 +745,7 @@
       <Item Name="Systematic_PU"          Value="central" />
       
       <!-- Channel? ELECTRON or MUON -->
-      <Item Name="analysis_channel" Value="ELECTRON"/>
+      <Item Name="analysis_channel" Value="Electron"/>
 
     </UserConfig>
   </Cycle>

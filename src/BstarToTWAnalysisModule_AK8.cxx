@@ -17,13 +17,13 @@
 #include "UHH2/HOTVR/include/HOTVRHists.h"
 #include "UHH2/HOTVR/include/HOTVRIds.h"
 
+#include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 #include "UHH2/BstarToTW/include/BstarToTWReconstruction.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
-#include "UHH2/BstarToTW/include/AndHists.h"
 
 /* ToDo:
  * - Add chi2 selection

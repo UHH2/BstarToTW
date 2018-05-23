@@ -116,6 +116,44 @@ bool ElectronTriggerWeights::process(Event & event){
 return true;
 }
 
+BackgroundShapeNormWeights::BackgroundShapeNormWeights(uhh2::Context &ctx, const TString &path, const std::string &hyps_name, const std::string &discriminator_name, const std::string &sys_direction) {
+  m_sys_direction = sys_direction;
+  h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
+  m_hyps_name = hyps_name;
+  m_discriminator_name = discriminator_name;
+  TFile* f =new TFile(path);
+  TH1F* ratio = (TH1F*)(f->Get("ratio"))->Clone("ratio");
+  TF1* linfit = ratio->GetFunction("linfit");
+  m_p0 = linfit->GetParameter(0);
+  m_p1 = linfit->GetParameter(1);
+}
+
+bool BackgroundShapeNormWeights::process(Event &event) {
+  
+  std::vector<BstarToTWHypothesis> hyps = event.get(h_hyps);
+  const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, m_discriminator_name );
+  if (!hyp)
+    {
+      cout << "WARNING: " + m_hyps_name  +": " + m_discriminator_name + " No hypothesis was valid!" << endl;
+      return false;
+    }
+  
+  double mbstar = 0;
+  if((hyp->get_topjet() + hyp->get_w()).isTimelike())
+    {    
+      mbstar = (hyp->get_topjet() + hyp->get_w()).M();
+    }
+  else
+    {
+      mbstar = sqrt(-(hyp->get_topjet()+hyp->get_w()).mass2());
+    }
+
+  double background_weight = m_p0 + m_p1 * mbstar;
+  if (background_weight < 0) background_weight = 0;
+  event.weight *= background_weight;
+
+  return true;
+}
 
 CMSTTScaleFactor::CMSTTScaleFactor(Context &ctx, string signal_name, TString sys_direction){
 
