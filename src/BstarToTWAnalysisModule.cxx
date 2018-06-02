@@ -393,8 +393,10 @@ namespace uhh2 {
 	    disc_0toptag->process(event);
 	    hist_sel_1btag0toptag->fill(event);
 	    if (sel_0toptag20chi2->passes(event))
-	      background_reweight->process(event);
-	      hist_sel_1btag0toptag20chi2->fill(event);
+	      {
+		background_reweight->process(event);
+		hist_sel_1btag0toptag20chi2->fill(event);
+	      }
 	  }
 
       }
