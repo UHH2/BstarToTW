@@ -98,6 +98,7 @@ namespace uhh2 {
     std::unique_ptr<AndHists> hist_sel_2btag1toptag20chi2, hist_sel_2btag0toptag20chi2;
     std::unique_ptr<AndHists> hist_sel_0btag1toptag20chi2, hist_sel_0btag0toptag20chi2;
 
+    std::unique_ptr<AndHists> hist_sel_1btag0toptag20chi2reweighted;
     // - btag - //
     std::unique_ptr<Selection> sel_1btag, sel_2btag, veto_btag;
 
@@ -274,6 +275,11 @@ namespace uhh2 {
     hist_sel_0btag0toptag20chi2.reset(new AndHists(ctx, "0btag0toptag20chi2"));
     hist_sel_0btag0toptag20chi2->add_hist(new BstarToTWHypothesisHists(ctx, "0btag0toptag20chi2_reco", "0TopTagReconstruction", "Chi2"));
 
+    // - Reweighted Hists for Background estimation -//
+    hist_sel_1btag0toptag20chi2reweighted.reset(new AndHists(ctx, "1btag0toptag20chi2reweighted"));
+    hist_sel_1btag0toptag20chi2reweighted->add_hist(new BstarToTWHypothesisHists(ctx, "1btag0toptag20chi2reweighted_reco", "0TopTagReconstruction", "Chi2"));
+    
+
     // - Chi2 - //
     sel_1toptag20chi2.reset(new Chi2Selection(ctx, "1TopTagReconstruction", chi2_max));
     sel_0toptag20chi2.reset(new Chi2Selection(ctx, "0TopTagReconstruction", chi2_max));
@@ -394,8 +400,9 @@ namespace uhh2 {
 	    hist_sel_1btag0toptag->fill(event);
 	    if (sel_0toptag20chi2->passes(event))
 	      {
-		background_reweight->process(event);
 		hist_sel_1btag0toptag20chi2->fill(event);
+		background_reweight->process(event);
+		hist_sel_1btag0toptag20chi2reweighted->fill(event);
 	      }
 	  }
 

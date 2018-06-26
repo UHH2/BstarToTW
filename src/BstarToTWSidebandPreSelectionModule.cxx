@@ -28,10 +28,10 @@ using namespace uhh2;
 
 namespace uhh2 {
 
-  class BstarToTWPreSelectionModule: public AnalysisModule {
+  class BstartToTWSidebandPreSelectionModule: public AnalysisModule {
   public:
     
-    explicit BstarToTWPreSelectionModule(Context & ctx);
+    explicit BstartToTWSidebandPreSelectionModule(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
@@ -48,7 +48,7 @@ namespace uhh2 {
     // Selections
     bool is_data;
     std::unique_ptr<Selection> sel_lumi;
-    std::unique_ptr<Selection> trig_IsoMu24, trig_IsoTkMu24;
+    std::unique_ptr<Selection> trig_Mu50, trig_TkMu50;
     std::unique_ptr<Selection> trig_Ele27, trig_Ele115;
     std::unique_ptr<Selection> veto_muo;
     std::unique_ptr<Selection> veto_ele;
@@ -70,7 +70,7 @@ namespace uhh2 {
 
   };
 
-  BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
+  BstartToTWSidebandPreSelectionModule::BstartToTWSidebandPreSelectionModule(Context & ctx) {
 
     is_mc = ctx.get("dataset_type") == "MC";
 
@@ -83,7 +83,8 @@ namespace uhh2 {
 
     double lep_eta_max = 2.4;
     double lepveto_pt_min  = 30.0;
-    double lep_pt_min  = 50.0; 
+    double ele_pt_min  = 50.0; 
+    double muo_pt_min  = 53.0; 
     double muo_iso_max = 0.15;
 
     double jet_pt_min  = 30.0;
@@ -94,11 +95,11 @@ namespace uhh2 {
 
 
     // IDs
-    MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
-    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
+    MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), VetoId<Muon>(MuonIso(muo_iso_max))); // muon veto ID
+    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), VetoId<Muon>(MuonIso(muo_iso_max))); // muon ID
 
-    ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
-    ElectronId id_ele_tight = AndId<Electron>(ElectronID_Spring16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+    ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto_noIso, VetoId<Electron>(ElectronID_Spring16_veto), PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+    ElectronId id_ele_tight = AndId<Electron>(ElectronID_Spring16_tight_noIso, VetoId<Electron>(ElectronID_Spring16_tight), PtEtaCut(ele_pt_min, lep_eta_max)); // electron ID
 
     JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT), PtEtaCut(jet_pt_min, jet_eta_max)); // jet ID
     TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe also deltaPhiCut ??
@@ -134,8 +135,8 @@ namespace uhh2 {
     sel_lumi.reset(new LumiSelection(ctx));
     // - Trigger
     // Muon
-    trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
-    trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
+    trig_Mu50.reset(new TriggerSelection("HLT_Mu50_v*"));
+    trig_TkMu50.reset(new TriggerSelection("HLT_TkMu50_v*"));
     // Electron
     trig_Ele27.reset(new TriggerSelection("HLT_Ele27_WPTight_Gsf_v*"));
     trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*")); // 105
@@ -175,7 +176,7 @@ namespace uhh2 {
     // hist_pileup.reset(new HOTVRPileUpHists(ctx, "HOTVR_PileUp"));
   }
 
-  bool BstarToTWPreSelectionModule::process(Event & event) {
+  bool BstartToTWSidebandPreSelectionModule::process(Event & event) {
 
     if(!is_mc)
       {
@@ -188,7 +189,14 @@ namespace uhh2 {
     // - Muon
     if (is_muo)
       {
-	if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
+	if (event.run<274954) 
+	  {
+	    if(!(trig_Mu50->passes(event))) return false;
+	  }
+	else 
+	  {
+	    if(!(trig_Mu50->passes(event) || trig_TkMu50->passes(event))) return false;
+	  }
 	hist_trigger->fill(event);
       }
     else if (is_ele)
@@ -250,6 +258,6 @@ namespace uhh2 {
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWPreSelectionModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(BstartToTWSidebandPreSelectionModule)
 
 }
