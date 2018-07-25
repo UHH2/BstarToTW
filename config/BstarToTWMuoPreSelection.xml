@@ -2,109 +2,81 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
 	  <!ENTITY TargetLumi      "35867">
-	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/PreSelection/Muon/35867fb_nominal/">
+	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v5/PreSelection/Muon/35867fb_nominal/">
 	  <!ENTITY b_Cacheable     "False">
 	  <!ENTITY NEVT            "-1">
 	  <!ENTITY PROOFdir        "/nfs/dust/cms/user/froehlia/.proof2">
 
 
 
-	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1200_LH_25ns.xml">
-	  <!ENTITY BstarToTW1400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1400_LH_25ns.xml">
-	  <!ENTITY BstarToTW1600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1600_LH_25ns.xml">
-	  <!ENTITY BstarToTW1800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1800_LH_25ns.xml">
-	  <!ENTITY BstarToTW2000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2000_LH_25ns.xml">
-	  <!ENTITY BstarToTW2200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2200_LH_25ns.xml">
-	  <!ENTITY BstarToTW2400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2400_LH_25ns.xml">
-	  <!ENTITY BstarToTW2600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2600_LH_25ns.xml">
-	  <!ENTITY BstarToTW2800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2800_LH_25ns.xml">
-	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-3000_LH_25ns.xml">
+	  <!-- <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1200_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW1400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1400_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW1600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1600_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW1800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1800_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2000_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2200_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2400_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2600_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2800_LH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-3000_LH_25ns.xml"> -->
 
-	  <!ENTITY BstarToTW1200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1200_RH_25ns.xml">
-	  <!ENTITY BstarToTW1400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1400_RH_25ns.xml">
-	  <!ENTITY BstarToTW1600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1600_RH_25ns.xml">
-	  <!ENTITY BstarToTW1800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1800_RH_25ns.xml">
-	  <!ENTITY BstarToTW2000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2000_RH_25ns.xml">
-	  <!ENTITY BstarToTW2200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2200_RH_25ns.xml">
-	  <!ENTITY BstarToTW2400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2400_RH_25ns.xml">
-	  <!ENTITY BstarToTW2600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2600_RH_25ns.xml">
-	  <!ENTITY BstarToTW2800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2800_RH_25ns.xml">
-	  <!ENTITY BstarToTW3000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-3000_RH_25ns.xml">
+	  <!-- <!ENTITY BstarToTW1200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1200_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW1400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1400_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW1600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1600_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW1800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-1800_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2000_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2200_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2400_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2600_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW2800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2800_RH_25ns.xml"> -->
+	  <!-- <!ENTITY BstarToTW3000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-3000_RH_25ns.xml"> -->
 
-	  <!-- <!ENTITY BprimeB-700_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-700_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-800_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-800_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-900_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-900_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1000_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1000_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1100_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1100_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1200_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1200_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1300_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1300_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1400_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1400_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1500_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1500_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1600_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1600_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1700_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1700_LH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1800_LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1800_LH.xml"> -->
+	  <!ENTITY TTbar SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_TT_TuneCUETP8M2T4_both.xml">
 
-	  <!-- <!ENTITY BprimeB-700_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-700_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-800_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-800_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-900_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-900_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1000_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1000_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1100_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1100_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1200_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1200_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1300_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1300_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1400_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1400_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1500_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1500_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1600_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1600_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1700_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1700_RH.xml"> -->
-	  <!-- <!ENTITY BprimeB-1800_RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bprime/BprimeBToTW_M-1800_RH.xml"> -->
+	  <!ENTITY WJetsPT100to250 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WJetsToLNu_Pt-100To250.xml">
+	  <!ENTITY WJetsPT250to400 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WJetsToLNu_Pt-250To400.xml">
+	  <!ENTITY WJetsPT400to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WJetsToLNu_Pt-400To600.xml">
+	  <!ENTITY WJetsPT600toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WJetsToLNu_Pt-600ToInf.xml">
 
+	  <!ENTITY DYJetsM50_HT70to100 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-70to100.xml">
+	  <!ENTITY DYJetsM50_HT100to200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-100to200.xml">
+	  <!ENTITY DYJetsM50_HT200to400 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-200to400.xml">
+	  <!ENTITY DYJetsM50_HT400to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-400to600.xml">
+	  <!ENTITY DYJetsM50_HT600to800 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-600to800.xml">
+	  <!ENTITY DYJetsM50_HT800to1200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-800to1200.xml">
+	  <!ENTITY DYJetsM50_HT1200to2500 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-1200to2500.xml">
+	  <!ENTITY DYJetsM50_HT2500toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-2500toInf.xml">
 
-	  <!ENTITY TTbar SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_TT_TuneCUETP8M2T4_both.xml">
+	  <!ENTITY SingleTop_TTbar_sch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/ST_s-channel_4f_leptonDecays_13TeV.xml">
+	  <!ENTITY SingleTop_T_tch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_t-channel_top_4f_inclusiveDecays.xml">
+	  <!ENTITY SingleTop_Tbar_tch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_t-channel_antitop_4f_inclusiveDecays.xml">
+	  <!ENTITY SingleTop_T_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/ST_tW_top_5f_inclusiveDecays_13TeV.xml">
+	  <!ENTITY SingleTop_Tbar_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/ST_tW_antitop_5f_inclusiveDecays_13TeV.xml">
 
-	  <!ENTITY WJetsPT100to250 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WJetsToLNu_Pt-100To250.xml">
-	  <!ENTITY WJetsPT250to400 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WJetsToLNu_Pt-250To400.xml">
-	  <!ENTITY WJetsPT400to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WJetsToLNu_Pt-400To600.xml">
-	  <!ENTITY WJetsPT600toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WJetsToLNu_Pt-600ToInf.xml">
+	  <!ENTITY WW SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WW.xml">
+	  <!ENTITY WZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WZ.xml">
+	  <!ENTITY ZZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ZZ.xml">
 
-	  <!ENTITY DYJetsM50_HT70to100 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-70to100.xml">
-	  <!ENTITY DYJetsM50_HT100to200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-100to200.xml">
-	  <!ENTITY DYJetsM50_HT200to400 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-200to400.xml">
-	  <!ENTITY DYJetsM50_HT400to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-400to600.xml">
-	  <!ENTITY DYJetsM50_HT600to800 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-600to800.xml">
-	  <!ENTITY DYJetsM50_HT800to1200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-800to1200.xml">
-	  <!ENTITY DYJetsM50_HT1200to2500 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-1200to2500.xml">
-	  <!ENTITY DYJetsM50_HT2500toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_DYJetsToLL_M-50_HT-2500toInf.xml">
+	  <!ENTITY QCDPT15to20 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-15to20_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT20to30 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-20to30_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT30to50 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-30to50_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT50to80 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-50to80_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT80to120 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-80to120_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT120to170 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-120to170_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT170to300 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-170to300_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT300to470 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-300to470_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT470to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-470to600_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT600to800 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-600to800_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT800to1000 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-800to1000_MuEnrichedPt5.xml">
+	  <!ENTITY QCDPT1000toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_QCD_Pt-1000toInf_MuEnrichedPt5.xml">
 
-	  <!ENTITY SingleTop_TTbar_sch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/ST_s-channel_4f_leptonDecays_13TeV.xml">
-	  <!ENTITY SingleTop_T_tch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_ST_t-channel_top_4f_inclusiveDecays.xml">
-	  <!ENTITY SingleTop_Tbar_tch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_ST_t-channel_antitop_4f_inclusiveDecays.xml">
-	  <!ENTITY SingleTop_T_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/ST_tW_top_5f_inclusiveDecays_13TeV.xml">
-	  <!ENTITY SingleTop_Tbar_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/ST_tW_antitop_5f_inclusiveDecays_13TeV.xml">
-
-	  <!ENTITY WW SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WW.xml">
-	  <!ENTITY WZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_WZ.xml">
-	  <!ENTITY ZZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_ZZ.xml">
-
-	  <!ENTITY QCDPT15to20 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-15to20_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT20to30 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-20to30_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT30to50 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-30to50_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT50to80 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-50to80_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT80to120 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-80to120_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT120to170 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-120to170_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT170to300 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-170to300_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT300to470 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-300to470_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT470to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-470to600_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT600to800 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-600to800_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT800to1000 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-800to1000_MuEnrichedPt5.xml">
-	  <!ENTITY QCDPT1000toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/MC_QCD_Pt-1000toInf_MuEnrichedPt5.xml">
-
-	  <!ENTITY DATA_B_v2 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/SingleMuonB.xml">
-	  <!ENTITY DATA_B_v3 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/SingleMuonB_v3.xml">
-	  <!ENTITY DATA_C SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/SingleMuonC.xml">
-	  <!ENTITY DATA_D SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/SingleMuonD.xml">
-	  <!ENTITY DATA_E SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/DATA_SingleMuon_Run2016E_23Sep.xml">
-	  <!ENTITY DATA_F SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/DATA_SingleMuon_Run2016F_23Sep.xml">
-	  <!ENTITY DATA_G SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/DATA_SingleMuon_Run2016G_23Sep.xml">
-	  <!ENTITY DATA_H SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/DATA_SingleMuon_Run2016H_PromptReco.xml">
+	  <!ENTITY DATA_B SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016B_03Feb.xml">
+	  <!ENTITY DATA_C SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016C_03Feb.xml">
+	  <!ENTITY DATA_D SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016D_03Feb.xml">
+	  <!ENTITY DATA_E SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016E_03Feb.xml">
+	  <!ENTITY DATA_F SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016F_03Feb.xml">
+	  <!ENTITY DATA_G SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016G_03Feb.xml">
+	  <!ENTITY DATA_H SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/DATA_SingleMuon_Run2016H_03Feb.xml">
 
 ]>
 
@@ -660,7 +632,7 @@
             <Item Name="JetCollection" Value="slimmedJets" />
             <Item Name="METName" Value="slimmedMETs" />
             <Item Name="GenJetCollection" Value="slimmedGenJets" /> 
-	    <Item Name="TopJetCollection" Value="HOTVRTopJets" />  
+	    <Item Name="TopJetCollection" Value="hotvrPuppi" />  
 	    <Item Name="GenTopJetCollection" Value="genHOTVRTopJets" />  
 	    <Item Name="GenParticleCollection" Value="GenParticles" />
 	    <Item Name="GenInfoName" Value="genInfo" />
