@@ -22,7 +22,6 @@
 #include "UHH2/HOTVR/include/HOTVRHists.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrectionHists.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrector.h"
-
 using namespace std;
 using namespace uhh2;
 
@@ -72,12 +71,12 @@ namespace uhh2 {
 
   BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
 
+    // --- Config ---
     is_mc = ctx.get("dataset_type") == "MC";
-
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
     is_muo = ctx.get("analysis_channel") == "MUON";
 
-    // Kinematic Variables
+    // -- Kinematic Variables --
     double met_min = 50.;
     double st_min = 400.;
 
@@ -93,7 +92,7 @@ namespace uhh2 {
     double top_eta_max = 2.5;
 
 
-    // IDs
+    // --- IDs ---
     MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
     MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
 
@@ -103,7 +102,7 @@ namespace uhh2 {
     JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT), PtEtaCut(jet_pt_min, jet_eta_max)); // jet ID
     TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe also deltaPhiCut ??
 
-    // Additional Modules
+    // --- Additional Modules ---
     common.reset(new CommonModules());
     common->switch_jetlepcleaner(true);
     common->set_muon_id(id_muo_veto);
@@ -113,15 +112,14 @@ namespace uhh2 {
 
     if(is_mc)
       {
-    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L23_AK4PFchs_MC));
+    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
       }
     else
       { 
-    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L23_AK4PFchs_DATA));
-    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L23_AK4PFchs_DATA));
-    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L23_AK4PFchs_DATA));
-    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L23_AK4PFchs_DATA));
-
+    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
+    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
+    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
+    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
       }
 
     // Cleaner
@@ -129,10 +127,10 @@ namespace uhh2 {
     cl_ele.reset(new ElectronCleaner(id_ele_tight));
     cl_topjet.reset(new TopJetCleaner(ctx, id_topjet));
 
-    // --- Selections
-    // - Lumi
+    // --- Selections ---
+    // - Lumi -
     sel_lumi.reset(new LumiSelection(ctx));
-    // - Trigger
+    // - Trigger -
     // Muon
     trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
     trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
@@ -152,24 +150,24 @@ namespace uhh2 {
     // - TopJet
     sel_ntop.reset(new NTopJetSelection(1, -1));
 
-    // --- Hists
-    // - Initial
+    // --- Hists ---
+    // - Initial -
     hist_nocuts.reset(new AndHists(ctx, "NoCuts"));
-    // - Trigger
+    // - Trigger -
     hist_trigger.reset(new AndHists(ctx, "Trigger"));
-    // - Cleaning
+    // - Cleaning -
     hist_cleaner.reset(new AndHists(ctx, "Cleaning"));
-    // - Lepton
+    // - Lepton -
     hist_1lep.reset(new AndHists(ctx, "1LepCut"));
-    // - MET
+    // - MET -
     hist_met.reset(new AndHists(ctx, "50METCut"));
-    // - ST
+    // - ST -
     hist_st.reset(new AndHists(ctx, "350STCut"));
-    // - HOTVR JEC
+    // - HOTVR JEC -
     hist_subj_jec.reset(new AndHists(ctx, "Subjet_Corrections"));
-    // - TopJet Cleaning
+    // - TopJet Cleaning -
     hist_topcleaner.reset(new AndHists(ctx, "Topjet_Cleaning"));
-    // - TopJet
+    // - TopJet -
     hist_ntop.reset(new AndHists(ctx, "1TopJetCut"));
 
     // hist_pileup.reset(new HOTVRPileUpHists(ctx, "HOTVR_PileUp"));
@@ -184,18 +182,6 @@ namespace uhh2 {
 
     hist_nocuts->fill(event);
 
-    // --- Trigger
-    // - Muon
-    if (is_muo)
-      {
-	if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
-	hist_trigger->fill(event);
-      }
-    else if (is_ele)
-      {
-	if(!(trig_Ele27->passes(event) || trig_Ele115->passes(event))) return false;
-	hist_trigger->fill(event);
-      }
     // --- Cleaner
     if(!common->process(event)) return false;
     hist_cleaner->fill(event);
@@ -217,6 +203,20 @@ namespace uhh2 {
 	if(!sel_1ele->passes(event)) return false;
 	hist_1lep->fill(event);
       }
+    
+    // --- Trigger
+    // - Muon
+    if (is_muo)
+      {
+	if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
+	hist_trigger->fill(event);
+      }
+    else if (is_ele)
+      {
+	if(!(trig_Ele27->passes(event) || trig_Ele115->passes(event))) return false;
+	hist_trigger->fill(event);
+      }
+    
     // --- MET selection
     if(!sel_met->passes(event)) return false;
     hist_met->fill(event);

@@ -31,7 +31,7 @@
 	  <!-- <!ENTITY BstarToTW2800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-2800_RH_25ns.xml"> -->
 	  <!-- <!ENTITY BstarToTW3000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v3/Bstar/MC_BstarToTW_M-3000_RH_25ns.xml"> -->
 
-	  <!ENTITY TTbar SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_TT_TuneCUETP8M2T4_both.xml">
+	  <!ENTITY TTbar SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_TT_TuneCUETP8M2T4.xml">
 
 	  <!ENTITY WJetsPT100to250 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WJetsToLNu_Pt-100To250.xml">
 	  <!ENTITY WJetsPT250to400 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WJetsToLNu_Pt-250To400.xml">
@@ -47,11 +47,11 @@
 	  <!ENTITY DYJetsM50_HT1200to2500 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-1200to2500.xml">
 	  <!ENTITY DYJetsM50_HT2500toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_DYJetsToLL_M-50_HT-2500toInf.xml">
 
-	  <!ENTITY SingleTop_TTbar_sch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/ST_s-channel_4f_leptonDecays_13TeV.xml">
+	  <!ENTITY SingleTop_TTbar_sch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_s-channel_4f_leptonDecays.xml">
 	  <!ENTITY SingleTop_T_tch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_t-channel_top_4f_inclusiveDecays.xml">
 	  <!ENTITY SingleTop_Tbar_tch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_t-channel_antitop_4f_inclusiveDecays.xml">
-	  <!ENTITY SingleTop_T_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/ST_tW_top_5f_inclusiveDecays_13TeV.xml">
-	  <!ENTITY SingleTop_Tbar_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/ST_tW_antitop_5f_inclusiveDecays_13TeV.xml">
+	  <!ENTITY SingleTop_T_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_tW_top_5f_NoFullyHadronicDecays.xml">
+	  <!ENTITY SingleTop_Tbar_tWch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_ST_tW_antitop_5f_NoFullyHadronicDecays.xml">
 
 	  <!ENTITY WW SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WW.xml">
 	  <!ENTITY WZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/MC_WZ.xml">
@@ -95,17 +95,12 @@
 <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&PRESELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
   
 
-  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B_v2" Cacheable="&b_Cacheable;">
-    &DATA_B_v2;
+  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B" Cacheable="&b_Cacheable;">
+    &DATA_B;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
-  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B_v3" Cacheable="&b_Cacheable;">
-    &DATA_B_v3;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
 
   <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_C" Cacheable="&b_Cacheable;">
     &DATA_C;
