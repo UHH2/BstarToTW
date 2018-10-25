@@ -77,6 +77,24 @@ bool Chi2Selection::passes(const Event &event) {
   return false;
 }
 
+MassCutSelection::MassCutSelection(double m_min_, double m_max_):
+  m_min(m_min_),
+  m_max(m_max_) {}
+
+bool MassCutSelection::passes(const Event &event) {
+  double m_inv = -1;
+  if (event.muons->size() >= 2)
+    {
+      vector<Muon> muons = *event.muons;
+      m_inv = (muons.at(0).v4() + muons.at(1).v4()).M();
+    }
+  if (event.electrons->size() >= 2)
+    {
+      vector<Electron> electrons = *event.electrons;
+      m_inv = (electrons.at(0).v4() + electrons.at(1).v4()).M();
+    }
+  return (m_min < m_inv && m_inv < m_max);
+}
 
 NGenJetSelection::NGenJetSelection(unsigned int n_min_, unsigned int n_max_):
   n_min(n_min_),

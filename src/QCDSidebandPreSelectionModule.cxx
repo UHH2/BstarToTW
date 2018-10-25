@@ -28,10 +28,10 @@ using namespace uhh2;
 
 namespace uhh2 {
 
-  class BstartToTWSidebandPreSelectionModule: public AnalysisModule {
+  class QCDSidebandPreSelectionModule: public AnalysisModule {
   public:
     
-    explicit BstartToTWSidebandPreSelectionModule(Context & ctx);
+    explicit QCDSidebandPreSelectionModule(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
@@ -70,7 +70,7 @@ namespace uhh2 {
 
   };
 
-  BstartToTWSidebandPreSelectionModule::BstartToTWSidebandPreSelectionModule(Context & ctx) {
+  QCDSidebandPreSelectionModule::QCDSidebandPreSelectionModule(Context & ctx) {
 
     is_mc = ctx.get("dataset_type") == "MC";
 
@@ -83,7 +83,7 @@ namespace uhh2 {
 
     double lep_eta_max = 2.4;
     double lepveto_pt_min  = 30.0;
-    double ele_pt_min  = 50.0; 
+    double ele_pt_min  = 53.0; 
     double muo_pt_min  = 53.0; 
     double muo_iso_max = 0.15;
 
@@ -110,6 +110,8 @@ namespace uhh2 {
     common->set_muon_id(id_muo_veto);
     common->set_electron_id(id_ele_veto);
     common->set_jet_id(id_jet);
+    common->switch_jetPtSorter();
+    common->switch_metcorrection();
     common->init(ctx);
 
     if(is_mc)
@@ -122,7 +124,6 @@ namespace uhh2 {
     	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L23_AK4PFchs_DATA));
     	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L23_AK4PFchs_DATA));
     	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L23_AK4PFchs_DATA));
-
       }
 
     // Cleaner
@@ -139,7 +140,7 @@ namespace uhh2 {
     trig_TkMu50.reset(new TriggerSelection("HLT_TkMu50_v*"));
     // Electron
     trig_Ele27.reset(new TriggerSelection("HLT_Ele27_WPTight_Gsf_v*"));
-    trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*")); // 105
+    trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*"));
     // - Lepton vetos
     veto_muo.reset(new NMuonSelection(0,0));
     veto_ele.reset(new NElectronSelection(0,0));
@@ -165,7 +166,7 @@ namespace uhh2 {
     // - MET
     hist_met.reset(new AndHists(ctx, "50METCut"));
     // - ST
-    hist_st.reset(new AndHists(ctx, "350STCut"));
+    hist_st.reset(new AndHists(ctx, "400STCut"));
     // - HOTVR JEC
     hist_subj_jec.reset(new AndHists(ctx, "Subjet_Corrections"));
     // - TopJet Cleaning
@@ -176,7 +177,7 @@ namespace uhh2 {
     // hist_pileup.reset(new HOTVRPileUpHists(ctx, "HOTVR_PileUp"));
   }
 
-  bool BstartToTWSidebandPreSelectionModule::process(Event & event) {
+  bool QCDSidebandPreSelectionModule::process(Event & event) {
 
     if(!is_mc)
       {
@@ -258,6 +259,6 @@ namespace uhh2 {
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(BstartToTWSidebandPreSelectionModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(QCDSidebandPreSelectionModule)
 
 }

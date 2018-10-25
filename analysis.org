@@ -1,0 +1,74 @@
+* Tasks
+** TODO run DY PreSelection for Muon
+** TODO run DY PreSelection for Electron
+** TODO run QCD PreSelection for Muon
+** TODO run QCD PreSelection for Electron
+** TODO run DY Analysis for Muon
+** TODO run DY Analysis for Electron
+** TODO run QCD Analysis for Muon
+** TODO run QCD Analysis for Electron
+
+
+
+* Object Definition
+** TODO figure out if I should apply isolation on veto level (i.e. at object definition) 
+** Objects
+- electron: veto iso ID, pt > 30GeV, |eta| < 2.5
+- muon: loose ID, pt > 30GeV, |eta| < 2.5
+- jet: tight ID, pt > 30GeV, |eta| < 2.5
+- HOTVR jet: pt > 200GeV, |eta| < 2.4
+
+* Muon Channel
+** PreSelection
+*** Cuts
+
+- isoMu24 || isoTkMu24 Triggers
+- 1 tight-ID muon: iso < 0.15, pt > 53GeV
+- additional lepton veto:
+- MET > 50GeV
+- ST > 400GeV
+- 1+ HOTVR Jet
+
+** Reconstruction
+
+*** W reconstruction
+
+Combine muon four-vector and MET assuming W is produced on-shell. If
+solution is complex, only real part is considered.
+
+*** top reconstruction
+
+Use HOTVR jet as top hypothesis. Additional top tagging requirements
+are imposed.
+
+** Signal Regions
+
+All signal regions require exactly one HOTVR jet fulfilling the top
+tagging criteria. Two different signal regions are then defined
+according to the number of ak4 jets fulfilling the loose b-tag
+criterion.
+1. (main signal region) 1 b-tagged jets
+2. (ttbar enriched region) 2+ b-tagged jets
+
+** Background Estimation
+
+The main backgrounds of this analysis are
+1. ttbar
+2. W+Jet
+3. single t
+
+Monte-Carlo simulations are used to describe the ttbar background. The
+shape and normalization are simultaneously fitted in both signar
+regions, to achieve better constrains on the background description.
+
+The W+Jets background is extrapolated from a control region, where no
+top-tagged HOTVR and no b-tagged ak4 jets were found. The background
+is extrapolated using a transfer function, that is obtained using a
+fit to the ration between Monte-Carlo prediction for the W+Jets
+background in the control region to the first signal region.
+
+* Electron Channel
+** PreSelection
+** Reconstruction
+** Signal Regions
+** Background Estimation

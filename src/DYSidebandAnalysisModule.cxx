@@ -40,10 +40,10 @@ namespace uhh2 {
    * - Try using BDT instead of chi2 method after reconstruction
    */
 
-  class BstarToTWAnalysisModule: public AnalysisModule {
+  class DYSidebandAnalysisModule: public AnalysisModule {
   public:
     
-    explicit BstarToTWAnalysisModule(Context & ctx);
+    explicit DYSidebandAnalysisModule(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
@@ -55,8 +55,7 @@ namespace uhh2 {
     // Common Modules
     std::unique_ptr<CommonModules> common;
     std::unique_ptr<AnalysisModule> cl_topjet;
-    std::unique_ptr<AnalysisModule> signal_background_reweight, btag_background_reweight;
-    
+    std::unique_ptr<AnalysisModule> background_reweight;
     // Bstar Reconsturction
     std::unique_ptr<AnalysisModule> BstarToTWgenprod;
     std::unique_ptr<AnalysisModule> primary_lep;
@@ -115,12 +114,12 @@ namespace uhh2 {
 
   };
 
-  BstarToTWAnalysisModule::BstarToTWAnalysisModule(Context & ctx) {
+  DYSidebandAnalysisModule::DYSidebandAnalysisModule(Context & ctx) {
 
     // --- Flags --- //
     dataset_name = ctx.get("dataset_version");
-    is_ele = ctx.get("analysis_channel") == "ELECTRON";
-    is_muo = ctx.get("analysis_channel") == "MUON";
+    is_ele = ctx.get("analysis_channel") == "Electron";
+    is_muo = ctx.get("analysis_channel") == "Muon";
 
 
     // --- Selection Variables --- //
@@ -182,8 +181,8 @@ namespace uhh2 {
 	string path_sf_muo_trigger = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/MuonTrigger_EfficienciesAndSF_average_RunBtoH.root";
 	string path_sf_muo_trk     = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/Tracking_EfficienciesAndSF_BCDEFGH.root";
 
-	sf_muo_id.reset(new MCMuonScaleFactor(ctx, path_sf_muo_id, "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta", 1, "tightID", true, sys_muo_id));
-	sf_muo_iso.reset(new MCMuonScaleFactor(ctx, path_sf_muo_iso, "TightISO_TightID_pt_eta", 1, "iso", true, sys_muo_iso));
+	// sf_muo_id.reset(new MCMuonScaleFactor(ctx, path_sf_muo_id, "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta", 1, "tightID", true, sys_muo_id));
+	// sf_muo_iso.reset(new MCMuonScaleFactor(ctx, path_sf_muo_iso, "TightISO_TightID_pt_eta", 1, "iso", true, sys_muo_iso));
 	sf_muo_trigger.reset(new MCMuonScaleFactor(ctx, path_sf_muo_trigger, "IsoMu24_OR_IsoTkMu24_PtEtaBins", 0.5, "trigger", true, sys_muo_trigger));
 	sf_muo_trk.reset(new MCMuonTrkScaleFactor(ctx, path_sf_muo_trk, 1, "track", sys_muo_trk, "muons"));
       }
@@ -227,14 +226,9 @@ namespace uhh2 {
     // hist_reco_cr.reset(new BstarToTWHypothesisHists(ctx, "CRReco", "CR_Reconstruction", "Chi2"));
     hist_bstar_matchreco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWMatchedReco", "1TopTagReconstruction", "Match"));
 
-    string sys_signal_background_reweight = "";//ctx.get("Systematic_BG");
-    string path_signal_background_reweight = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_"+ctx.get("analysis_channel")+".root";
-    signal_background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_signal_background_reweight,"0TopTagReconstruction","Chi2",sys_signal_background_reweight));
-
-    string sys_btag_background_reweight = "";//ctx.get("Systematic_BG");
-    string path_btag_background_reweight = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_"+ctx.get("analysis_channel")+"_bcr.root";
-    btag_background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_btag_background_reweight,"0TopTagReconstruction","Chi2",sys_btag_background_reweight));
-
+    string sys_background_reweight = "";//ctx.get("Systematic_BG");
+    string path_background_reweight = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_"+ctx.get("analysis_channel")+".root";
+    background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_background_reweight,"0TopTagReconstruction","Chi2",sys_background_reweight));
 
     // --- Selections and Histogramms --- //
     hist_presel.reset(new AndHists(ctx, "PreSel"));
@@ -294,7 +288,7 @@ namespace uhh2 {
 
   }
 
-  bool BstarToTWAnalysisModule::process(Event & event) {
+  bool DYSidebandAnalysisModule::process(Event & event) {
     // -- after PreSel -- //
     common->process(event);
     primary_lep->process(event);
@@ -307,8 +301,8 @@ namespace uhh2 {
     // apply scale factors for muons and trigger
     if (is_muo)
       {
-	sf_muo_id->process(event);
-	sf_muo_iso->process(event);
+	// sf_muo_id->process(event);
+	// sf_muo_iso->process(event);
 	sf_muo_trigger->process(event);
 	sf_muo_trk->process(event);
       }
@@ -372,8 +366,7 @@ namespace uhh2 {
 	    if (sel_0toptag20chi2->passes(event))
 	      {	      
 		hist_sel_0btag0toptag20chi2->fill(event);
-		// signal_background_reweight->process(event);
-		btag_background_reweight->process(event); //rework this!!
+		background_reweight->process(event);
 		hist_sel_0btag0toptag20chi2reweighted->fill(event);
 	      }
 	  }
@@ -423,6 +416,6 @@ namespace uhh2 {
     return true;
   }
 
-  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWAnalysisModule)
+  UHH2_REGISTER_ANALYSIS_MODULE(DYSidebandAnalysisModule)
 
 }

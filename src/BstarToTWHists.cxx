@@ -134,6 +134,9 @@ void BstarToTWHists::fill(const Event & event){
       LumiBlock_vs_NPV->Fill(ibin*lumi_per_bin, event.pvs->size(), weight);
     }
   rho->Fill(event.rho, weight);
+
 }
 
 BstarToTWHists::~BstarToTWHists(){}
+
+

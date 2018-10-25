@@ -58,13 +58,13 @@ BstarToTWChi2Discriminator::BstarToTWChi2Discriminator(Context & ctx, const std:
   // m_deltaPt_sigma = 0.081;
 
   m_deltaPhi_mean = M_PI;
-  m_deltaPhi_sigma = 0.0589;
+  m_deltaPhi_sigma = 0.05458;
 
   // m_deltaPt_mean = -19.36;
   // m_deltaPt_sigma = 53.89;
 
-  m_deltaPt_mean = -0.0267;
-  m_deltaPt_sigma = 0.0611;
+  m_deltaPt_mean = -0.002863;
+  m_deltaPt_sigma = 0.06937;
 
 }
 

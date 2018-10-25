@@ -55,6 +55,14 @@ namespace uhh2 {
 
   };
 
+  class MassCutSelection: public uhh2::Selection {
+  public:
+    MassCutSelection(double m_min_, double m_max_);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_min, m_max;
+  };
+
 
   class NGenJetSelection: public uhh2::Selection {
   public:

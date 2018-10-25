@@ -22,15 +22,16 @@
 #include "UHH2/HOTVR/include/HOTVRHists.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrectionHists.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrector.h"
+
 using namespace std;
 using namespace uhh2;
 
 namespace uhh2 {
 
-  class BstarToTWPreSelectionModule: public AnalysisModule {
+  class DYSidebandPreSelectionModule: public AnalysisModule {
   public:
     
-    explicit BstarToTWPreSelectionModule(Context & ctx);
+    explicit DYSidebandPreSelectionModule(Context & ctx);
     virtual bool process(Event & event) override;
 
   private:  
@@ -47,18 +48,18 @@ namespace uhh2 {
     // Selections
     bool is_data;
     std::unique_ptr<Selection> sel_lumi;
-    std::unique_ptr<Selection> trig_IsoMu24, trig_IsoTkMu24;
+    std::unique_ptr<Selection>  trig_IsoMu24, trig_IsoTkMu24;
     std::unique_ptr<Selection> trig_Ele27, trig_Ele115;
     std::unique_ptr<Selection> veto_muo;
     std::unique_ptr<Selection> veto_ele;
-    std::unique_ptr<Selection> sel_1muo;
-    std::unique_ptr<Selection> sel_1ele;
-    std::unique_ptr<Selection> sel_met;
+    std::unique_ptr<Selection> sel_2muo;
+    std::unique_ptr<Selection> sel_2ele;
+    std::unique_ptr<Selection> sel_masscut;
     std::unique_ptr<Selection> sel_st;
     std::unique_ptr<Selection> sel_ntop;
 
     // Hists
-    std::unique_ptr<Hists> hist_nocuts, hist_trigger, hist_cleaner, hist_1lep, hist_met, hist_st, hist_subj_jec, hist_topcleaner, hist_ntop;
+    std::unique_ptr<Hists> hist_nocuts, hist_trigger, hist_cleaner, hist_2lep, hist_masscut, hist_st, hist_subj_jec, hist_topcleaner, hist_ntop;
     std::unique_ptr<Hists> hist_pileup;
 
     bool is_mc, is_ele, is_muo;
@@ -69,20 +70,23 @@ namespace uhh2 {
 
   };
 
-  BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
+  DYSidebandPreSelectionModule::DYSidebandPreSelectionModule(Context & ctx) {
 
-    // --- Config ---
     is_mc = ctx.get("dataset_type") == "MC";
+
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
     is_muo = ctx.get("analysis_channel") == "MUON";
 
-    // -- Kinematic Variables --
-    double met_min = 50.;
+    // Kinematic Variables
+    double mass_min = 70.;
+    double mass_max = 110.;
+    
     double st_min = 400.;
 
     double lep_eta_max = 2.4;
     double lepveto_pt_min  = 30.0;
-    double lep_pt_min  = 50.0; 
+    double ele_pt_min  = 53.0; 
+    double muo_pt_min  = 53.0; 
     double muo_iso_max = 0.15;
 
     double jet_pt_min  = 30.0;
@@ -92,17 +96,17 @@ namespace uhh2 {
     double top_eta_max = 2.5;
 
 
-    // --- IDs ---
+    // IDs
     MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
-    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
+    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
 
     ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
-    ElectronId id_ele_tight = AndId<Electron>(ElectronID_Spring16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+    ElectronId id_ele_tight = AndId<Electron>(ElectronID_Spring16_tight, PtEtaCut(ele_pt_min, lep_eta_max)); // electron ID
 
     JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT), PtEtaCut(jet_pt_min, jet_eta_max)); // jet ID
-    TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe also deltaPhiCut ??
-
-    // --- Additional Modules ---
+    TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe also deltaPhiCut ??  
+   
+    // Additional Modules
     common.reset(new CommonModules());
     common->switch_jetlepcleaner(true);
     common->set_muon_id(id_muo_veto);
@@ -114,68 +118,66 @@ namespace uhh2 {
 
     if(is_mc)
       {
-    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
+    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L23_AK4PFchs_MC));
       }
     else
       { 
-    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
-    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
-    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
-    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
+    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L23_AK4PFchs_DATA));
+    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L23_AK4PFchs_DATA));
+    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L23_AK4PFchs_DATA));
+    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L23_AK4PFchs_DATA));
       }
 
     // Cleaner
-    cl_muo.reset(new MuonCleaner(id_muo_tight));
-    cl_ele.reset(new ElectronCleaner(id_ele_tight));
     cl_topjet.reset(new TopJetCleaner(ctx, id_topjet));
 
-    // --- Selections ---
-    // - Lumi -
+    // --- Selections
+    // - Lumi
     sel_lumi.reset(new LumiSelection(ctx));
-    // - Trigger -
+    // - Trigger
     // Muon
     trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
     trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
     // Electron
     trig_Ele27.reset(new TriggerSelection("HLT_Ele27_WPTight_Gsf_v*"));
-    trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*")); // 105
+    trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*"));
     // - Lepton vetos
     veto_muo.reset(new NMuonSelection(0,0));
     veto_ele.reset(new NElectronSelection(0,0));
     // - Lepton
-    sel_1muo.reset(new NMuonSelection(1,1));
-    sel_1ele.reset(new NElectronSelection(1,1));
+    sel_2muo.reset(new NMuonSelection(2,2));
+    sel_2ele.reset(new NElectronSelection(2,2));
     // - MET
-    sel_met.reset(new METSelection(met_min));
+    sel_masscut.reset(new MassCutSelection(mass_min, mass_max));
     // - ST
     sel_st.reset(new STSelection(st_min));
     // - TopJet
     sel_ntop.reset(new NTopJetSelection(1, -1));
 
-    // --- Hists ---
-    // - Initial -
+    // --- Hists
+    // - Initial
     hist_nocuts.reset(new AndHists(ctx, "NoCuts"));
-    // - Trigger -
+    // - Trigger
     hist_trigger.reset(new AndHists(ctx, "Trigger"));
-    // - Cleaning -
+    // - Cleaning
     hist_cleaner.reset(new AndHists(ctx, "Cleaning"));
-    // - Lepton -
-    hist_1lep.reset(new AndHists(ctx, "1LepCut"));
-    // - MET -
-    hist_met.reset(new AndHists(ctx, "50METCut"));
-    // - ST -
+    // - Lepton
+    hist_2lep.reset(new AndHists(ctx, "2LepCut"));
+    // - MET
+    hist_masscut.reset(new AndHists(ctx, "ZMassCut"));
+    // - ST
     hist_st.reset(new AndHists(ctx, "400STCut"));
-    // - HOTVR JEC -
+    // - HOTVR JEC
     hist_subj_jec.reset(new AndHists(ctx, "Subjet_Corrections"));
-    // - TopJet Cleaning -
+    // - TopJet Cleaning
     hist_topcleaner.reset(new AndHists(ctx, "Topjet_Cleaning"));
-    // - TopJet -
+    // - TopJet
     hist_ntop.reset(new AndHists(ctx, "1TopJetCut"));
 
     // hist_pileup.reset(new HOTVRPileUpHists(ctx, "HOTVR_PileUp"));
   }
 
-  bool BstarToTWPreSelectionModule::process(Event & event) {
+  bool DYSidebandPreSelectionModule::process(Event & event) {
 
     if(!is_mc)
       {
@@ -184,28 +186,6 @@ namespace uhh2 {
 
     hist_nocuts->fill(event);
 
-    // --- Cleaner
-    if(!common->process(event)) return false;
-    hist_cleaner->fill(event);
-
-    // --- Lepton selection & additional lepton veto
-    // - Muon Channel
-    if (is_muo)
-      {
-	if(!(sel_1muo->passes(event) && veto_ele->passes(event))) return false;
-	cl_muo->process(event);
-	if(!sel_1muo->passes(event)) return false;
-	hist_1lep->fill(event);
-      }
-    // - Electron Channel
-    else if (is_ele)
-      {
-	if(!(sel_1ele->passes(event) && veto_muo->passes(event))) return false;
-	cl_ele->process(event);
-	if(!sel_1ele->passes(event)) return false;
-	hist_1lep->fill(event);
-      }
-    
     // --- Trigger
     // - Muon
     if (is_muo)
@@ -219,10 +199,31 @@ namespace uhh2 {
 	if(!(trig_Ele27->passes(event) || trig_Ele115->passes(event))) return false;
 	hist_trigger->fill(event);
       }
-    
-    // --- MET selection
-    if(!sel_met->passes(event)) return false;
-    hist_met->fill(event);
+
+    // --- Cleaner
+    if(!common->process(event)) return false;
+    hist_cleaner->fill(event);
+
+    // --- Lepton selection & additional lepton veto
+    // - Muon Channel
+    if (is_muo)
+      {
+	if(!(sel_2muo->passes(event) && veto_ele->passes(event))) return false;
+	// cl_muo->process(event);
+	// if(!sel_1muo->passes(event)) return false;
+	hist_2lep->fill(event);
+      }
+    // - Electron Channel
+    else if (is_ele)
+      {
+	if(!(sel_2ele->passes(event) && veto_muo->passes(event))) return false;
+	// cl_ele->process(event);
+	// if(!sel_1ele->passes(event)) return false;
+	hist_2lep->fill(event);
+      }
+    // - Mass Cut
+    if(!sel_masscut->passes(event)) return false;
+    hist_masscut->fill(event);
 
     // --- ST selection
     if(!sel_st->passes(event)) return false;
@@ -252,7 +253,5 @@ namespace uhh2 {
     // done
     return true;
   }
-
-  UHH2_REGISTER_ANALYSIS_MODULE(BstarToTWPreSelectionModule)
-
+  UHH2_REGISTER_ANALYSIS_MODULE(DYSidebandPreSelectionModule)
 }

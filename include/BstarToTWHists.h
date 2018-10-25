@@ -2,7 +2,7 @@
 
 #include "UHH2/core/include/Hists.h"
 #include "UHH2/common/include/LuminosityHists.h"
-
+#include "UHH2/BstarToTW/include/BstarToTWGen.h"
 
 
   /**  \brief Example class for booking and filling histograms
@@ -27,7 +27,6 @@ namespace uhh2 {
 
     TH1F *MET, *HT_lep, *HT_jet, *ST, *rho;
     TH2F *LumiBlock_vs_NPV;
-
   };
    
 }
