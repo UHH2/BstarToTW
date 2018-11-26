@@ -1,5 +1,6 @@
 #include "UHH2/core/include/Utils.h"
 #include "UHH2/core/include/Event.h"
+#include "UHH2/common/include/Utils.h"
 #include "UHH2/BstarToTW/include/BstarToTWHists.h"
 
 
@@ -8,6 +9,7 @@
 #include "TH1F.h"
 #include "TH2F.h"
 #include <iostream>
+
 
 using namespace std;
 using namespace uhh2;
@@ -80,6 +82,7 @@ BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname):
   }
   int nbins = upper_binborders.size() + 1; // add one for the partial bin
 
+  h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
   // book all histograms here
 
   // Event variables
@@ -88,6 +91,8 @@ BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname):
   HT_jet = book<TH1F>("HT_jet", "HT_{jet} [GeV/c]", 70, 0, 3500);
   ST = book<TH1F>("ST", "S_{T} [GeV/c]", 80, 0, 4000);
   rho = book<TH1F>("rho", "#rho [GeV/c]", 12, 0, 65);
+  deltaPhi_blep = book<TH1F>("deltaPhi_blep", "#Delta #phi_{b,l}", 35, 0, 3.5);
+  deltaPhi_btop = book<TH1F>("deltaPhi_btop", "#Delta #phi_{b,t}", 35, 0, 3.5);
 
   LumiBlock_vs_NPV = book<TH2F>("LumiBlock_vs_NPV", "LumiBlock_vs_NPV",
 				nbins, 0, ( int(total_lumi / lumi_per_bin) + 1)*lumi_per_bin,
@@ -101,9 +106,13 @@ void BstarToTWHists::fill(const Event & event){
   vector<Jet> jets = *event.jets;
   vector<Electron> electrons = *event.electrons;
   vector<Muon> muons = *event.muons;
-
+  vector<TopJet> topjets = *event.topjets;
+  
+  
   double ht_lep = 0;
   double ht_jet = 0;
+
+  const Particle &primlep = event.get(h_primlep);
 
   for (Electron ele : electrons)
     {
@@ -120,6 +129,14 @@ void BstarToTWHists::fill(const Event & event){
   for (Jet jet : jets)
     {
       ht_jet += jet.v4().pt();
+      if(btag_loose(jet, event))
+	{
+	  deltaPhi_blep->Fill(deltaPhi(jet.v4(),primlep.v4()), weight);
+	  for (TopJet topjet : topjets)
+	    {
+	      deltaPhi_btop->Fill(deltaPhi(jet.v4(),topjet.v4()), weight);
+	    }
+	}
     }
 
   HT_lep->Fill(ht_lep, weight);
@@ -140,3 +157,62 @@ void BstarToTWHists::fill(const Event & event){
 BstarToTWHists::~BstarToTWHists(){}
 
 
+BstarToTWBackgroundHists::BstarToTWBackgroundHists(Context & ctx, const string & dirname, const string & hyps_name, const TString & path):
+  Hists(ctx, dirname){
+  h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
+  TFile* f = new TFile(path);
+  TH1F* ratio = (TH1F*)(f->Get("ratio"))->Clone("ratio");
+  TF1* linfit = ratio->GetFunction("linfit");
+  m_p0 = linfit->GetParameter(0);
+  m_p1 = linfit->GetParameter(1);
+  //  m_p2 = linfit->GetParameter(2);
+  m_p2 = 0;
+
+  double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 5000};
+  double xbins_fitbin[13] = {0,500, 700, 900, 1100, 1300, 1500, 1700, 1900, 2100, 2300, 2500, 5000};
+  Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV/c^{2}]", 25, 100, 5100);
+  Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV/c^{2}]", 12, xbins_fitbin);
+  Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV/c^{2}]", 16, xbins);
+}
+
+void BstarToTWBackgroundHists::fill(const Event & event){
+  
+  std::vector<BstarToTWHypothesis> hyps = event.get(h_hyps);
+  const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, "Chi2" );
+  if (!hyp)
+    {
+      //cout << "WARNING: " + m_hyps_name  +": " + m_discriminator_name + " No hypothesis was valid!" << endl;
+      return;
+    }
+  
+  double mbstar = 0;
+  if((hyp->get_topjet() + hyp->get_w()).isTimelike())
+    {    
+      mbstar = (hyp->get_topjet() + hyp->get_w()).M();
+    }
+  else
+    {
+      mbstar = sqrt(-(hyp->get_topjet()+hyp->get_w()).mass2());
+    }
+  //  double background_weight = m_p0 + m_p1 * mbstar + m_p2 * mbstar * mbstar;
+  double background_weight = exp(m_p0 + m_p1 * mbstar);
+  if ( background_weight < 0) 
+    background_weight = 0;
+  const double event_weight = event.weight;
+  background_weight *= event_weight;
+  if (mbstar < 5000.) 
+    {
+      Bstar_reco_M->Fill(mbstar, background_weight);
+      Bstar_reco_M_rebin->Fill(mbstar, background_weight);
+      Bstar_reco_M_unbinned->Fill(mbstar, background_weight);
+    }
+  else 
+    {
+      Bstar_reco_M->Fill(4999., background_weight);
+      Bstar_reco_M_rebin->Fill(4999., background_weight);
+      Bstar_reco_M_unbinned->Fill(4999., background_weight);
+    }
+
+}
+
+BstarToTWBackgroundHists::~BstarToTWBackgroundHists(){}

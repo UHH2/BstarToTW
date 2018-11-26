@@ -59,7 +59,7 @@ namespace uhh2 {
 
 
     std::unique_ptr<Selection> trig_IsoMu24, trig_IsoTkMu24;
-    std::unique_ptr<Selection> sel_ngenjet,sel_lumi, sel_nmuo, sel_met, sel_1top;
+    std::unique_ptr<Selection> sel_ngenjet,sel_lumi, sel_1muo, sel_met, sel_1top, veto_ele;
 
     std::unique_ptr<Hists> hist_pileup;
     bool is_mc, is_qcd;
@@ -99,19 +99,19 @@ namespace uhh2 {
 
     double met_min     = 50.;
     double lep_eta_max = 2.4;
-    double muo_pt_min  = 50.; 
+    double muo_pt_min  = 53.; 
     double muo_iso_max = 0.15;
-    double ele_pt_min  = 30.0;
+    double lep_pt_min  = 30.0;
     double jet_pt_min  = 30.0;
     double jet_eta_max = 2.4;
-    MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
     MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    ElectronId id_ele = AndId<Electron>(ElectronID_Spring16_veto_noIso, PtEtaCut(ele_pt_min, lep_eta_max));
-    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_LOOSE), PtEtaCut(jet_pt_min, jet_eta_max));
+    ElectronId id_ele = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lep_pt_min, lep_eta_max));
+    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT), PtEtaCut(jet_pt_min, jet_eta_max));
 
     common.reset(new CommonModules());
     common->switch_jetlepcleaner(true);
-    common->set_muon_id(id_muo_tight);
+    common->set_muon_id(id_muo_loose);
     common->set_electron_id(id_ele);
     common->set_jet_id(id_jet);
     common->init(ctx);
@@ -124,7 +124,8 @@ namespace uhh2 {
     trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
     trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
     sel_lumi.reset(new LumiSelection(ctx));
-    sel_nmuo.reset(new NMuonSelection(1, 1));
+    veto_ele.reset(new NElectronSelection(0, 0));
+    sel_1muo.reset(new NMuonSelection(1, 1)); 
     sel_met.reset(new METSelection(met_min));
     sel_1top.reset(new NTopJetSelection(1,1,id_wreco));
     // sel_toptag1.reset(new NTopJetSelection(1,1,id_toptag1));
@@ -143,18 +144,19 @@ namespace uhh2 {
     sel_ntop1.reset(new NTopJetSelection(1, -1));
     sel_ntop2.reset(new NTopJetSelection(1, -1, boost::none, h_ak8jets));
 
+
     if(is_mc)
       {
-    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L23_AK4PFchs_MC));
+    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
 
     	jec_topj_mc.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK8PFchs_MC, ak8jets_name));
       }
     else
       { 
-    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L23_AK4PFchs_DATA));
-    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L23_AK4PFchs_DATA));
-    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L23_AK4PFchs_DATA));
-    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L23_AK4PFchs_DATA));
+    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
+    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
+    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
+    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
 
     	jec_topj_BCD.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK8PFchs_DATA, ak8jets_name));
     	jec_topj_EFearly.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK8PFchs_DATA, ak8jets_name));
@@ -269,10 +271,9 @@ namespace uhh2 {
 	  }
       }
 
-
     if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
     primary_lep->process(event);
-    if(!sel_nmuo->passes(event)) return false;
+    if(!sel_1muo->passes(event)) return false;
     if(!sel_met->passes(event)) return false;
 
     if(sel_1top->passes(event))

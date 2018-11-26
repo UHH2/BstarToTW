@@ -77,6 +77,30 @@ bool Chi2Selection::passes(const Event &event) {
   return false;
 }
 
+RecoMassSelection::RecoMassSelection(Context &ctx, double m_min_, string label):
+  m_min(m_min_),
+  h_hyp(ctx.get_handle<vector<BstarToTWHypothesis>>(label)) {}
+
+bool RecoMassSelection::passes(const Event &event) {
+  std::vector<BstarToTWHypothesis> hyps = event.get(h_hyp);
+  const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, "Chi2" );
+  if (!hyp)
+    {
+      cout << "WARNING: RecoMassSelection: Chi2 No hypothesis was valid!" << endl;
+      return false;
+    }
+  double mbstar_reco = 0;
+  if((hyp->get_topjet() + hyp->get_w()).isTimelike())
+    {    
+      mbstar_reco = (hyp->get_topjet() + hyp->get_w()).M();
+    }
+  else
+    {
+      mbstar_reco = sqrt(-(hyp->get_topjet()+hyp->get_w()).mass2());
+    }
+  return mbstar_reco > m_min;
+}
+
 MassCutSelection::MassCutSelection(double m_min_, double m_max_):
   m_min(m_min_),
   m_max(m_max_) {}

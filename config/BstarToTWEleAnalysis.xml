@@ -3,10 +3,10 @@
 
 
 	  <!ENTITY TargetLumi      "35867">
-	  <!ENTITY SELdir          "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/Analysis/Electron/35867fb/">
+	  <!ENTITY SELdir          "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v5/Analysis/Electron/35867fb/">
 	  <!ENTITY b_Cacheable     "False">
 	  <!ENTITY NEVT            "-1">
-	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v3/PreSelection/Electron/35867fb_nominal"> 
+	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_80X_v5/PreSelection/Electron/35867fb/NOMINAL"> 
 	  <!ENTITY PRESELfilename  "uhh2.AnalysisModuleRunner"> 
 	  <!ENTITY PROOFdir        "/nfs/dust/cms/user/froehlia/.proof2">
 
@@ -32,32 +32,6 @@
 	  <!ENTITY BstarToTW2600RH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW2600RH.root">
 	  <!ENTITY BstarToTW2800RH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW2800RH.root">
 	  <!ENTITY BstarToTW3000RH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW3000RH.root">
-
-	  <!ENTITY BprimeB-700_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-700_LH.root">
-	  <!ENTITY BprimeB-800_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-800_LH.root">
-	  <!ENTITY BprimeB-900_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-900_LH.root">
-	  <!ENTITY BprimeB-1000_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1000_LH.root">
-	  <!ENTITY BprimeB-1100_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1100_LH.root">
-	  <!ENTITY BprimeB-1200_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1200_LH.root">
-	  <!ENTITY BprimeB-1300_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1300_LH.root">
-	  <!ENTITY BprimeB-1400_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1400_LH.root">
-	  <!ENTITY BprimeB-1500_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1500_LH.root">
-	  <!ENTITY BprimeB-1600_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1600_LH.root">
-	  <!ENTITY BprimeB-1700_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1700_LH.root">
-	  <!ENTITY BprimeB-1800_LH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1800_LH.root">
-
-	  <!ENTITY BprimeB-700_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-700_RH.root">
-	  <!ENTITY BprimeB-800_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-800_RH.root">
-	  <!ENTITY BprimeB-900_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-900_RH.root">
-	  <!ENTITY BprimeB-1000_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1000_RH.root">
-	  <!ENTITY BprimeB-1100_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1100_RH.root">
-	  <!ENTITY BprimeB-1200_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1200_RH.root">
-	  <!ENTITY BprimeB-1300_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1300_RH.root">
-	  <!ENTITY BprimeB-1400_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1400_RH.root">
-	  <!ENTITY BprimeB-1500_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1500_RH.root">
-	  <!ENTITY BprimeB-1600_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1600_RH.root">
-	  <!ENTITY BprimeB-1700_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1700_RH.root">
-	  <!ENTITY BprimeB-1800_RH  "&PRESELdir;/&PRESELfilename;.MC.BprimeB-1800_RH.root">
 
 	  <!ENTITY TTbar   "&PRESELdir;/&PRESELfilename;.MC.TTbar.root">
 
@@ -100,14 +74,14 @@
 	  <!ENTITY QCDPT170to250_b   "&PRESELdir;/&PRESELfilename;.MC.QCDPT170to250_bcToE.root">
 	  <!ENTITY QCDPT250toInf_b   "&PRESELdir;/&PRESELfilename;.MC.QCDPT250toInf_bcToE.root">
 
-	  <!ENTITY DATA_B_v2   "&PRESELdir;/&PRESELfilename;.DATA.DATA_B_v2.root">
-	  <!ENTITY DATA_B_v3   "&PRESELdir;/&PRESELfilename;.DATA.DATA_B_v3.root">
+	  <!ENTITY DATA_B   "&PRESELdir;/&PRESELfilename;.DATA.DATA_B.root">
 	  <!ENTITY DATA_C   "&PRESELdir;/&PRESELfilename;.DATA.DATA_C.root">
 	  <!ENTITY DATA_D   "&PRESELdir;/&PRESELfilename;.DATA.DATA_D.root">
 	  <!ENTITY DATA_E   "&PRESELdir;/&PRESELfilename;.DATA.DATA_E.root">
 	  <!ENTITY DATA_F   "&PRESELdir;/&PRESELfilename;.DATA.DATA_F.root">
 	  <!ENTITY DATA_G   "&PRESELdir;/&PRESELfilename;.DATA.DATA_G.root">
-	  <!ENTITY DATA_H   "&PRESELdir;/&PRESELfilename;.DATA.DATA_H.root">
+	  <!ENTITY DATA_H_v2   "&PRESELdir;/&PRESELfilename;.DATA.DATA_H_v2.root">
+	  <!ENTITY DATA_H_v3   "&PRESELdir;/&PRESELfilename;.DATA.DATA_H_v3.root">
 
 	  ]>
 
@@ -115,7 +89,7 @@
 
 <!--
    <ConfigParse NEventsBreak="0" FileSplit="1" AutoResubmit="4"/>
-   <ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_AnalysisEle"/>
+   <ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_EleAnalysis"/>
    -->
 
 <JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
@@ -129,13 +103,8 @@
     
 
     
-    <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B_v2" Cacheable="&b_Cacheable;">
-      <In FileName="&DATA_B_v2;" Lumi="0.0"/>
-      <InputTree Name="AnalysisTree" />
-    </InputData>
-
-    <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B_v3" Cacheable="&b_Cacheable;">
-      <In FileName="&DATA_B_v3;" Lumi="0.0"/>
+    <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_B" Cacheable="&b_Cacheable;">
+      <In FileName="&DATA_B;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
     </InputData>
 
@@ -164,8 +133,13 @@
       <InputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_H" Cacheable="&b_Cacheable;">
-      <In FileName="&DATA_H;" Lumi="0.0"/>
+    <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_H_v2" Cacheable="&b_Cacheable;">
+      <In FileName="&DATA_H_v2;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_H_v3" Cacheable="&b_Cacheable;">
+      <In FileName="&DATA_H_v3;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
     </InputData>
 

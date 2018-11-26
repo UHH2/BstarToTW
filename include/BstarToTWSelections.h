@@ -54,6 +54,16 @@ namespace uhh2 {
     uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;    
 
   };
+  
+  class RecoMassSelection: public uhh2::Selection {
+  public:
+    RecoMassSelection(uhh2::Context &ctx, double m_min_, std::string label);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_min;
+    uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;
+  };
+
 
   class MassCutSelection: public uhh2::Selection {
   public:

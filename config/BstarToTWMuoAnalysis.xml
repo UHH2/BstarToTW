@@ -538,6 +538,17 @@
       <Item Name="MCBtagEfficienciesLoose" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BTagMCEfficiencyHistsLoose_Muon.root" />
       <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/data/CSVv2_Moriond17_B_H.csv" />
 
+      <Item Name="BackgroundShapeNorm"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_1b_pol2.root" />
+
+      <Item Name="BackgroundShapeNorm_1b0t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_closure_1b.root" />
+      <Item Name="BackgroundShapeNorm_0b1t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_closure_1t.root" />
+      <Item Name="BackgroundShapeNorm_1b1t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_signal_1b.root" />
+      <Item Name="BackgroundShapeNorm_2b1t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_signal_2b.root" />
+      <!-- <Item Name="BackgroundShapeNorm_1b0t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_1b_pol2.root" /> -->
+      <!-- <Item Name="BackgroundShapeNorm_0b1t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_1t_pol2.root" /> -->
+      <!-- <Item Name="BackgroundShapeNorm_1b1t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_pol2.root" /> -->
+      <!-- <Item Name="BackgroundShapeNorm_2b1t"      Value="/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_MUON_2b_pol2.root" /> -->
+      
       <!-- Keys for uncertainties -->
       <Item Name="ScaleVariationMuR"      Value="none" />
       <Item Name="ScaleVariationMuF"      Value="none" />

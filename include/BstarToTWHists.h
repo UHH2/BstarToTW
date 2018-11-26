@@ -1,8 +1,19 @@
 #pragma once
 
 #include "UHH2/core/include/Hists.h"
+
 #include "UHH2/common/include/LuminosityHists.h"
+#include "UHH2/common/include/PrimaryLepton.h"
+#include "UHH2/common/include/JetIds.h"
+#include "UHH2/common/include/ObjectIdUtils.h"
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
+#include "UHH2/BstarToTW/include/BstarToTWHypothesis.h"
+#include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
+
+#include <TFile.h>
+#include <TH1.h>
+#include <TF1.h>
+#include <TGraphAsymmErrors.h>
 
 
   /**  \brief Example class for booking and filling histograms
@@ -24,9 +35,24 @@ namespace uhh2 {
   protected:
     std::vector<run_lumi> upper_binborders;
     double lumi_per_bin;
+    uhh2::Event::Handle<FlavorParticle> h_primlep;
+    JetId btag_loose = CSVBTag(CSVBTag::WP_LOOSE);
 
-    TH1F *MET, *HT_lep, *HT_jet, *ST, *rho;
+    TH1F *MET, *HT_lep, *HT_jet, *ST, *rho, *deltaPhi_blep, *deltaPhi_btop;
     TH2F *LumiBlock_vs_NPV;
+  };
+
+  class BstarToTWBackgroundHists: public uhh2::Hists {
+  public:
+    // use the same constructor arguments as Hists for forwarding:
+    BstarToTWBackgroundHists(uhh2::Context & ctx, const std::string & dirname, const std::string & hyps_name, const TString & path);
+
+    virtual void fill(const uhh2::Event & ev) override;
+    virtual ~BstarToTWBackgroundHists();
+  protected:
+    double m_p0, m_p1, m_p2;
+    uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyps;
+    TH1F *Bstar_reco_M, *Bstar_reco_M_rebin, *Bstar_reco_M_unbinned;
   };
    
 }

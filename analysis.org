@@ -1,29 +1,32 @@
 * Tasks
-** TODO run DY PreSelection for Muon
-** TODO run DY PreSelection for Electron
-** TODO run QCD PreSelection for Muon
-** TODO run QCD PreSelection for Electron
-** TODO run DY Analysis for Muon
-** TODO run DY Analysis for Electron
-** TODO run QCD Analysis for Muon
-** TODO run QCD Analysis for Electron
+** TODO non-top background estimation
+*** TODO obtain extrapolation function
+*** DONE implement extrapolation
+*** TODO closure test in 1b0t control region
+*** TODO check why 0t1b control region looks odd
+**
 
-
+** TODO implement electron+jets channel
+*** TODO run preselection
+*** TODO run analysis
+*** TODO run background estimation + closure test 
 
 * Object Definition
-** TODO figure out if I should apply isolation on veto level (i.e. at object definition) 
+** DONE figure out if I should apply isolation on veto level (i.e. at object definition) 
+no, because this might reject events with bjets as well
 ** Objects
-- electron: veto iso ID, pt > 30GeV, |eta| < 2.5
-- muon: loose ID, pt > 30GeV, |eta| < 2.5
-- jet: tight ID, pt > 30GeV, |eta| < 2.5
-- HOTVR jet: pt > 200GeV, |eta| < 2.4
 
-* Muon Channel
+- electron: veto iso ID, pt > 30GeV, |eta| < 2.5
+- muon: loose ID, pt > 30GeV, |eta| < 2.5, iso < 0.15
+- ak4-jet: tight ID, pt > 30GeV, |eta| < 2.5 (used for b-tagging)
+- HOTVR-jet: pt > 200GeV, |eta| < 2.4 (used for top-tagging and b* reco)
+
+* Analysis Strategy
 ** PreSelection
 *** Cuts
 
 - isoMu24 || isoTkMu24 Triggers
-- 1 tight-ID muon: iso < 0.15, pt > 53GeV
+- 1 tight-ID muon: pt > 53GeV
 - additional lepton veto:
 - MET > 50GeV
 - ST > 400GeV
@@ -32,14 +35,14 @@
 ** Reconstruction
 
 *** W reconstruction
-
+**** TODO maybe use Daniel's kinematic fit instead?    
 Combine muon four-vector and MET assuming W is produced on-shell. If
 solution is complex, only real part is considered.
 
 *** top reconstruction
 
 Use HOTVR jet as top hypothesis. Additional top tagging requirements
-are imposed.
+are imposed in the signal region.
 
 ** Signal Regions
 
@@ -53,22 +56,22 @@ criterion.
 ** Background Estimation
 
 The main backgrounds of this analysis are
-1. ttbar
-2. W+Jet
-3. single t
+1. ttbar (semi-leptonic)
+2. b or t tag fakes (mostly W+Jets, little DY, Diboson, QCD)
+3. single t (tW-channel)
 
-Monte-Carlo simulations are used to describe the ttbar background. The
-shape and normalization are simultaneously fitted in both signar
-regions, to achieve better constrains on the background description.
+The single t and ttbar backgrounds are estimated from Monte-Carlo
+simulations. The normalization is constrained by fitting
+these backgrounds in both signal regions simulatneously.
 
-The W+Jets background is extrapolated from a control region, where no
-top-tagged HOTVR and no b-tagged ak4 jets were found. The background
-is extrapolated using a transfer function, that is obtained using a
-fit to the ration between Monte-Carlo prediction for the W+Jets
-background in the control region to the first signal region.
+The non-t backgrounds arise from misidentified objects, mostly from
+W+Jets but also from DY+Jets, Di-Boson nd QCD. These Backgrounds are
+expected to be not well described in the signal region. Hence, the
+background contribution from misidentified objects is estimated, by
+extrapolating the non-top SM backgrounds from a separate control
+region. The extrapolation is performed using the \alpha method. In
+this method, a extrapolation function for the background is obtained
+via a fit to the ratio of the background in the signal region to the
+background in the control region. A linear function is assumed to
+describe this ratio.
 
-* Electron Channel
-** PreSelection
-** Reconstruction
-** Signal Regions
-** Background Estimation

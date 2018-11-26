@@ -27,6 +27,7 @@
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWPDFHists.h"
+#include "UHH2/BstarToTW/include/BstarToTWHists.h"
 
 
 using namespace std;
@@ -55,7 +56,7 @@ namespace uhh2 {
     // Common Modules
     std::unique_ptr<CommonModules> common;
     std::unique_ptr<AnalysisModule> cl_topjet;
-    std::unique_ptr<AnalysisModule> signal_background_reweight, btag_background_reweight;
+    std::unique_ptr<AnalysisModule> background_reweight;
     
     // Bstar Reconsturction
     std::unique_ptr<AnalysisModule> BstarToTWgenprod;
@@ -73,7 +74,7 @@ namespace uhh2 {
     bool do_top_pt_reweight;
     std::unique_ptr<AnalysisModule> sf_toptag;
     std::unique_ptr<AnalysisModule> scale_variation;
-    std::unique_ptr<AnalysisModule> L1_variation;
+    // std::unique_ptr<AnalysisModule> L1_variation;
     bool do_scale_variation, do_pdf_variations;
     std::unique_ptr<Hists> pdf_variations;
 
@@ -99,15 +100,19 @@ namespace uhh2 {
     std::unique_ptr<AndHists> hist_sel_2btag1toptag20chi2, hist_sel_2btag0toptag20chi2;
     std::unique_ptr<AndHists> hist_sel_0btag1toptag20chi2, hist_sel_0btag0toptag20chi2;
 
-    std::unique_ptr<AndHists> hist_sel_0btag0toptag20chi2reweighted;
+    std::unique_ptr<Hists> hist_1btag0toptagreweighted, hist_0btag1toptagreweighted;
+    std::unique_ptr<Hists> hist_1btag1toptag20chi2reweighted, hist_2btag1toptag20chi2reweighted;
+
+    std::unique_ptr<AndHists> hist_sel_0btag0toptagreweighted;
     // - btag - //
     std::unique_ptr<Selection> sel_1btag, sel_2btag, veto_btag;
 
     // - toptag - //
-    std::unique_ptr<Selection> sel_1toptag, veto_toptag, sel_1antitoptag;
+    std::unique_ptr<Selection> sel_1toptag, veto_toptag, sel_1antitoptag, sel_1top;
 
     // - chi2 - //
     std::unique_ptr<Selection> sel_1toptag20chi2, sel_0toptag20chi2;
+    std::unique_ptr<Selection> sel_1toprecomass, sel_0toprecomass;
     std::unique_ptr<AndHists> hist_sel_20chi2;
 
     // - additional hists - //
@@ -157,7 +162,6 @@ namespace uhh2 {
     common->disable_jersmear();
     common->switch_jetPtSorter();
     common->init(ctx, sys_pu);
-
 
     // --- Scale Factors & Uncertainties --- //
     do_scale_variation = (ctx.get("ScaleVariationMuR") == "up" || ctx.get("ScaleVariationMuR") == "down") || (ctx.get("ScaleVariationMuF") == "up" || ctx.get("ScaleVariationMuF") == "down");
@@ -209,9 +213,9 @@ namespace uhh2 {
     string path_sf_toptag = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/TopTagMCEfficiency.root";
     sf_toptag.reset(new HOTVRScaleFactor(ctx, "BstarToTW", id_toptag, path_sf_toptag, sys_toptag));
 
-    string sys_L1           = ctx.get("Systematic_L1");
-    string path_L1_variation = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/HOTVR_L1Uncertainty.root";
-    L1_variation.reset(new HOTVRPileUpUncertainty(ctx, path_L1_variation, sys_L1 ));
+    // string sys_L1           = ctx.get("Systematic_L1");
+    // string path_L1_variation = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/HOTVR_L1Uncertainty.root";
+    // L1_variation.reset(new HOTVRPileUpUncertainty(ctx, path_L1_variation, sys_L1 ));
 
     // --- Bstar reconstruction --- //
     reco_1toptag.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, "1TopTagReconstruction", id_toptag));
@@ -227,18 +231,14 @@ namespace uhh2 {
     // hist_reco_cr.reset(new BstarToTWHypothesisHists(ctx, "CRReco", "CR_Reconstruction", "Chi2"));
     hist_bstar_matchreco.reset(new BstarToTWHypothesisHists(ctx, "BstarToTWMatchedReco", "1TopTagReconstruction", "Match"));
 
-    string sys_signal_background_reweight = "";//ctx.get("Systematic_BG");
-    string path_signal_background_reweight = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_"+ctx.get("analysis_channel")+".root";
-    signal_background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_signal_background_reweight,"0TopTagReconstruction","Chi2",sys_signal_background_reweight));
-
-    string sys_btag_background_reweight = "";//ctx.get("Systematic_BG");
-    string path_btag_background_reweight = "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/BstarToTW/data/BackgroundShapeNorm_"+ctx.get("analysis_channel")+"_bcr.root";
-    btag_background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_btag_background_reweight,"0TopTagReconstruction","Chi2",sys_btag_background_reweight));
-
-
+    string sys_background_reweight = "";//ctx.get("Systematic_BG");
+    string path_background_reweight = ctx.get("BackgroundShapeNorm");
+    background_reweight.reset(new BackgroundShapeNormWeights(ctx,path_background_reweight,"0TopTagReconstruction","Chi2",sys_background_reweight));
     // --- Selections and Histogramms --- //
+    sel_1top.reset(new NTopJetSelection(1,-1, id_topjet));
     hist_presel.reset(new AndHists(ctx, "PreSel"));
     hist_presel->add_hist(new HOTVRPerformanceHists(ctx, "PreSel_HOTVRPerformance"));
+
 
     // - bTag - //
     sel_1btag.reset(new NJetSelection(1, 1, id_btag));
@@ -282,12 +282,26 @@ namespace uhh2 {
     hist_sel_0btag0toptag20chi2->add_hist(new BstarToTWHypothesisHists(ctx, "0btag0toptag20chi2_reco", "0TopTagReconstruction", "Chi2"));
 
     // - Reweighted Hists for Background estimation -//
-    hist_sel_0btag0toptag20chi2reweighted.reset(new AndHists(ctx, "0btag0toptag20chi2reweighted"));
-    hist_sel_0btag0toptag20chi2reweighted->add_hist(new BstarToTWHypothesisHists(ctx, "0btag0toptag20chi2reweighted_reco", "0TopTagReconstruction", "Chi2"));
+    // hist_sel_0btag0toptagreweighted->add_hist(new BstarToTWHypothesisHists(ctx, "0btag0toptagreweighted_reco", "0TopTagReconstruction", "Chi2"));
+    
+    string path_1b_background = ctx.get("BackgroundShapeNorm_1b0t");
+    string path_1t_background = ctx.get("BackgroundShapeNorm_0b1t");
+    string path_1b_signal = ctx.get("BackgroundShapeNorm_1b1t");
+    string path_2b_signal = ctx.get("BackgroundShapeNorm_2b1t");
+    
+    hist_1btag0toptagreweighted.reset(new BstarToTWBackgroundHists(ctx, "1btag0toptagreweighted_reco", "0TopTagReconstruction", path_1b_background));
+    hist_0btag1toptagreweighted.reset(new BstarToTWBackgroundHists(ctx, "0btag1toptagreweighted_reco", "0TopTagReconstruction", path_1t_background));
+    hist_1btag1toptag20chi2reweighted.reset(new BstarToTWBackgroundHists(ctx, "1btag1toptagreweighted_reco", "0TopTagReconstruction", path_1b_signal));
+    hist_2btag1toptag20chi2reweighted.reset(new BstarToTWBackgroundHists(ctx, "2btag1toptagreweighted_reco", "0TopTagReconstruction", path_2b_signal));
+    
     
     // - Chi2 - //
     sel_1toptag20chi2.reset(new Chi2Selection(ctx, "1TopTagReconstruction", chi2_max));
     sel_0toptag20chi2.reset(new Chi2Selection(ctx, "0TopTagReconstruction", chi2_max));
+
+    // - RecoMass - //
+    sel_1toprecomass.reset(new RecoMassSelection(ctx, 500., "1TopTagReconstruction"));
+    sel_0toprecomass.reset(new RecoMassSelection(ctx, 500., "0TopTagReconstruction"));
 
     // - Scale Factor Hists - //
     hist_BTagMCEfficiency.reset(new BTagMCEfficiencyHists(ctx, "BTagMCEfficiency", btag_wp));
@@ -319,8 +333,11 @@ namespace uhh2 {
 	sf_ele_trigger->process(event);
       }
 
+    // move this to presel!
     cl_topjet->process(event);
-    L1_variation->process(event);
+    if(!sel_1top->passes(event))
+      return false;
+    // L1_variation->process(event);
     if(do_scale_variation) scale_variation->process(event);
     if(do_top_pt_reweight) sf_top_pt_reweight->process(event);   
     hist_presel->fill(event);
@@ -337,6 +354,7 @@ namespace uhh2 {
 	  {
 	    reco_1toptag->process(event);
 	    disc_1toptag->process(event);
+	    if (!sel_1toprecomass->passes(event)) return false;
 	    hist_sel_2btag1toptag->fill(event);
 	    if (sel_1toptag20chi2->passes(event))
 	      hist_sel_2btag1toptag20chi2->fill(event);
@@ -345,6 +363,7 @@ namespace uhh2 {
 	  {
 	    reco_0toptag->process(event);
 	    disc_0toptag->process(event);
+	    if (!sel_0toprecomass->passes(event)) return false;
 	    hist_sel_2btag0toptag->fill(event);
 	    if (sel_0toptag20chi2->passes(event))
 	      hist_sel_2btag0toptag20chi2->fill(event);
@@ -360,6 +379,7 @@ namespace uhh2 {
 	  {
 	    reco_1toptag->process(event);
 	    disc_1toptag->process(event);
+	    if (!sel_1toprecomass->passes(event)) return false;
 	    hist_sel_0btag1toptag->fill(event);
 	    if (sel_1toptag20chi2->passes(event))
 	      hist_sel_0btag1toptag20chi2->fill(event);
@@ -368,13 +388,17 @@ namespace uhh2 {
 	  {
 	    reco_0toptag->process(event);
 	    disc_0toptag->process(event);
+	    if (!sel_0toprecomass->passes(event)) return false;
 	    hist_sel_0btag0toptag->fill(event);
+	    //background_reweight->process(event);
+	    //hist_sel_0btag0toptagreweighted->fill(event);
+	    hist_1btag0toptagreweighted->fill(event);
+	    hist_0btag1toptagreweighted->fill(event);
+	    hist_1btag1toptag20chi2reweighted->fill(event);
+	    hist_2btag1toptag20chi2reweighted->fill(event);
 	    if (sel_0toptag20chi2->passes(event))
 	      {	      
 		hist_sel_0btag0toptag20chi2->fill(event);
-		// signal_background_reweight->process(event);
-		btag_background_reweight->process(event); //rework this!!
-		hist_sel_0btag0toptag20chi2reweighted->fill(event);
 	      }
 	  }
 	return false;
@@ -391,6 +415,7 @@ namespace uhh2 {
 	    // -- Bstar Reconstructinon -- //	
 	    reco_1toptag->process(event);
 	    disc_1toptag->process(event);
+	    if (!sel_1toprecomass->passes(event)) return false;
 	    hist_sel_1btag1toptag->fill(event);
 	    
 	    if (dataset_name.find("BstarToTW") == 0)
@@ -409,14 +434,13 @@ namespace uhh2 {
 	  {
 	    reco_0toptag->process(event);
 	    disc_0toptag->process(event);
+	    if (!sel_0toprecomass->passes(event)) return false;
 	    hist_sel_1btag0toptag->fill(event);
 	    if (sel_0toptag20chi2->passes(event))
 	      {
 		hist_sel_1btag0toptag20chi2->fill(event);
 	      }
-
 	  }
-
       }
 
     // -- Done -- //

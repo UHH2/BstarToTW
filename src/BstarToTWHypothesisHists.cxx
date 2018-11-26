@@ -20,7 +20,7 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
 
     double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 5000};
     double xbins_fitbin[13] = {0,500, 700, 900, 1100, 1300, 1500, 1700, 1900, 2100, 2300, 2500, 5000};
-    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV/c^{2}]", 25, 0, 5000);
+    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV/c^{2}]", 25, 100, 5100);
     Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV/c^{2}]", 12, xbins_fitbin);
     Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV/c^{2}]", 16, xbins);
     // Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{b*}^{reco} [GeV/c^{2}]", 50, 0, 5000);
