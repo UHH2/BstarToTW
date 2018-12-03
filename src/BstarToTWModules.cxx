@@ -3,6 +3,125 @@
 using namespace std;
 using namespace uhh2;
 
+ObjectCleaner::ObjectCleaner(Context & ctx){
+  
+  is_mc = ctx.get("dataset_type") == "MC";
+
+  // JetCorrectors
+  if(is_mc)
+    {  
+      jec_ak4_mc.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
+      jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
+      jlc_mc.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
+      jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
+    }  
+  else
+    { 
+      // ak4
+      jec_ak4_BCD.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
+      jec_ak4_EFearly.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
+      jec_ak4_FlateG.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
+      jec_ak4_H.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
+      jlc_BCD.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
+      jlc_EFearly.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
+      jlc_FlateG.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
+      jlc_H.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
+      // HOTVR
+      jec_hotvr_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
+      jec_hotvr_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
+      jec_hotvr_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
+      jec_hotvr_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
+    }  
+  
+  // Cleaner
+  PrimaryVertexId id_pv=StandardPrimaryVertexId();
+  MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
+  ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+  JetId id_jetpfid = JetPFID(JetPFID::WP_LOOSE);
+  JetId id_jet = PtEtaCut(jet_pt_min, jet_eta_max); // jet ID
+  TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe also deltaPhiCut ??
+  
+  cl_pv.reset(new PrimaryVertexCleaner(id_pv));
+  cl_muo.reset(new MuonCleaner(id_muo_veto));
+  cl_ele.reset(new ElectronCleaner(id_ele_veto));
+  cl_jetpfid.reset(new JetCleaner(ctx, id_jetpfid));
+  cl_jet.reset(new JetCleaner(ctx, id_jet));
+  cl_topjet.reset(new TopJetCleaner(ctx, id_topjet));
+ 
+  // Metfilters
+  metfilters.reset(new AndSelection(ctx, "metfilters"));
+  metfilters->add<TriggerSelection>("HBHENoiseFilter", "Flag_HBHENoiseFilter");
+  metfilters->add<TriggerSelection>("HBHENoiseIsoFilter", "Flag_HBHENoiseIsoFilter");
+  metfilters->add<TriggerSelection>("globalTightHalo2016Filter", "Flag_globalTightHalo2016Filter");
+  metfilters->add<TriggerSelection>("EcalDeadCellTriggerPrimitiveFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter");
+  metfilters->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");
+  //metfilters->add<TriggerSelection>("chargedHadronTrackResolutionFilter", "Flag_chargedHadronTrackResolutionFilter"); 
+  //metfilters->add<TriggerSelection>("muonBadTrackFilter", "Flag_muonBadTrackFilter");
+  metfilters->add<NPVSelection>("1 good PV",1,-1,id_pv);
+
+}
+
+bool ObjectCleaner::process(Event & event){
+  
+  cl_pv->process(event);
+  if(!metfilters->passes(event)) return false;
+  cl_muo->process(event);
+  cl_ele->process(event);
+  cl_jetpfid->process(event);
+
+  if(is_mc) 
+    {
+      jlc_mc->process(event);
+      jec_ak4_mc->process(event);
+      jec_ak4_mc->correct_met(event);
+      jet_resolution_smearer->process(event);
+      jec_hotvr_mc->process(event);
+    }
+  else{
+    if(event.run <= runnr_BCD)
+      {
+	jlc_BCD->process(event);
+	jec_ak4_BCD->process(event);
+	jec_ak4_BCD->correct_met(event);
+	jec_hotvr_BCD->process(event);
+      }
+    else if(event.run < runnr_EFearly) //< is correct, not <=
+      {
+	jlc_EFearly->process(event); 
+	jec_ak4_EFearly->process(event);
+	jec_ak4_EFearly->correct_met(event);
+	jec_hotvr_EFearly->process(event);
+      }
+    else if(event.run <= runnr_FlateG)
+      {
+	jlc_FlateG->process(event);
+	jec_ak4_FlateG->process(event);
+	jec_ak4_FlateG->correct_met(event);
+	jec_hotvr_FlateG->process(event);
+      }
+    else if(event.run > runnr_FlateG)
+      {
+	jlc_H->process(event);
+	jec_ak4_H->process(event);
+	jec_ak4_H->correct_met(event);
+	jec_hotvr_H->process(event);
+      }
+    else throw runtime_error("CommonModules.cxx: run number not covered by if-statements in process-routine.");
+  }  
+  cl_jet->process(event);
+  cl_topjet->process(event);
+
+}
+
+SystematicsModule::SystematicsModule(){}
+
+bool SystematicsModule::process(Event &event){
+  for (const auto &module : modules)
+    {
+      module->process(event);
+    }
+}
+
 ElectronTriggerWeights::ElectronTriggerWeights(Context & ctx, TString path_, TString SysDirection_): path(path_), SysDirection(SysDirection_){
 
   auto dataset_type = ctx.get("dataset_type");
@@ -116,44 +235,44 @@ bool ElectronTriggerWeights::process(Event & event){
 return true;
 }
 
-BackgroundShapeNormWeights::BackgroundShapeNormWeights(uhh2::Context &ctx, const TString &path, const std::string &hyps_name, const std::string &discriminator_name, const std::string &sys_direction) {
-  m_sys_direction = sys_direction;
-  h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
-  m_hyps_name = hyps_name;
-  m_discriminator_name = discriminator_name;
-  TFile* f =new TFile(path);
-  TH1F* ratio = (TH1F*)(f->Get("ratio"))->Clone("ratio");
-  TF1* linfit = ratio->GetFunction("linfit");
-  m_p0 = linfit->GetParameter(0);
-  m_p1 = linfit->GetParameter(1);
-}
+// BackgroundShapeNormWeights::BackgroundShapeNormWeights(uhh2::Context &ctx, const TString &path, const std::string &hyps_name, const std::string &discriminator_name, const std::string &sys_direction) {
+//   m_sys_direction = sys_direction;
+//   h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
+//   m_hyps_name = hyps_name;
+//   m_discriminator_name = discriminator_name;
+//   TFile* f =new TFile(path);
+//   TH1F* ratio = (TH1F*)(f->Get("ratio"))->Clone("ratio");
+//   TF1* linfit = ratio->GetFunction("linfit");
+//   m_p0 = linfit->GetParameter(0);
+//   m_p1 = linfit->GetParameter(1);
+// }
 
-bool BackgroundShapeNormWeights::process(Event &event) {
+// bool BackgroundShapeNormWeights::process(Event &event) {
   
-  std::vector<BstarToTWHypothesis> hyps = event.get(h_hyps);
-  const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, m_discriminator_name );
-  if (!hyp)
-    {
-      cout << "WARNING: " + m_hyps_name  +": " + m_discriminator_name + " No hypothesis was valid!" << endl;
-      return false;
-    }
+//   std::vector<BstarToTWHypothesis> hyps = event.get(h_hyps);
+//   const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, m_discriminator_name );
+//   if (!hyp)
+//     {
+//       cout << "WARNING: " + m_hyps_name  +": " + m_discriminator_name + " No hypothesis was valid!" << endl;
+//       return false;
+//     }
   
-  double mbstar = 0;
-  if((hyp->get_topjet() + hyp->get_w()).isTimelike())
-    {    
-      mbstar = (hyp->get_topjet() + hyp->get_w()).M();
-    }
-  else
-    {
-      mbstar = sqrt(-(hyp->get_topjet()+hyp->get_w()).mass2());
-    }
+//   double mbstar = 0;
+//   if((hyp->get_topjet() + hyp->get_w()).isTimelike())
+//     {    
+//       mbstar = (hyp->get_topjet() + hyp->get_w()).M();
+//     }
+//   else
+//     {
+//       mbstar = sqrt(-(hyp->get_topjet()+hyp->get_w()).mass2());
+//     }
 
-  double background_weight = m_p0 + m_p1 * mbstar;
-  if (background_weight < 0) background_weight = 0;
-  event.weight *= background_weight;
+//   double background_weight = m_p0 + m_p1 * mbstar;
+//   if (background_weight < 0) background_weight = 0;
+//   event.weight *= background_weight;
 
-  return true;
-}
+//   return true;
+// }
 
 CMSTTScaleFactor::CMSTTScaleFactor(Context &ctx, string signal_name, TString sys_direction){
 
