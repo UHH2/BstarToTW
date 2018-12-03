@@ -491,8 +491,8 @@
             <Item Name="PrimaryVertexCollection" Value="offlineSlimmedPrimaryVertices" /> 
             <Item Name="ElectronCollection" Value="slimmedElectronsUSER" />
             <Item Name="MuonCollection" Value="slimmedMuonsUSER" /> 
-            <Item Name="JetCollection" Value="slimmedJets" />
-            <Item Name="METName" Value="slimmedMETs" />
+            <Item Name="JetCollection" Value="slimmedJetsPuppi" />
+            <Item Name="METName" Value="slimmedMETsPuppi" />
             <Item Name="GenJetCollection" Value="slimmedGenJets" /> 
 	    <Item Name="TopJetCollection" Value="hotvrPuppi" />  
 	    <Item Name="GenTopJetCollection" Value="genHOTVRTopJets" />  
