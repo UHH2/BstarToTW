@@ -64,6 +64,15 @@ namespace uhh2 {
     uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;
   };
 
+  class JetDeltaPhiSelection: public uhh2::Selection {
+  public:
+    JetDeltaPhiSelection(uhh2::Context &ctx, double delta_phi_min, const boost::optional<uhh2::Event::Handle<std::vector<Jet> > > jet_collection = boost::none);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_delta_phi_min;
+    boost::optional<uhh2::Event::Handle<std::vector<Jet> > > h_jets;
+    uhh2::Event::Handle<FlavorParticle> h_primlep;
+  };
 
   class MassCutSelection: public uhh2::Selection {
   public:

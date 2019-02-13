@@ -25,67 +25,11 @@ bool operator<(const run_lumi & rl1, const run_lumi & rl2){
 }
 
 BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname): 
-  Hists(ctx, dirname){
-
-  lumi_per_bin = string2double(ctx.get("lumihists_lumi_per_bin", "50.0"));
-  if(lumi_per_bin <= 0.0) {
-    throw runtime_error("lumihists_lumi_per_bin is <= 0.0; this is not allowed");
-  }
-    
-  string lumifile = ctx.get("lumi_file");
-  std::unique_ptr<TFile> file(TFile::Open(lumifile.c_str(), "read"));
-  TTree * tree = dynamic_cast<TTree*>(file->Get("AnalysisTree"));
-  if(!tree){
-    throw runtime_error("LuminosityHists: Did not find TTree 'AnalysisTree' in file ;" + lumifile + "'");
-  }
-  // only fetch branches we really need:
-  TBranch * brun = tree->GetBranch("run");
-  TBranch * blumiblock = tree->GetBranch("luminosityBlock");
-  TBranch * bilumi = tree->GetBranch("intgRecLumi");
-  run_lumi rl;
-  double ilumi;
-  brun->SetAddress(&rl.run);
-  blumiblock->SetAddress(&rl.lumiblock);
-  bilumi->SetAddress(&ilumi);
-    
-  // use the file to build a map from run/lumi --> integrated lumi in pb.
-  // Inserting into a map sorts by run and lumi.
-  std::map<run_lumi, double> rl2lumi;
-  double total_lumi = 0.0; // in   1/pb
-  auto ientries = tree->GetEntries();
-  for(auto ientry = 0l; ientry < ientries; ientry++){
-    for(auto b : {brun, blumiblock, bilumi}){
-      b->GetEntry(ientry);
-    }
-    double ilumi_pb = ilumi * 1e-6; // convert units in file (microbarn) to pb.
-    total_lumi += ilumi_pb;
-    auto it_inserted = rl2lumi.insert(make_pair(rl, ilumi_pb));
-    if(!it_inserted.second){
-      throw runtime_error("Duplicate run/lumi entry in lumi file '" + lumifile + "'");
-    }
-  }
-  //cout << "LuminosityHists: read total lumi " << total_lumi << " from lumi file " << lumifile << endl;
-    
-  // Save the bin borders to find out the number of bins to use and for later assigning each event to a bin.
-  int nbins_estimated = int(total_lumi / lumi_per_bin + 1);
-  if(nbins_estimated >= 20000){
-    throw runtime_error("LuminosityHists misconfiguration: would take more than 20000 bins. Please increase lumi_per_bin");
-  }
-  upper_binborders.reserve(nbins_estimated);
-  double ilumi_current_bin = 0.0;
-  for(const auto & rl : rl2lumi){
-    ilumi_current_bin += rl.second;
-    if(ilumi_current_bin >= lumi_per_bin){
-      upper_binborders.push_back(rl.first);
-      ilumi_current_bin = ilumi_current_bin - lumi_per_bin;
-    }
-  }
-  int nbins = upper_binborders.size() + 1; // add one for the partial bin
+  Hists(ctx, dirname) {
 
   h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
-  // book all histograms here
 
-  // Event variables
+  // book all histograms here
   MET = book<TH1F>("MET", "#slash{E}_{T} [GeV/c]", 20, 0, 1000);
   HT_lep = book<TH1F>("HT_lep", "HT_{lep} [GeV/c]", 70, 0, 3500);
   HT_jet = book<TH1F>("HT_jet", "HT_{jet} [GeV/c]", 70, 0, 3500);
@@ -93,12 +37,12 @@ BstarToTWHists::BstarToTWHists(Context & ctx, const string & dirname):
   rho = book<TH1F>("rho", "#rho [GeV/c]", 12, 0, 65);
   deltaPhi_blep = book<TH1F>("deltaPhi_blep", "#Delta #phi_{b,l}", 35, 0, 3.5);
   deltaPhi_btop = book<TH1F>("deltaPhi_btop", "#Delta #phi_{b,t}", 35, 0, 3.5);
-
-  LumiBlock_vs_NPV = book<TH2F>("LumiBlock_vs_NPV", "LumiBlock_vs_NPV",
-				nbins, 0, ( int(total_lumi / lumi_per_bin) + 1)*lumi_per_bin,
-				40, 0, 40);
-
-    }
+  deltaPhi_hotvr_ak4 = book<TH1F>("deltaPhi_hotvr_ak4", "#Delta #phi_{hotvr,ak4}", 35, 0, 3.5);
+  deltaPhi_lep_ak4 = book<TH1F>("deltaPhi_lep_ak4", "#Delta #phi_{l,ak4}", 35, 0, 3.5);
+  deltaPhi_hotvr_lak4 = book<TH1F>("deltaPhi_hotvr_leadingak4", "#Delta #phi_{hotvr,ak4}", 35, 0, 3.5);
+  deltaPhi_lep_lak4 = book<TH1F>("deltaPhi_lep_leadingak4", "#Delta #phi_{l,ak4}", 35, 0, 3.5);
+  // deltaRmin_vs_pTrel = book <TH2F>("deltaRmin_vs_pTrel", "2D_cut", );
+}
 
 
 void BstarToTWHists::fill(const Event & event){
@@ -125,48 +69,67 @@ void BstarToTWHists::fill(const Event & event){
     }
   MET->Fill(event.met->pt(), weight);
   ht_lep += event.met->pt();
-
+  int i = 0;
   for (Jet jet : jets)
     {
       ht_jet += jet.v4().pt();
+      if (topjets.size() > 0)
+	deltaPhi_hotvr_ak4->Fill(deltaPhi(jet.v4(),topjets.at(0).v4()), weight);
+      deltaPhi_lep_ak4->Fill(deltaPhi(jet.v4(),primlep.v4()), weight);
       if(btag_loose(jet, event))
 	{
-	  deltaPhi_blep->Fill(deltaPhi(jet.v4(),primlep.v4()), weight);
+	  if (i == 0)
+	    deltaPhi_blep->Fill(deltaPhi(jet.v4(),primlep.v4()), weight);
 	  for (TopJet topjet : topjets)
 	    {
 	      deltaPhi_btop->Fill(deltaPhi(jet.v4(),topjet.v4()), weight);
 	    }
+	  ++i;
 	}
+    }
+
+  if (jets.size() > 0)
+    {
+      if (topjets.size() > 0)
+	deltaPhi_hotvr_lak4->Fill(deltaPhi(jets.at(0).v4(),topjets.at(0).v4()), weight);
+      deltaPhi_lep_lak4->Fill(deltaPhi(jets.at(0).v4(),primlep.v4()), weight);
     }
 
   HT_lep->Fill(ht_lep, weight);
   HT_jet->Fill(ht_jet, weight);
   ST->Fill(ht_lep + ht_jet, weight);
-
-  if(event.isRealData)
-    {
-      run_lumi rl{event.run, event.luminosityBlock};
-      auto it = upper_bound(upper_binborders.begin(), upper_binborders.end(), rl);
-      int ibin = distance(upper_binborders.begin(), it);
-      LumiBlock_vs_NPV->Fill(ibin*lumi_per_bin, event.pvs->size(), weight);
-    }
+  
   rho->Fill(event.rho, weight);
-
+  
 }
 
 BstarToTWHists::~BstarToTWHists(){}
-
 
 BstarToTWBackgroundHists::BstarToTWBackgroundHists(Context & ctx, const string & dirname, const string & hyps_name, const TString & path):
   Hists(ctx, dirname){
   h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
   TFile* f = new TFile(path);
-  TH1F* ratio = (TH1F*)(f->Get("ratio"))->Clone("ratio");
-  TF1* linfit = ratio->GetFunction("linfit");
-  m_p0 = linfit->GetParameter(0);
-  m_p1 = linfit->GetParameter(1);
-  //  m_p2 = linfit->GetParameter(2);
-  m_p2 = 0;
+
+  TH1F* ha = (TH1F*)(f->Get("ratio"))->Clone("ratio");
+  // TH1F* ha = (TH1F*)(f->Get("signal"))->Clone("signal");
+  TF1* fa = ha->GetFunction("fitfun");
+  double* pa = fa->GetParameters();
+  int nparam = 3;
+  m_pa = new double[nparam];
+  for (int i = 0; i<nparam; ++i)
+    {
+      m_pa[i] = pa[i];
+    }
+  // TH1F* hb = (TH1F*)(f->Get("control"))->Clone("control");
+  // TF1* fb = hb->GetFunction("fitfun");  
+  // double* pb = fb->GetParameters();
+  // m_pb = new double[nparam];
+  // for (int i = 0; i<nparam; ++i)
+  //   {
+  //     m_pb[i] = pb[i];
+  //   }
+  
+  f->Close();
 
   double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 5000};
   double xbins_fitbin[13] = {0,500, 700, 900, 1100, 1300, 1500, 1700, 1900, 2100, 2300, 2500, 5000};
@@ -194,8 +157,17 @@ void BstarToTWBackgroundHists::fill(const Event & event){
     {
       mbstar = sqrt(-(hyp->get_topjet()+hyp->get_w()).mass2());
     }
-  //  double background_weight = m_p0 + m_p1 * mbstar + m_p2 * mbstar * mbstar;
-  double background_weight = exp(m_p0 + m_p1 * mbstar);
+
+  // double background_weight = m_pa[0] + m_pa[1] * mbstar;
+  double background_weight = exp(m_pa[0] + m_pa[1] * mbstar) + m_pa[2];
+  
+  // double weight_a = (1.+erf((mbstar - m_pa[3])/m_pa[4]))/2. * exp(m_pa[0] + m_pa[1] * mbstar + m_pa[2] * mbstar * mbstar);
+  // double weight_b = (1.+erf((mbstar - m_pb[3])/m_pb[4]))/2. * exp(m_pb[0] + m_pb[1] * mbstar + m_pb[2] * mbstar * mbstar);
+  // double background_weight = weight_a / weight_b;
+
+  // cout << "weight a: " << weight_a << endl;
+  // cout << "weight b: " << weight_b << endl;
+  // cout << "Background weight: " << background_weight << endl;
   if ( background_weight < 0) 
     background_weight = 0;
   const double event_weight = event.weight;
@@ -216,3 +188,57 @@ void BstarToTWBackgroundHists::fill(const Event & event){
 }
 
 BstarToTWBackgroundHists::~BstarToTWBackgroundHists(){}
+
+BstarToTWAnalysisHists::BstarToTWAnalysisHists(uhh2::Context &ctx, const std::string &dirname):
+  Hists(ctx,dirname) {
+  h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
+
+  // Book histograms
+  deltaPhi_blep = book<TH1F>("deltaPhi_blep", "#Delta #phi_{b,l}", 35, 0, 3.5);
+  deltaPhi_btop = book<TH1F>("deltaPhi_btop", "#Delta #phi_{b,t}", 35, 0, 3.5);
+  deltaPhi_hotvr_ak4 = book<TH1F>("deltaPhi_hotvr_ak4", "#Delta #phi_{hotvr,ak4}", 35, 0, 3.5);
+  deltaPhi_lep_ak4 = book<TH1F>("deltaPhi_lep_ak4", "#Delta #phi_{l,ak4}", 35, 0, 3.5);
+  deltaPhi_hotvr_lak4 = book<TH1F>("deltaPhi_hotvr_leadingak4", "#Delta #phi_{hotvr,ak4}", 35, 0, 3.5);
+  deltaPhi_lep_lak4 = book<TH1F>("deltaPhi_lep_leadingak4", "#Delta #phi_{l,ak4}", 35, 0, 3.5);
+}
+
+void BstarToTWAnalysisHists::fill(const Event &event) {
+
+  double weight = event.weight;
+
+
+}
+
+BstarToTWAnalysisHists::~BstarToTWAnalysisHists(){}
+
+TopMatchHists::TopMatchHists(uhh2::Context &ctx, const std::string &dirname, const std::string & hyps_name):
+  Hists(ctx, dirname) {
+
+  h_hyps = ctx.get_handle<vector<BstarToTWHypothesis> >(hyps_name);
+  h_tophad = ctx.get_handle<vector<GenTop> >("HadronicTop");
+
+  double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 5000};
+  Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
+  HOTVR_pt     = book<TH1F>("pt", "p_{T}^{top-jet} [GeV]", 40, 0, 1600);
+  HOTVR_eta    = book<TH1F>("eta", "#eta^{topjet}", 30, -6, 6);
+
+  // mis_Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
+  // mis_HOTVR_pt     = book<TH1F>("pt", "p_{T}^{top-jet} [GeV]", 40, 0, 1600);
+  // mis_HOTVR_eta    = book<TH1F>("eta", "#eta^{topjet}", 30, -6, 6);
+
+}
+
+void TopMatchHists::fill(const Event &event) {
+  
+  if (event.isRealData) return;
+  
+  const vector<GenTop> &gentops = event.get(h_tophad);
+  const vector<TopJet> &topjets = *event.topjets;
+
+  for (const TopJet &topjet : topjets)
+    {
+      
+    }
+}
+
+TopMatchHists::~TopMatchHists(){}

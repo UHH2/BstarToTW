@@ -101,6 +101,21 @@ bool RecoMassSelection::passes(const Event &event) {
   return mbstar_reco > m_min;
 }
 
+JetDeltaPhiSelection::JetDeltaPhiSelection(Context &ctx, double delta_phi_min, const boost::optional<Event::Handle<std::vector<Jet> > > jet_collection) {
+  m_delta_phi_min = delta_phi_min;  
+  h_jets = jet_collection;
+  h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
+}
+
+bool JetDeltaPhiSelection::passes(const Event &event) {
+  const vector<Jet> &jets = h_jets ? event.get(*h_jets) : *event.jets;
+  const FlavorParticle &muo = event.get(h_primlep);
+  if (jets.size() > 0)
+    return (deltaPhi(jets.at(0), muo) > m_delta_phi_min);
+  else
+    return false;
+}
+
 MassCutSelection::MassCutSelection(double m_min_, double m_max_):
   m_min(m_min_),
   m_max(m_max_) {}

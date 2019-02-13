@@ -28,4 +28,16 @@ namespace uhh2 {
 
   };
 
+  class MistagHists: public uhh2::Hists {
+  public:
+    MistagHists(uhh2::Context &ctx, const std::string &dirname, TopJetId id, const boost::optional<Event::Handle<std::vector<TopJet> > > &topjetcollection = boost::none);
+    virtual void fill(const uhh2::Event &event) override;
+    virtual ~MistagHists();
+
+  protected:
+    TH2F *pt_eta_all, *pt_eta_mismatched;
+    TopJetId m_id;
+    boost::optional<Event::Handle<std::vector<TopJet> > > h_topjetcollection;
+  };
+
 }

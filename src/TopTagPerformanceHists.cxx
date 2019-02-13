@@ -13,14 +13,15 @@ TopTagPerformanceHists::TopTagPerformanceHists(Context & ctx, const string & dir
   m_id(id),
   h_topjetcollection(topjetcollection) 
 {
-  double intervall[] = {0, 200, 400, 600, 800, 1000, 1500, 2000};
+  double pt_intervall[] = {0, 200, 400, 600, 800, 1000, 1500, 2000};
+
   N_evt = book<TH1F>("N", "N", 1, 0.5, 1.5);
   N_mat = book<TH1F>("N_mat", "N", 1, 0.5, 1.5);
-  pt_top = book<TH1F>("pt_gentop", "p_{T, topjet}", 7, intervall);
-  pt_matched = book<TH1F>("pt_top_matched", "p_{T, topjet}", 7, intervall);
-  pt_mismatched = book<TH1F>("pt_top_mismatched", "p_{T, topjet}", 7, intervall);
-  pt_gen = book<TH1F>("pt_gen", "p_{T, gen}", 7, intervall);
-  dR_max = book<TH2F>("dR_max", "#Delta R_{max}", 7, intervall, 60, 0, 3);
+  pt_top = book<TH1F>("pt_gentop", "p_{T, topjet}", 7, pt_intervall);
+  pt_matched = book<TH1F>("pt_top_matched", "p_{T, topjet}", 7, pt_intervall);
+  pt_mismatched = book<TH1F>("pt_top_mismatched", "p_{T, topjet}", 7, pt_intervall);
+  pt_gen = book<TH1F>("pt_gen", "p_{T, gen}", 7, pt_intervall);
+  dR_max = book<TH2F>("dR_max", "#Delta R_{max}", 7, pt_intervall, 60, 0, 3);
 }
 
 void TopTagPerformanceHists::fill(const Event & event){  
@@ -42,17 +43,12 @@ void TopTagPerformanceHists::fill(const Event & event){
 	  double pt = -1;
 	  for (Particle gen : genjets)
 	    {
-	      bool is_tagged = m_id(topjet, event);
-	      if (is_tagged) 
-		{	  
-		  if (deltaR(gen.v4(), topjet.v4()) < matching_dist && gen.pt() > pt)
-		    {
-		      pt = gen.pt();
-		    }
-		}
+	      if ( (m_id(topjet, event)) && (deltaR(gen.v4(), topjet.v4()) < matching_dist && gen.pt() > pt) )
+		       pt = gen.pt();		 
 	    }
+	  if (pt < 0) continue; // no match found
 	  if (pt < 2000) pt_mismatched->Fill(pt, weight);
-	  else pt_mismatched->Fill(1999., weight);
+	  else           pt_mismatched->Fill(1999., weight);
 	}
     }
   else
@@ -113,3 +109,34 @@ void TopTagPerformanceHists::fill(const Event & event){
 
 
 TopTagPerformanceHists::~TopTagPerformanceHists() {}
+
+
+MistagHists::MistagHists(Context & ctx, const string & dirname, TopJetId id , const boost::optional<Event::Handle<std::vector<TopJet> > > &topjetcollection): 
+  Hists(ctx, dirname),
+  m_id(id),
+  h_topjetcollection(topjetcollection) {
+
+  double pt_intervall[] = {0, 200, 400, 600, 800, 1000, 1500, 2000};
+  double eta_intervall[] = {-2.5, -1.0, -0.5, 0, 0.5, 1.0, 2.5};
+  pt_eta_all = book<TH2F>("pt_eta_all"," ;p_{T, gen} [GeV]; #eta_{gen}", 7, pt_intervall, 6, eta_intervall);
+  pt_eta_mismatched = book<TH2F>("pt_eta_mismatched"," ;p_{T} [GeV]; #eta", 7, pt_intervall, 6, eta_intervall);
+
+}
+
+void MistagHists::fill(const Event &event) {
+
+  double weight = event.weight;
+  const vector<TopJet> &topjets = h_topjetcollection ? event.get(*h_topjetcollection) : *event.topjets;
+
+  for (const TopJet &topjet : topjets)
+    {
+      double pt = topjet.pt();
+      if (pt > 2000.00) pt = 1999.0; // avoid filling in overflow
+      double eta = topjet.eta();
+
+      pt_eta_all->Fill(pt, eta, weight);
+      if (m_id(topjet, event)) pt_eta_mismatched->Fill(pt, eta, weight);
+    }
+}
+
+MistagHists::~MistagHists() {}
