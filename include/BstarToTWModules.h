@@ -39,9 +39,15 @@ class ObjectCleaner: public uhh2::AnalysisModule {
   bool b_lepclean = true;
   bool b_jetlep = true;
   
-  const int runnr_BCD = 276811;
-  const int runnr_EFearly = 278802;
-  const int runnr_FlateG = 280385;
+  // Run Numbers taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2016Analysis
+  const int runnr_B = 275376;
+  const int runnr_C = 276283;
+  const int runnr_D = 276811;
+  const int runnr_E = 277420;
+  const int runnr_F = 278802; // 278808 actually but here EFearly
+  const int runnr_G = 280385;
+  const int runnr_H = 284044;
+
 
   double lep_eta_max = 2.4;
   double lepveto_pt_min  = 30.0;
@@ -52,9 +58,9 @@ class ObjectCleaner: public uhh2::AnalysisModule {
   double top_pt_min = 200.0;
   double top_eta_max = 2.5;
 
-  std::unique_ptr<JetCorrector> jec_ak4_mc, jec_ak4_BCD, jec_ak4_EFearly, jec_ak4_FlateG, jec_ak4_H;
-  std::unique_ptr<JetLeptonCleaner> jlc_mc, jlc_BCD, jlc_EFearly, jlc_FlateG, jlc_H;
-  std::unique_ptr<HOTVRJetCorrector> jec_hotvr_mc, jec_hotvr_BCD, jec_hotvr_EFearly, jec_hotvr_FlateG, jec_hotvr_H;
+  std::unique_ptr<JetCorrector> jec_ak4_mc, jec_ak4_B, jec_ak4_C, jec_ak4_D, jec_ak4_E, jec_ak4_F, jec_ak4_G, jec_ak4_H;
+  std::unique_ptr<JetLeptonCleaner> jlc_ak4_mc, jlc_ak4_B, jlc_ak4_C, jlc_ak4_D, jlc_ak4_E, jlc_ak4_F, jlc_ak4_G, jlc_ak4_H;
+  std::unique_ptr<HOTVRJetCorrector> jec_hotvr_mc, jec_hotvr_B, jec_hotvr_C, jec_hotvr_D, jec_hotvr_E, jec_hotvr_F, jec_hotvr_G, jec_hotvr_H;
   std::unique_ptr<AnalysisModule> cl_pv, cl_muo, cl_ele, cl_jetpfid, cl_jet, cl_topjet, jlc_hotvr;
   std::unique_ptr<JetResolutionSmearer> jet_resolution_smearer;
   std::unique_ptr<AndSelection> metfilters;

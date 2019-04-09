@@ -10,34 +10,48 @@ ObjectCleaner::ObjectCleaner(Context & ctx){
   // JetCorrectors
   if(is_mc)
     {  
-      jec_ak4_mc.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
+      jec_ak4_mc.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFchs_MC));
       jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
-      jlc_mc.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
-      jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
+      jlc_ak4_mc.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFchs_MC));
+      jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFPuppi_MC));
     }  
   else
     { 
-      // ak4
-      jec_ak4_BCD.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
-      jec_ak4_EFearly.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
-      jec_ak4_FlateG.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
-      jec_ak4_H.reset(new JetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
-      jlc_BCD.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
-      jlc_EFearly.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
-      jlc_FlateG.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
-      jlc_H.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
-      // HOTVR
-      jec_hotvr_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
-      jec_hotvr_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
-      jec_hotvr_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
-      jec_hotvr_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
+      // 2016
+      // -- ak4
+      // JEC
+      jec_ak4_B.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK4PFchs_DATA));
+      jec_ak4_C.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK4PFchs_DATA));
+      jec_ak4_D.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK4PFchs_DATA));
+      jec_ak4_E.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK4PFchs_DATA));
+      jec_ak4_F.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK4PFchs_DATA));
+      jec_ak4_G.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK4PFchs_DATA));
+      jec_ak4_H.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK4PFchs_DATA));
+      // Jet Lepton Cleaning
+      jlc_ak4_B.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK4PFchs_DATA));
+      jlc_ak4_C.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK4PFchs_DATA));
+      jlc_ak4_D.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK4PFchs_DATA));
+      jlc_ak4_E.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK4PFchs_DATA));
+      jlc_ak4_F.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK4PFchs_DATA));
+      jlc_ak4_G.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK4PFchs_DATA));
+      jlc_ak4_H.reset(new JetLeptonCleaner(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK4PFchs_DATA));
+
+      // -- HOTVR
+      // JEC
+      jec_hotvr_B.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK4PFPuppi_DATA));
+      jec_hotvr_C.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK4PFPuppi_DATA));
+      jec_hotvr_D.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK4PFPuppi_DATA));
+      jec_hotvr_E.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK4PFPuppi_DATA));
+      jec_hotvr_F.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK4PFPuppi_DATA));
+      jec_hotvr_G.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK4PFPuppi_DATA));
+      jec_hotvr_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK4PFPuppi_DATA));
     }  
   
   // Cleaner
-  PrimaryVertexId id_pv=StandardPrimaryVertexId();
-  MuonId id_muo_veto = AndId<Muon>(MuonIDLoose(), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
-  ElectronId id_ele_veto = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
-  JetId id_jetpfid = JetPFID(JetPFID::WP_LOOSE);
+  PrimaryVertexId id_pv = StandardPrimaryVertexId();
+  MuonId id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
+  ElectronId id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+  JetId id_jetpfid = JetPFID(JetPFID::WP_LOOSE_CHS);
   JetId id_jet = PtEtaCut(jet_pt_min, jet_eta_max); // jet ID
   TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max); // maybe implement "jetlep cleaner as well"
   
@@ -55,7 +69,7 @@ ObjectCleaner::ObjectCleaner(Context & ctx){
   metfilters->add<TriggerSelection>("HBHENoiseIsoFilter", "Flag_HBHENoiseIsoFilter");
   metfilters->add<TriggerSelection>("globalTightHalo2016Filter", "Flag_globalTightHalo2016Filter");
   metfilters->add<TriggerSelection>("EcalDeadCellTriggerPrimitiveFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter");
-  metfilters->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");
+  if(!is_mc) metfilters->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");
   //metfilters->add<TriggerSelection>("chargedHadronTrackResolutionFilter", "Flag_chargedHadronTrackResolutionFilter"); 
   //metfilters->add<TriggerSelection>("muonBadTrackFilter", "Flag_muonBadTrackFilter");
   metfilters->add<NPVSelection>("1 good PV",1,-1,id_pv);
@@ -80,46 +94,67 @@ bool ObjectCleaner::process(Event & event){
   if(is_mc) 
     {
       if (b_jetlep)
-	jlc_mc->process(event);
+	jlc_ak4_mc->process(event);
       jec_ak4_mc->process(event);
       jec_ak4_mc->correct_met(event);
       jet_resolution_smearer->process(event);
       jec_hotvr_mc->process(event);
     }
   else{
-    if(event.run <= runnr_BCD)
-      {
-	if (b_jetlep)
-	  jlc_BCD->process(event);
-	jec_ak4_BCD->process(event);
-	jec_ak4_BCD->correct_met(event);
-	jec_hotvr_BCD->process(event);
-      }
-    else if(event.run < runnr_EFearly) //< is correct, not <=
-      {
-	if (b_jetlep)
-	  jlc_EFearly->process(event); 
-	jec_ak4_EFearly->process(event);
-	jec_ak4_EFearly->correct_met(event);
-	jec_hotvr_EFearly->process(event);
-      }
-    else if(event.run <= runnr_FlateG)
-      {
-	if (b_jetlep)
-	  jlc_FlateG->process(event);
-	jec_ak4_FlateG->process(event);
-	jec_ak4_FlateG->correct_met(event);
-	jec_hotvr_FlateG->process(event);
-      }
-    else if(event.run > runnr_FlateG)
-      {
-	if (b_jetlep)
-	  jlc_H->process(event);
-	jec_ak4_H->process(event);
-	jec_ak4_H->correct_met(event);
-	jec_hotvr_H->process(event);
-      }
-    else throw runtime_error("ObjectCleaner: run number not covered by if-statements in process-routine.");
+	if(event.run <= runnr_B)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_B->process(event);
+	    jec_ak4_B->process(event);
+	    jec_hotvr_B->process(event);
+	  }
+	else if(event.run <= runnr_C)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_C->process(event);
+	    jec_ak4_C->process(event);
+	    jec_hotvr_C->process(event);
+	  }
+
+	else if(event.run <= runnr_D)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_D->process(event);
+	    jec_ak4_D->process(event);
+	    jec_hotvr_D->process(event);
+	  }
+
+	else if(event.run <= runnr_E)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_E->process(event);
+	    jec_ak4_E->process(event);
+	    jec_hotvr_E->process(event);
+	  }
+
+	else if(event.run < runnr_F) // "<" is correct since checking for Fearly
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_F->process(event);
+	    jec_ak4_F->process(event);
+	    jec_hotvr_F->process(event);
+	  }
+
+	else if(event.run <= runnr_G)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_G->process(event);
+	    jec_ak4_G->process(event);
+	    jec_hotvr_G->process(event);
+	  }
+	else if(event.run <= runnr_H)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_G->process(event);
+	    jec_ak4_H->process(event);
+	    jec_hotvr_H->process(event);
+	  }
+	else runtime_error("ObjectCleaner.cxx: run number not covered by if-statements in process-routine.");
   }
   cl_jet->process(event);
   cl_topjet->process(event);

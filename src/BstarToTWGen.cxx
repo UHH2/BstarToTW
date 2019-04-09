@@ -14,7 +14,7 @@ using namespace uhh2;
 BstarToTWGen::BstarToTWGen(const Event & event)
 {
   vector<GenParticle> genparticles = *event.genparticles;
-  vector<Particle> genjets = *event.genjets;
+  vector<GenJet> genjets = *event.genjets;
   // Get first 11 genparticles (this should be all particles from the hard process) and match them
   vector<GenParticle> hardGenparticles(&genparticles[0], &genparticles[10]);
 

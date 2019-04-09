@@ -33,15 +33,15 @@ void TopTagPerformanceHists::fill(const Event & event){
   
   if (b_is_qcd)
     {
-      const vector<Particle> genjets = *event.genjets;
-      for (Particle gen : genjets)
+      const vector<GenJet> genjets = *event.genjets;
+      for (GenJet gen : genjets)
 	{
 	  pt_gen->Fill(gen.pt(), weight);
 	}
       for (TopJet topjet : topjets)
 	{
 	  double pt = -1;
-	  for (Particle gen : genjets)
+	  for (GenJet gen : genjets)
 	    {
 	      if ( (m_id(topjet, event)) && (deltaR(gen.v4(), topjet.v4()) < matching_dist && gen.pt() > pt) )
 		       pt = gen.pt();		 

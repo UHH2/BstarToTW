@@ -13,7 +13,6 @@
 #include "UHH2/BstarToTW/include/BstarToTWReconstruction.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
-#include "UHH2/BstarToTW/include/GenCleaningModules.h"
 
 #include "UHH2/HOTVR/include/HOTVRHists.h"
 #include "UHH2/HOTVR/include/HOTVRIds.h"

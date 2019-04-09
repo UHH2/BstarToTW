@@ -4,6 +4,7 @@
 #include "UHH2/common/include/PrintingModules.h"
 #include "UHH2/common/include/CommonModules.h"
 #include <UHH2/common/include/JetCorrections.h>
+#include <UHH2/common/include/JetCorrectionSets.h>
 #include "UHH2/common/include/TopJetIds.h"
 #include "UHH2/common/include/MuonIds.h"
 #include "UHH2/common/include/JetIds.h"
@@ -18,7 +19,6 @@
 #include "UHH2/BstarToTW/include/BstarToTWReconstruction.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
-#include "UHH2/BstarToTW/include/GenCleaningModules.h"
 
 #include "UHH2/HOTVR/include/HOTVRHists.h"
 #include "UHH2/HOTVR/include/HOTVRIds.h"
@@ -45,8 +45,8 @@ namespace uhh2 {
     Event::Handle<vector<TopJet>> h_ak8jets; // handle for ak8_SoftDrop collection
     std::unique_ptr<CommonModules> common;
     std::unique_ptr<AnalysisModule> genjet_cleaner, hotvr_jetlep_cleaner;
-    std::unique_ptr<AnalysisModule> jec_subj_mc, jec_subj_BCD, jec_subj_EFearly, jec_subj_FlateG, jec_subj_H;
-    std::unique_ptr<AnalysisModule> jec_topj_mc, jec_topj_BCD, jec_topj_EFearly, jec_topj_FlateG, jec_topj_H;
+    std::unique_ptr<AnalysisModule> jec_subj_mc, jec_subj_B, jec_subj_C, jec_subj_D, jec_subj_E, jec_subj_F, jec_subj_G, jec_subj_H;
+    std::unique_ptr<AnalysisModule> jec_topj_mc, jec_topj_B, jec_topj_C, jec_topj_D, jec_topj_E, jec_topj_F, jec_topj_G, jec_topj_H;
 
     std::unique_ptr<AnalysisModule> cl_topjet1, cl_topjet2;
     std::unique_ptr<Selection> sel_ntop1, sel_ntop2;
@@ -64,9 +64,14 @@ namespace uhh2 {
     std::unique_ptr<Hists> hist_pileup;
     bool is_mc, is_qcd;
 
-    const int runnr_BCD = 276811;
-    const int runnr_EFearly = 278802;
-    const int runnr_FlateG = 280385;
+    // Run Numbers taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2016Analysis
+    const int runnr_B = 275376;
+    const int runnr_C = 276283;
+    const int runnr_D = 276811;
+    const int runnr_E = 277420;
+    const int runnr_F = 278802; // 278808 actually but here EFearly
+    const int runnr_G = 280385;
+    const int runnr_H = 284044;
 
     // --- Scans --- //
     std::unique_ptr<Hists> hist_hotvr_pre, hist_cmstt_pre;
@@ -104,10 +109,10 @@ namespace uhh2 {
     double lep_pt_min  = 30.0;
     double jet_pt_min  = 30.0;
     double jet_eta_max = 2.4;
-    MuonId id_muo_loose = AndId<Muon>(MuonIDLoose(), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    MuonId id_muo_tight = AndId<Muon>(MuonIDTight(), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    ElectronId id_ele = AndId<Electron>(ElectronID_Spring16_veto, PtEtaCut(lep_pt_min, lep_eta_max));
-    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT), PtEtaCut(jet_pt_min, jet_eta_max));
+    MuonId id_muo_loose = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+    ElectronId id_ele = AndId<Electron>(ElectronID_Summer16_loose, PtEtaCut(lep_pt_min, lep_eta_max));
+    JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT_CHS), PtEtaCut(jet_pt_min, jet_eta_max));
 
     common.reset(new CommonModules());
     common->switch_jetlepcleaner(true);
@@ -147,21 +152,26 @@ namespace uhh2 {
 
     if(is_mc)
       {
-    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK4PFPuppi_MC));
-
-    	jec_topj_mc.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_L123_AK8PFchs_MC, ak8jets_name));
+    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFPuppi_MC));
+    	jec_topj_mc.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK8PFchs_MC, ak8jets_name));
       }
     else
       { 
-    	jec_subj_BCD.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFPuppi_DATA));
-    	jec_subj_EFearly.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFPuppi_DATA));
-    	jec_subj_FlateG.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFPuppi_DATA));
-    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFPuppi_DATA));
+    	jec_subj_B.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK4PFPuppi_DATA));
+    	jec_subj_C.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK4PFPuppi_DATA));
+    	jec_subj_D.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK4PFPuppi_DATA));
+    	jec_subj_E.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK4PFPuppi_DATA));
+    	jec_subj_F.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK4PFPuppi_DATA));
+    	jec_subj_G.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK4PFPuppi_DATA));
+    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK4PFPuppi_DATA));
 
-    	jec_topj_BCD.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_EFearly.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_EF_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_FlateG.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_G_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_H.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_23Sep2016_V4_H_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_B.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_C.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_D.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_E.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_F.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_G.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK8PFchs_DATA, ak8jets_name));
+    	jec_topj_H.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK8PFchs_DATA, ak8jets_name));
 
       }
 
@@ -210,8 +220,6 @@ namespace uhh2 {
       }
     if(!common->process(event)) return false;
     if(is_qcd) genjet_cleaner->process(event);
-    // genjet_cleaner->process(event);
-    // if(is_qcd && !sel_ngenjet->passes(event)) return false;
 
     // cl_muon->process(event);
     // if(!sel_nmuo->passes(event)) return false;
@@ -223,26 +231,62 @@ namespace uhh2 {
       }
     else
       {
-	if(event.run <= runnr_BCD)         
+	if(event.run <= runnr_B)
 	  {
-	    jec_subj_BCD->process(event);
-	    jec_topj_BCD->process(event);
+	    jec_subj_B->process(event);
+	    jec_topj_B->process(event);
 	  }
-	else if(event.run < runnr_EFearly) //< is correct, not <= 
+	else if(event.run <= runnr_C)
 	  {
-	    jec_subj_EFearly->process(event);
-	    jec_topj_EFearly->process(event);
+	    jec_subj_C->process(event);
+	    jec_topj_C->process(event);
 	  }
-	else if(event.run <= runnr_FlateG) 
+
+	else if(event.run <= runnr_D)
 	  {
-	    jec_subj_FlateG->process(event);
-	    jec_topj_FlateG->process(event);
+	    jec_subj_D->process(event);
+	    jec_topj_D->process(event);
 	  }
-	else if(event.run > runnr_FlateG)  
+
+	else if(event.run <= runnr_E)
+	  {
+	    jec_subj_E->process(event);
+	    jec_topj_E->process(event);
+	  }
+
+	else if(event.run < runnr_F) // "<" is correct since checking for Fearly
+	  {
+	    jec_subj_F->process(event);
+	    jec_topj_F->process(event);
+	  }
+
+	else if(event.run <= runnr_G)
+	  {
+	    jec_subj_G->process(event);
+	    jec_topj_G->process(event);
+	  }
+	else if(event.run <= runnr_H)
 	  {
 	    jec_subj_H->process(event);
 	    jec_topj_H->process(event);
 	  }
+	else runtime_error("CommonModules.cxx: run number not covered by if-statements in process-routine.");
+	
+	// else if(event.run < runnr_EFearly) //< is correct, not <= 
+	//   {
+	//     jec_subj_EFearly->process(event);
+	//     jec_topj_EFearly->process(event);
+	//   }
+	// else if(event.run <= runnr_FlateG) 
+	//   {
+	//     jec_subj_FlateG->process(event);
+	//     jec_topj_FlateG->process(event);
+	//   }
+	// else if(event.run > runnr_FlateG)  
+	//   {
+	//     jec_subj_H->process(event);
+	//     jec_topj_H->process(event);
+	//   }
       }
 
 
