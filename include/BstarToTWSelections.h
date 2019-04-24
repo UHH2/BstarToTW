@@ -47,12 +47,12 @@ namespace uhh2 {
 
   class Chi2Selection: public uhh2::Selection {
   public:
-    Chi2Selection(uhh2::Context &ctx, std::string label, double chi2_max);
+    Chi2Selection(uhh2::Context &ctx, std::string label, double chi2_max, const std::string disc_name = "Chi2");
     virtual bool passes(const uhh2::Event &event) override;
   private:
     double m_chi2_max;
     uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;    
-
+    const std::string m_disc_name;
   };
   
   class RecoMassSelection: public uhh2::Selection {
@@ -73,6 +73,45 @@ namespace uhh2 {
     boost::optional<uhh2::Event::Handle<std::vector<Jet> > > h_jets;
     uhh2::Event::Handle<FlavorParticle> h_primlep;
   };
+  class LeadingJetDeltaRSelection: public uhh2::Selection {
+  public:
+    LeadingJetDeltaRSelection(uhh2::Context &ctx, double delta_R_min, const boost::optional<uhh2::Event::Handle<std::vector<Jet> > > jet_collection = boost::none);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_delta_R_min;
+    boost::optional<uhh2::Event::Handle<std::vector<Jet> > > h_jets;
+    uhh2::Event::Handle<FlavorParticle> h_primlep;
+  };
+
+  class JetDeltaRSelection: public uhh2::Selection {
+  public:
+    JetDeltaRSelection(uhh2::Context &ctx, double delta_R_min, const boost::optional<uhh2::Event::Handle<std::vector<Jet> > > jet_collection = boost::none);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_delta_R_min;
+    boost::optional<uhh2::Event::Handle<std::vector<Jet> > > h_jets;
+    uhh2::Event::Handle<FlavorParticle> h_primlep;
+  };
+
+  class TopJetDeltaRSelection: public uhh2::Selection {
+  public:
+    TopJetDeltaRSelection(uhh2::Context &ctx, double delta_R_max, const boost::optional<uhh2::Event::Handle<std::vector<TopJet> > > topjet_collection = boost::none);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_delta_R_max;
+    bool do_R_calc;
+    boost::optional<uhh2::Event::Handle<std::vector<TopJet> > > h_topjets;
+    uhh2::Event::Handle<std::vector<Jet> > h_bjets;
+  };
+
+  class METDeltaPhiSelection: public uhh2::Selection {
+  public:
+    METDeltaPhiSelection(uhh2::Context &ctx, double delta_phi_max);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    double m_delta_phi_max;
+    uhh2::Event::Handle<FlavorParticle> h_primlep;
+  };
 
   class MassCutSelection: public uhh2::Selection {
   public:
@@ -81,7 +120,6 @@ namespace uhh2 {
   private:
     double m_min, m_max;
   };
-
 
   class NGenJetSelection: public uhh2::Selection {
   public:

@@ -58,13 +58,13 @@ BstarToTWChi2Discriminator::BstarToTWChi2Discriminator(Context & ctx, const std:
   // m_deltaPt_sigma = 0.081;
 
   m_deltaPhi_mean = M_PI;
-  m_deltaPhi_sigma = 0.05458;
+  m_deltaPhi_sigma = 0.048;
 
   // m_deltaPt_mean = -19.36;
   // m_deltaPt_sigma = 53.89;
 
-  m_deltaPt_mean = -0.002863;
-  m_deltaPt_sigma = 0.06937;
+  m_deltaPt_mean = 0.05;
+  m_deltaPt_sigma = 0.06;
 
 }
 
@@ -77,7 +77,7 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
       double mtop_reco = inv_mass(hyp.get_topjet());
       const double chi2_mtop = pow((mtop_reco - m_mtop_mean) / m_mtop_sigma, 2);
 
-      double deltaPhi_reco = (hyp.get_topjet().phi() - hyp.get_w().phi());
+      double deltaPhi_reco = (hyp.get_w().phi() - hyp.get_topjet().phi());
       if (deltaPhi_reco < 0) deltaPhi_reco += 2*M_PI;
       const double chi2_deltaPhi = pow((deltaPhi_reco - m_deltaPhi_mean) / m_deltaPhi_sigma, 2);
 

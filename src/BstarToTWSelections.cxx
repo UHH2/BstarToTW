@@ -63,15 +63,16 @@ bool STSelection::passes(const Event &event) {
   return ht > m_st_min;
 }
 
-Chi2Selection::Chi2Selection(Context &ctx, string label, double chi2_max):
+Chi2Selection::Chi2Selection(Context &ctx, string label, double chi2_max, const string disc_name):
   m_chi2_max(chi2_max),
-  h_hyp(ctx.get_handle<vector<BstarToTWHypothesis>>(label)) {}
+  h_hyp(ctx.get_handle<vector<BstarToTWHypothesis>>(label)),
+  m_disc_name(disc_name){}
 
 bool Chi2Selection::passes(const Event &event) {
-  const BstarToTWHypothesis *hyp = get_best_hypothesis(event.get(h_hyp), "Chi2");
+  const BstarToTWHypothesis *hyp = get_best_hypothesis(event.get(h_hyp), m_disc_name);
   if (hyp)
     {
-      double chi2 = hyp->get_discriminator("Chi2");
+      double chi2 = hyp->get_discriminator(m_disc_name);
       return chi2 < m_chi2_max;
     }
   return false;
@@ -114,6 +115,69 @@ bool JetDeltaPhiSelection::passes(const Event &event) {
     return (deltaPhi(jets.at(0), muo) > m_delta_phi_min);
   else
     return false;
+}
+LeadingJetDeltaRSelection::LeadingJetDeltaRSelection(Context &ctx, double delta_R_min, const boost::optional<Event::Handle<std::vector<Jet> > > jet_collection) {
+  m_delta_R_min = delta_R_min;  
+  h_jets = jet_collection;
+  h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
+}
+
+bool LeadingJetDeltaRSelection::passes(const Event &event) {
+  const vector<Jet> &jets = h_jets ? event.get(*h_jets) : *event.jets;
+  const FlavorParticle &lep = event.get(h_primlep);
+  return (jets.size() > 0 && deltaR(lep, jets.at(0)) > m_delta_R_min);
+}
+
+JetDeltaRSelection::JetDeltaRSelection(Context &ctx, double delta_R_min, const boost::optional<Event::Handle<std::vector<Jet> > > jet_collection) {
+  m_delta_R_min = delta_R_min;  
+  h_jets = jet_collection;
+  h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
+}
+
+bool JetDeltaRSelection::passes(const Event &event) {
+  const vector<Jet> &jets = h_jets ? event.get(*h_jets) : *event.jets;
+  const FlavorParticle &lep = event.get(h_primlep);
+  for (const Jet &jet : jets)
+    {
+      if (deltaR(lep, jet) < m_delta_R_min)
+	return false;
+    }
+  return true;
+}
+
+TopJetDeltaRSelection::TopJetDeltaRSelection(Context &ctx, double delta_R_max, const boost::optional<Event::Handle<std::vector<TopJet> > > topjet_collection) {
+  m_delta_R_max = delta_R_max;
+  do_R_calc = delta_R_max < 0;
+  h_topjets = topjet_collection;
+  h_bjets = ctx.get_handle<vector<Jet> >("btag_loose");
+}
+
+bool TopJetDeltaRSelection::passes(const Event &event) {
+  const vector<TopJet> &topjets = h_topjets ? event.get(*h_topjets) : *event.topjets;
+  const vector<Jet> &bjets = event.get(h_bjets);
+  if (bjets.size() > 0)
+    {
+      for (const TopJet topjet : topjets)
+	{
+	  if (do_R_calc)
+	    m_delta_R_max = sqrt(topjet.jetArea() / M_PI);
+	  if (deltaR(bjets.at(0), topjet) > m_delta_R_max)
+	    return false;
+	}
+      return true;
+    }
+  else return false;
+}
+
+METDeltaPhiSelection::METDeltaPhiSelection(Context &ctx, double delta_phi_max) {
+  m_delta_phi_max = delta_phi_max;  
+  h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
+}
+
+bool METDeltaPhiSelection::passes(const Event &event) {
+  const auto met = *event.met;
+  const FlavorParticle &muo = event.get(h_primlep);
+  return (deltaPhi(met, muo) < m_delta_phi_max);
 }
 
 MassCutSelection::MassCutSelection(double m_min_, double m_max_):

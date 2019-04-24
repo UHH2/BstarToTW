@@ -17,6 +17,7 @@
 
 #include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWModules.h"
+#include "UHH2/BstarToTW/include/BstarToTWCommonModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 
@@ -37,6 +38,7 @@ namespace uhh2 {
   private:  
 
     std::unique_ptr<AnalysisModule> primary_lepton;
+    std::unique_ptr<AnalysisModule> object_setup;
     // Cleaner
     std::unique_ptr<AnalysisModule> cl_objects, cl_muo_tight, cl_ele_tight;
 
@@ -67,6 +69,10 @@ namespace uhh2 {
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
     is_muo = ctx.get("analysis_channel") == "MUON";
 
+    // --- Additional Modules ---
+    primary_lepton.reset(new PrimaryLepton(ctx));
+    object_setup.reset(new ObjectSetup(ctx));
+
     // -- Kinematic Variables --
     double met_min = 50.;
     double st_min = 400.;
@@ -78,8 +84,6 @@ namespace uhh2 {
     MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
     ElectronId id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
 
-    // --- Additional Modules ---
-    primary_lepton.reset(new PrimaryLepton(ctx));
     // Cleaner
     cl_objects.reset(new ObjectCleaner(ctx));
     cl_muo_tight.reset(new MuonCleaner(id_muo_tight));
@@ -91,19 +95,19 @@ namespace uhh2 {
     // - Trigger -
     // Muon (recommended trigger selections for 2016)
     trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
-    trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
+    // trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
     // Electron (recommended trigger selections for 2016)
     trig_Ele27.reset(new TriggerSelection("HLT_Ele27_WPTight_Gsf_v*"));
     trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*"));
     trig_Pho175.reset(new TriggerSelection("HLT_Photon175_v*"));
     // - Lepton vetos
-    veto_muo.reset(new NMuonSelection(0,0));
-    veto_ele.reset(new NElectronSelection(0,0));
+    veto_muo.reset(new NMuonSelection(0, 0));
+    veto_ele.reset(new NElectronSelection(0, 0));
     // - Lepton
-    sel_1muo.reset(new NMuonSelection(1,1));
-    sel_1ele.reset(new NElectronSelection(1,1));
+    sel_1muo.reset(new NMuonSelection(1, 1));
+    sel_1ele.reset(new NElectronSelection(1, 1));
     // - JET
-    sel_njet.reset(new NJetSelection(1,-1));
+    sel_njet.reset(new NJetSelection(1, -1));
     // - MET
     sel_met.reset(new METSelection(met_min));
     // - ST
@@ -131,13 +135,13 @@ namespace uhh2 {
 
   bool BstarToTWPreSelectionModule::process(Event & event) {
     
-    // --- Cleaner
+    // --- Object Setup and Cleaning
     if(!is_mc)
       {
 	if(!sel_lumi->passes(event)) return false;
       }
-    if(!(cl_objects->process(event))) return false;
-
+    // if(!(cl_objects->process(event))) return false;
+    if(!object_setup->process(event)) return false;
     primary_lepton->process(event);
 
     hist_cleaner->fill(event);
@@ -151,7 +155,8 @@ namespace uhh2 {
 	if(!sel_1muo->passes(event)) return false;
 	hist_1lep->fill(event);
 	// --- Trigger
-	if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
+	// if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
+	if(!trig_IsoMu24->passes(event)) return false;
 	hist_trigger->fill(event);
       }
     // - Electron Channel

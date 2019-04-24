@@ -22,7 +22,7 @@ AndHists::AndHists(Context &ctx, const string & dirname, const boost::optional<T
   nevt = book<TH1F>("NEvt", "", 1,0,1);
 
   // Add common hists to vector
-  hists_vector.push_back(new BstarToTWHists(ctx, dirname + "_BstarToTW"));
+  hists_vector.push_back(new BstarToTWAnalysisHists(ctx, dirname + "_Analysis"));
   if (id_topjet)  hists_vector.push_back(new HOTVRHists(ctx, dirname + "_HOTVR", *id_topjet));
   else hists_vector.push_back(new HOTVRHists(ctx, dirname + "_HOTVR"));
   hists_vector.push_back(new LuminosityHists(ctx, dirname + "_Lumi"));

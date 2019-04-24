@@ -104,9 +104,9 @@ class ObjectTagger: public uhh2::AnalysisModule {
   uhh2::Event::Handle<std::vector<Jet> > h_btag_tight;
 
   TopJetId m_toptag_id = AndId<TopJet>(HOTVRTopTag(0.8, 140.0, 220.0, 50.0), Tau32Groomed(0.56));
-  JetId m_btag_tight_id = CSVBTag(CSVBTag::WP_TIGHT);
-  JetId m_btag_medium_id = CSVBTag(CSVBTag::WP_MEDIUM);
-  JetId m_btag_loose_id = CSVBTag(CSVBTag::WP_LOOSE);
+  JetId m_btag_tight_id = DeepCSVBTag(DeepCSVBTag::WP_TIGHT);
+  JetId m_btag_medium_id = DeepCSVBTag(DeepCSVBTag::WP_MEDIUM);
+  JetId m_btag_loose_id = DeepCSVBTag(DeepCSVBTag::WP_LOOSE);
 
 };
 

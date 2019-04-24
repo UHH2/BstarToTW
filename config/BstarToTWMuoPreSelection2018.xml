@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
+
+	  <!-- <!ENTITY TargetLumi      "59970"> -->
+	  <!ENTITY TargetLumi      "14000">
+	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/PreSelection/Muon/2018/NOMINAL">
+	  <!ENTITY b_Cacheable     "False">
+	  <!ENTITY NEVT            "-1">
+	  <!ENTITY PROOFdir        "/nfs/dust/cms/user/froehlia/.proof2">
+
+
+	  <!ENTITY DATA_A SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_SingleMuon2018_RunA.xml">
+
+	  <!ENTITY BstarToTW0700LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-700_LH_TuneCP5_13TeV-madgraph-pythia8.xml">
+	  <!ENTITY BstarToTW0800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-800_LH_TuneCP5_13TeV-madgraph-pythia8.xml">
+	  <!ENTITY BstarToTW0900LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-900_LH_TuneCP5_13TeV-madgraph-pythia8.xml">
+	  <!ENTITY BstarToTW1000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-1000_LH_TuneCP5_13TeV-madgraph-pythia8.xml">
+	  <!ENTITY BstarToTW1100LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-1100_LH_TuneCP5_13TeV-madgraph-pythia8.xml">
+
+	  <!ENTITY TTToSemiLeptonic SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_TTToSemiLeptonic.xml">
+
+	  <!ENTITY WJetsToLNu_HT_70to100 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-70To100.xml">
+	  <!ENTITY WJetsToLNu_HT_100to200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-100To200.xml">
+	  <!ENTITY WJetsToLNu_HT_200to400 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-200To400.xml">
+	  <!ENTITY WJetsToLNu_HT_400to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-400To600.xml">
+	  <!ENTITY WJetsToLNu_HT_600to800 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-600To800.xml">
+	  <!ENTITY WJetsToLNu_HT_800to1200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-800To1200.xml">
+	  <!ENTITY WJetsToLNu_HT_1200to2500 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-1200To2500.xml">
+	  <!ENTITY WJetsToLNu_HT_2500toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-2500ToInf.xml">
+
+	  <!ENTITY SingleT_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8.xml">
+	  <!ENTITY SingleT_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8.xml">
+	  
+]>
+
+
+
+<!--
+<ConfigParse NEventsBreak="0" FileSplit="30" AutoResubmit="5"/>
+<ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_MuoPreSel18"/>
+-->
+
+<!-- OutputLevel controls which messages are printed; set to VERBOSE or DEBUG for more verbosity, to WARNING or ERROR for less -->
+<JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
+  <Library Name="libSUHH2BstarToTW"/>
+  <Package Name="SUHH2BstarToTW.par" />
+
+<Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&PRESELdir;/" PostFix="" TargetLumi="&TargetLumi;" >
+  
+
+  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_A_2018" Cacheable="&b_Cacheable;">
+    &DATA_A;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+
+  <InputData Lumi="99855.8401877" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW0700LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW0700LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="84877.9371523" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW0800LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW0800LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99838.648525" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW0900LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW0900LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99830.5189567" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW1000LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW1000LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99800.2628292" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW1100LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW1100LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+
+ <InputData Lumi="336939.1825" NEventsMax="&NEVT;" Type="MC" Version="TTToSemiLeptonic_2018" Cacheable="&b_Cacheable;">
+    &TTToSemiLeptonic;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+
+  <InputData Lumi="21389.37091" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_70to100;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="21390.21465" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_100to200;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="59161.06487" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_200to400;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="101396.3596" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_400to600;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="1459136.089" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_600to800;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="1597710.71" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_800to1200;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="6855855.856" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_1200to2500;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+
+ <InputData Lumi="217986.8459" NEventsMax="&NEVT;" Type="MC" Version="SingleT_tW_antitop_2018" Cacheable="&b_Cacheable;">
+    &SingleT_tW_antitop;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="274935.5486" NEventsMax="&NEVT;" Type="MC" Version="SingleT_tW_top_2018" Cacheable="&b_Cacheable;">
+    &SingleT_tW_top;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ 
+        <UserConfig>
+            <!-- define which collections to read from the input. Only specify what you need to save I/O time -->
+            <Item Name="PrimaryVertexCollection" Value="offlineSlimmedPrimaryVertices" /> 
+            <Item Name="ElectronCollection" Value="slimmedElectronsUSER" />
+            <Item Name="MuonCollection" Value="slimmedMuonsUSER" /> 
+            <Item Name="JetCollection" Value="jetsAk4CHS" />
+            <Item Name="METName" Value="slimmedMETs" />
+            <Item Name="GenJetCollection" Value="slimmedGenJets" /> 
+	    <Item Name="TopJetCollection" Value="hotvrPuppi" />  
+	    <Item Name="GenTopJetCollection" Value="hotvrGen" />  
+	    <Item Name="GenParticleCollection" Value="GenParticles" />
+	    <Item Name="GenInfoName" Value="genInfo" />
+
+            <Item Name="lumi_file" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.root" />
+            <Item Name="lumihists_lumi_per_bin" Value="1000."/>
+
+            
+            <!-- The list of available collections to read in corresponds to the pointer members in event. The 'Name's to use here in the configuration are:
+            
+                 PrimaryVertexCollection
+                 ElectronCollection
+                 MuonCollection
+                 TauCollection
+                 PhotonCollection
+                 JetCollection
+                 TopJetCollection
+                 METName
+                 
+                 GenInfoName
+                 GenJetCollection
+                 GenTopJetCollection
+                 GenParticleCollection
+                 
+                 Note that the last four are only read in for MC (InputData Type="MC"), so it is save to specify
+                 them for real data, although those branches do not exist.
+                 
+                 As 'Value', always use the branch name (if in doubt, open the input file in ROOT).
+                 
+                 By default, triggers are read. To explicitly disable reading triggers, use:
+                 <Item Name="readTrigger" Value="false" />
+            -->
+            
+            <!-- the class name of the AnalysisModule subclasses to run: -->
+            <Item Name="AnalysisModule" Value="BstarToTWPreSelectionModule" /> 
+            
+            <!-- tell AnalysisModuleRunner NOT to use the MC event weight from SFrame; rather let
+                 MCLumiWeight (called via CommonModules) calculate the MC event weight. The MC
+                 event weight assigned by MCLumiWeight is InputData.Lumi / Cycle.TargetLumi. -->
+            <Item Name="use_sframe_weight" Value="false" />
+            
+            <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
+            <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/MyMCPileupHistogram.root" /> 
+	    <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/MyDataPileupHistogram2018.root" />
+
+	    <Item Name="ScaleVariationMuR" Value="none" />
+	    <Item Name="ScaleVariationMuF" Value="none" />
+	    <Item Name="jecsmear_direction" Value="nominal" />
+	    <Item Name="jersmear_direction" Value="nominal" />
+            
+	    <!-- Channel? ELECTRON or MUON -->
+	    <Item Name="analysis_channel" Value="MUON"/>
+
+        </UserConfig>
+    </Cycle>
+</JobConfiguration>

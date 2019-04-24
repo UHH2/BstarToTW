@@ -192,41 +192,94 @@ BstarToTWBackgroundHists::~BstarToTWBackgroundHists(){}
 BstarToTWAnalysisHists::BstarToTWAnalysisHists(uhh2::Context &ctx, const std::string &dirname):
   Hists(ctx,dirname) {
   h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
+  h_toptag = ctx.get_handle<vector<TopJet> >("toptag");
+  h_btag = ctx.get_handle<vector<Jet> >("btag_loose");
+  h_ht = ctx.get_handle<double>("HT");
 
-  // Book histograms
+  // --- Book histograms
+  // Event variables in nicer binning
+  pt_lep = book<TH1F>("lepton_pt","p_{T, lep} [GeV]", 40, 0, 2000);
+  event_met = book<TH1F>("MET", "miss. E_{T} [GeV]", 40, 0, 2000);
+  event_ht = book<TH1F>("HT", "H_{T} [GeV]", 50, 0, 2500);
+  event_htlep = book<TH1F>("HTlep", "H_{T, lep} [GeV]", 50, 0, 2500);
+  event_st = book<TH1F>("ST", "S_{T} [GeV]", 50, 0, 5000);
+  event_st_half = book<TH1F>("ST_half", "S_{T} [GeV]", 25, 0, 5000);
+  event_st_fifth = book<TH1F>("ST_fifth", "S_{T} [GeV]", 10, 0, 5000);
+  event_rho = book<TH1F>("rho", "#rho [GeV]", 20, 0, 100);
+
+  ratio_ht = book<TH1F>("HTratio", "ratio H_{T}", 20, 0, 4);
+  asymm_st = book<TH1F>("STasymm", "asymm. S_{T}", 20, -1, 1);
+
+  lep_isolation = book<TH1F>("lepton_isolation", "rel. iso", 50, 0, 0.5);
+
+  // Angular distributions
   deltaPhi_blep = book<TH1F>("deltaPhi_blep", "#Delta #phi_{b,l}", 35, 0, 3.5);
   deltaPhi_btop = book<TH1F>("deltaPhi_btop", "#Delta #phi_{b,t}", 35, 0, 3.5);
-  deltaPhi_hotvr_ak4 = book<TH1F>("deltaPhi_hotvr_ak4", "#Delta #phi_{hotvr,ak4}", 35, 0, 3.5);
-  deltaPhi_lep_ak4 = book<TH1F>("deltaPhi_lep_ak4", "#Delta #phi_{l,ak4}", 35, 0, 3.5);
-  deltaPhi_hotvr_lak4 = book<TH1F>("deltaPhi_hotvr_leadingak4", "#Delta #phi_{hotvr,ak4}", 35, 0, 3.5);
-  deltaPhi_lep_lak4 = book<TH1F>("deltaPhi_lep_leadingak4", "#Delta #phi_{l,ak4}", 35, 0, 3.5);
+  deltaPhi_toplep = book<TH1F>("deltaPhi_toplep", "#Delta #phi_{t,l}", 35, 0, 3.5);
+  deltaPhi_lepmet = book<TH1F>("deltaPhi_lepmet", "#Delta #phi_{l,MET}", 35, 0, 3.5);
+  deltaR_blep = book<TH1F>("deltaR_blep", "#Delta R_{b,l}", 60, 0, 6);
+  deltaR_btop = book<TH1F>("deltaR_btop", "#Delta R_{b,t}", 60, 0, 6);
+  deltaR_toplep = book<TH1F>("deltaR_toplep", "#Delta R_{t,l}", 60, 0, 6);
+
 }
 
 void BstarToTWAnalysisHists::fill(const Event &event) {
+  // check if handles were set, otherwise return
+  if (!event.is_valid(h_primlep) || !event.is_valid(h_toptag) || !event.is_valid(h_btag) || !event.is_valid(h_ht))
+    return;
 
   double weight = event.weight;
+  FlavorParticle lep = event.get(h_primlep);
+  vector<TopJet> topjets = event.get(h_toptag);
+  vector<Jet> bjets = event.get(h_btag);
+  double met = event.met->pt();
+  double ht = event.get(h_ht);
+  double htlep = lep.pt() + met;
+  double st = ht + lep.pt() + met;
+  
+  pt_lep->Fill(lep.pt(), weight);
+  event_met->Fill(met, weight);
+  event_ht->Fill(ht, weight);
+  event_htlep->Fill(htlep, weight);
+  event_st->Fill(st, weight);
+  event_st_half->Fill(st, weight);
+  event_st_fifth->Fill(st, weight);
+  event_rho->Fill(event.rho, weight);
 
+  ratio_ht->Fill(ht/htlep, weight);
+  asymm_st->Fill((ht-htlep)/st, weight);
+  
+  for (TopJet &topjet : topjets) 
+    {
+      deltaPhi_toplep->Fill(deltaPhi(topjet.v4(), lep.v4()), weight);
+      deltaR_toplep->Fill(deltaR(topjet.v4(), lep.v4()), weight);
+      for (Jet &bjet : bjets)
+	{
+	  deltaPhi_btop->Fill(deltaPhi(topjet.v4(), bjet.v4()), weight);
+	  deltaR_btop->Fill(deltaR(topjet.v4(), bjet.v4()), weight);
+	}
+    }
+  for (Jet &bjet : bjets)
+    {
+      deltaPhi_blep->Fill(deltaPhi(lep.v4(), bjet.v4()), weight);
+      deltaR_blep->Fill(deltaR(lep.v4(), bjet.v4()), weight);
+    }
 
+  deltaPhi_lepmet->Fill(deltaPhi(lep.v4(),event.met->v4()), weight);
+
+  for (const Electron &ele : *event.electrons)
+    {
+      lep_isolation->Fill(ele.relIsorho(event.rho), weight);
+    }
+
+  for (const Muon &muo : *event.muons)
+    {
+      lep_isolation->Fill(muo.relIso(), weight);
+    }
+ 
 }
 
 BstarToTWAnalysisHists::~BstarToTWAnalysisHists(){}
-
-TopMatchHists::TopMatchHists(uhh2::Context &ctx, const std::string &dirname, const std::string & hyps_name):
-  Hists(ctx, dirname) {
-
-  h_hyps = ctx.get_handle<vector<BstarToTWHypothesis> >(hyps_name);
-  h_tophad = ctx.get_handle<vector<GenTop> >("HadronicTop");
-
-  double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 5000};
-  Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
-  HOTVR_pt     = book<TH1F>("pt", "p_{T}^{top-jet} [GeV]", 40, 0, 1600);
-  HOTVR_eta    = book<TH1F>("eta", "#eta^{topjet}", 30, -6, 6);
-
-  // mis_Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
-  // mis_HOTVR_pt     = book<TH1F>("pt", "p_{T}^{top-jet} [GeV]", 40, 0, 1600);
-  // mis_HOTVR_eta    = book<TH1F>("eta", "#eta^{topjet}", 30, -6, 6);
-
-}
 
 void TopMatchHists::fill(const Event &event) {
   

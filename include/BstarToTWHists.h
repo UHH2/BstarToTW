@@ -66,8 +66,13 @@ namespace uhh2 {
     virtual ~BstarToTWAnalysisHists();
   protected:
     uhh2::Event::Handle<FlavorParticle> h_primlep;
-    TH1F *deltaPhi_blep, *deltaPhi_btop, *deltaPhi_hotvr_ak4, *deltaPhi_lep_ak4, *deltaPhi_hotvr_lak4, *deltaPhi_lep_lak4;
-
+    uhh2::Event::Handle<std::vector<TopJet> > h_toptag;
+    uhh2::Event::Handle<std::vector<Jet> > h_btag;
+    uhh2::Event::Handle<double> h_ht;
+    TH1F *pt_lep, *event_met, *event_ht, *event_htlep, *ratio_ht, *asymm_st, *event_st, *event_st_half, *event_st_fifth, *event_rho, *lep_isolation;
+    TH1F *deltaPhi_blep, *deltaPhi_btop, *deltaPhi_toplep, *deltaPhi_lepmet;
+    TH1F *deltaR_blep, *deltaR_btop, *deltaR_toplep;
+    
   };
 
   class TopMatchHists: public uhh2::Hists {

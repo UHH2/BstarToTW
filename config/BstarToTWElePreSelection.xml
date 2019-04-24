@@ -7,8 +7,6 @@
 	  <!ENTITY NEVT            "-1">
 	  <!ENTITY PROOFdir        "/nfs/dust/cms/user/froehlia/.proof2">
 
-
-
 	  <!ENTITY BstarToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/Bstar/MC_BstarToTW_M-1200_LH_25ns.xml">
 	  <!ENTITY BstarToTW1400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/Bstar/MC_BstarToTW_M-1400_LH_25ns.xml">
 	  <!ENTITY BstarToTW1600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_8_0_24_patch1/src/UHH2/common/datasets/RunII_80X_v5/Bstar/MC_BstarToTW_M-1600_LH_25ns.xml">
