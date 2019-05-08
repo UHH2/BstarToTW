@@ -22,6 +22,7 @@
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
+#include "UHH2/BstarToTW/include/BstarToTWSystematics.h"
 #include "UHH2/BstarToTW/include/BstarToTWReconstruction.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisHists.h"
@@ -50,7 +51,7 @@ namespace uhh2 {
     std::unique_ptr<ObjectTagger> object_tagger;
 
     // Scale Factors
-    std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight;
+    std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight, sf_lepton;
     // TO DO!
 
     // Reconstruction Modules
@@ -90,6 +91,7 @@ namespace uhh2 {
 
   BstarToTWAnalysisModule::BstarToTWAnalysisModule(Context & ctx) {
     // Set Flags
+    // Year year;
     dataset_name = ctx.get("dataset_version");
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
     is_muo = ctx.get("analysis_channel") == "MUON";
@@ -117,7 +119,15 @@ namespace uhh2 {
 	sf_mc_pu_reweight.reset(new MCPileupReweight(ctx, syst_pu));
       }
     // TO DO!
-
+    //include years!
+    if (is_muo)
+      {
+	sf_lepton.reset(new MuonScaleFactors2018(ctx));
+      }
+    else if (is_ele)
+      {
+	// sf_lepton.reset(MuonScaleFactors2018(ctx);
+      }
     // Selection Parameters
     // double deltaPhi_min  = M_PI/2; // minimum delta phi between muon and top
     double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
@@ -216,6 +226,7 @@ namespace uhh2 {
 	sf_mc_lumiweight->process(event);
 	sf_mc_pu_reweight->process(event);
       }
+    sf_lepton->process(event);
     // TO DO!
 
     // hist_BTagMCEfficiency->fill(event);
