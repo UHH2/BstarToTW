@@ -32,17 +32,17 @@ AndHists::AndHists(Context &ctx, const string & dirname, const boost::optional<T
   hists_vector.push_back(new JetHists(ctx, dirname + "_Jet"));
 
   JetHists* bJetLooseHists = new JetHists(ctx, dirname + "_bJet_loose", 2);
-  JetId btag_loose = CSVBTag(CSVBTag::WP_LOOSE);
+  JetId btag_loose = DeepCSVBTag(DeepCSVBTag::WP_LOOSE);
   bJetLooseHists->set_JetId(btag_loose);
   hists_vector.push_back(bJetLooseHists);
 
   JetHists* bJetMediumHists = new JetHists(ctx, dirname + "_bJet_medium", 2);
-  JetId btag_medium = CSVBTag(CSVBTag::WP_MEDIUM);
+  JetId btag_medium = DeepCSVBTag(DeepCSVBTag::WP_MEDIUM);
   bJetMediumHists->set_JetId(btag_medium);
   hists_vector.push_back(bJetMediumHists);
 
   JetHists* bJetTightHists = new JetHists(ctx, dirname + "_bJet_tight", 2);
-  JetId btag_tight = CSVBTag(CSVBTag::WP_TIGHT);
+  JetId btag_tight = DeepCSVBTag(DeepCSVBTag::WP_TIGHT);
   bJetTightHists->set_JetId(btag_tight);
   hists_vector.push_back(bJetTightHists);
 }
