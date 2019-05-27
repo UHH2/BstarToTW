@@ -173,6 +173,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_A->process(event);
 	    jec_ak4_A->process(event);
+	    jec_ak4_A->correct_met(event);
 	    jec_hotvr_A->process(event);
 	  }
 	else if(event.run <= runnr_B)
@@ -180,6 +181,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_B->process(event);
 	    jec_ak4_B->process(event);
+	    jec_ak4_B->correct_met(event);
 	    jec_hotvr_B->process(event);
 	  }
 
@@ -188,6 +190,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_C->process(event);
 	    jec_ak4_C->process(event);
+	    jec_ak4_C->correct_met(event);
 	    jec_hotvr_C->process(event);
 	  }
 
@@ -196,6 +199,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_D->process(event);
 	    jec_ak4_D->process(event);
+	    jec_ak4_D->correct_met(event);
 	    jec_hotvr_D->process(event);
 	  }
 
@@ -228,7 +232,6 @@ ObjectSetup::ObjectSetup(Context & ctx){
   }
 
   // Cleaner
-
   cl_pv.reset(new PrimaryVertexCleaner(id_pv));
   cl_muo.reset(new MuonCleaner(id_muo_veto));
   cl_ele.reset(new ElectronCleaner(id_ele_veto));
@@ -242,11 +245,15 @@ ObjectSetup::ObjectSetup(Context & ctx){
   metfilters_selection->add<TriggerSelection>("HBHENoiseIsoFilter", "Flag_HBHENoiseIsoFilter");
   metfilters_selection->add<TriggerSelection>("globalSuperTightHalo2016Filter", "Flag_globalSuperTightHalo2016Filter");
   metfilters_selection->add<TriggerSelection>("EcalDeadCellTriggerPrimitiveFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter");
-  // metfilters_selection->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");  // Not recommended
-  // metfilters_selection->add<TriggerSelection>("BadChargedCandidateFilter", "Flag_BadChargedCandidateFilter"); // Not recommended, under review. Already applied in 2016v2
-  if (year != Year::is2016v2) metfilters_selection->add<TriggerSelection>("BadPFMuonFilter", "Flag_BadPFMuonFilter"); // Already filter BadPFMuon events in ntuple production
+  if (!is_mc) metfilters_selection->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");
+  // metfilters_selection->add<TriggerSelection>("BadChargedCandidateFilter", "Flag_BadChargedCandidateFilter"); // Not recommended, under review. Separate module in ntuple_generator for 2016v2
+  if (year != Year::is2016v2) {
+    metfilters_selection->add<TriggerSelection>("BadPFMuonFilter", "Flag_BadPFMuonFilter");
+  } else {
+    metfilters_selection->add<TriggerSelection>("BadPFMuonFilter", "Extra_BadPFMuonFilter");
+  }
   metfilters_selection->add<TriggerSelection>("goodVertices", "Flag_goodVertices");
-  metfilters_selection->add<EcalBadCalibSelection>("EcalBadCalibSelection"); // Use this instead of Flag_ecalBadCalibFilter
+  metfilters_selection->add<EcalBadCalibSelection>("EcalBadCalibSelection"); // Use this instead of Flag_ecalBadCalibFilter, uses ecalBadCalibReducedMINIAODFilter in ntuple_generator
   metfilters_selection->add<NPVSelection>("1 good PV",1,-1,id_pv);
 
 }
@@ -265,7 +272,7 @@ bool ObjectSetup::process(Event & event){
   // jet energy corrections and cleaning
   cl_jetpfid->process(event);
   jec_module->process(event);
-
+  
   cl_jet->process(event);
   cl_topjet->process(event);
 
