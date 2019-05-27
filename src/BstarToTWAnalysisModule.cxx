@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <chrono>
 
 #include "UHH2/core/include/AnalysisModule.h"
 #include "UHH2/core/include/Event.h"
@@ -51,8 +52,10 @@ namespace uhh2 {
     std::unique_ptr<ObjectTagger> object_tagger;
 
     // Scale Factors
-    std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight, sf_lepton;
-    // TO DO!
+    std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight;
+    std::unique_ptr<AnalysisModule> sf_lepton;
+    std::unique_ptr<AnalysisModule> sf_btag;
+    std::unique_ptr<AnalysisModule> sf_toptag;
 
     // Reconstruction Modules
     std::unique_ptr<AnalysisModule> reco_1toptag, disc_1toptag, disc_match;
@@ -61,7 +64,7 @@ namespace uhh2 {
 
     // Selection + Hists
     std::unique_ptr<AndHists> hist_presel;
-    std::unique_ptr<Hists> hist_btag_mc_efficiency; // hists for calculating btag scale factors
+    std::unique_ptr<Hists> hist_btag_mc_efficiency;
 
     std::unique_ptr<Selection> sel_deltaPhi_metlep; // delta phi between primary lepton and MET
     std::unique_ptr<AndHists> hist_sel_deltaPhi_metlep;
@@ -86,7 +89,6 @@ namespace uhh2 {
     std::unique_ptr<Selection> sel_1toptag20chi2, sel_0toptag20chi2; // chi2 cut (for 0 and 1 toptag reco)
     std::unique_ptr<Selection> sel_1toprecomass, sel_0toprecomass; // reco mass cut (for 0 and 1 toptag reco)
     std::unique_ptr<AndHists> hist_sel_1btag1toptag20chi2, hist_sel_1btag0toptag20chi2, hist_sel_0btag1toptag20chi2, hist_sel_0btag0toptag20chi2;
-
   };
 
   BstarToTWAnalysisModule::BstarToTWAnalysisModule(Context & ctx) {
@@ -97,8 +99,25 @@ namespace uhh2 {
     is_muo = ctx.get("analysis_channel") == "MUON";
     do_for_cr = ctx.get("do_for_cr") == "true";
     is_mc = ctx.get("dataset_type") == "MC";
-
     // h_tot_weight = ctx.declare_event_output<float>("weight_total");
+
+    // Selection Parameters
+    double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
+    double top_m_min     = 140.;   // minimum topjet mass
+    double top_m_max     = 220.;   // maximum topjet mass
+    double top_mpair_min = 50.;    // minimum pairwise mass of first three subjets
+    double top_tau32_max = 0.56;   // maximum nsubjetiness tau_3/2
+    double chi2_max      = 30.0;   // maximum chi2 of the reconstructed bstar hypothesis
+    double deltaR_blep_min = 2.0;  // minimuim deltaR between lepton and (b)jet
+    double deltaPhi_metlep_max = M_PI/2; // maximum deltaPhi between missign ET and lepton
+    BTag::algo btag_algo = BTag::DEEPCSV;
+    BTag::wp btag_wp = BTag::WP_MEDIUM;
+
+    // Toptags:
+    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max));
+    TopJetId id_toptag_veto = VetoId<TopJet>(id_toptag);
+    // btag:
+    JetId id_btag = BTag(btag_algo, btag_wp);
 
     // Modules for setting up event handles
     primary_lep.reset(new PrimaryLepton(ctx));
@@ -118,7 +137,6 @@ namespace uhh2 {
 	std::string syst_pu = ctx.get("Systematic_PU");
 	sf_mc_pu_reweight.reset(new MCPileupReweight(ctx, syst_pu));
       }
-    // TO DO!
     //include years!
     if (is_muo)
       {
@@ -126,25 +144,11 @@ namespace uhh2 {
       }
     else if (is_ele)
       {
-	// sf_lepton.reset(MuonScaleFactors2018(ctx);
+	// To Do
       }
-    // Selection Parameters
-    // double deltaPhi_min  = M_PI/2; // minimum delta phi between muon and top
-    double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
-    double top_m_min     = 140.;   // minimum topjet mass
-    double top_m_max     = 220.;   // maximum topjet mass
-    double top_mpair_min = 50.;    // minimum pairwise mass of first three subjets
-    double top_tau32_max = 0.56;   // maximum nsubjetiness tau_3/2
-    double chi2_max      = 30.0;   // maximum chi2 of the reconstructed bstar hypothesis
-    double deltaR_blep_min = 2.0;  // minimuim deltaR between lepton and (b)jet
-    double deltaPhi_metlep_max = M_PI/2; // maximum deltaPhi between missign ET and lepton
-    DeepCSVBTag::wp btag_wp  = DeepCSVBTag::WP_LOOSE;  // b-tag workingpoint
-    // Toptags:
-    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max));
-    TopJetId id_toptag_veto = VetoId<TopJet>(id_toptag);
-    // btag:
-    JetId id_btag  = DeepCSVBTag(btag_wp);
-    
+    sf_btag.reset(new MCBTagScaleFactor(ctx, btag_algo, btag_wp, "jets", "NOMINAL", "mujets", "incl", "MCBtagEfficiencies"));
+    sf_toptag.reset(new HOTVRScaleFactor(ctx, id_toptag, "HadronicTop", "TopTagSF", "HOTVRTopTagSFs"));
+
     // Reconstruction Modules
     reco_1toptag.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, "1TopTagReconstruction", id_toptag));
     disc_1toptag.reset(new BstarToTWChi2Discriminator(ctx, "1TopTagReconstruction"));
@@ -159,9 +163,7 @@ namespace uhh2 {
 
     // Selection + Hists
     hist_presel.reset(new AndHists(ctx, "PreSel"));
-    std::unique_ptr<BTagMCEfficiencyHists<DeepCSVBTag>> hists_btag_mc_efficiency;
-    hists_btag_mc_efficiency.reset(new BTagMCEfficiencyHists<DeepCSVBTag>(ctx,"BTagLoose", btag_wp));
-    // hist_BTagMCEfficiency.reset(new BTagMCEfficiencyHists(ctx, "BTagMCEfficiency", btag_wp));
+    hist_btag_mc_efficiency.reset(new BTagMCEfficiencyHists(ctx,"BTagMCEfficiency", id_btag));
     // deltaPhi met-lep
     sel_deltaPhi_metlep.reset(new METDeltaPhiSelection(ctx, deltaPhi_metlep_max));
     hist_sel_deltaPhi_metlep.reset(new AndHists(ctx, "deltaPhiMETLep"));
@@ -229,7 +231,6 @@ namespace uhh2 {
     sf_lepton->process(event);
     // TO DO!
 
-    // hist_BTagMCEfficiency->fill(event);
     hist_presel->fill(event);
 
     // deltaPhi met-lep
@@ -239,6 +240,8 @@ namespace uhh2 {
     if(!sel_deltaR_jetlep->passes(event)) return false;
     hist_sel_deltaR_jetlep->fill(event);
 
+    hist_btag_mc_efficiency->fill(event);
+    sf_btag->process(event);
     // - 0 btag regions - //
     if (veto_btag->passes(event))
       {
@@ -246,7 +249,7 @@ namespace uhh2 {
 	// - deltaR jet, lepton - //
 	if (!sel_deltaR_leadingjetlep->passes(event)) return false;
 	hist_sel_0btagdr->fill(event);
-	
+	sf_toptag->process(event);
 	// - 1 toptag - //
 	if (sel_1toptag->passes(event))
 	  {
@@ -282,6 +285,7 @@ namespace uhh2 {
 	hist_sel_1btag->fill(event);
 	if (!sel_deltaR_leadingbjetlep->passes(event)) return false;
 	hist_sel_1btagdr->fill(event);
+	sf_toptag->process(event);
 	// - Signal Region - //
 	if(sel_1toptag->passes(event))
 	  {	    
