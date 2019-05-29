@@ -8,7 +8,7 @@ using namespace uhh2;
 MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
 
   m_sf_trigger_before.reset(new MCMuonScaleFactor(ctx,
-						  ctx.get("SF_MUO_TRIGGER_BEFORE_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/EfficienciesAndSF_2018Data_BeforeMuonHLTUpdate.root"),
+						  ctx.get("SF_MUO_TRIGGER_BEFORE_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_BeforeMuonHLTUpdate.root"),
 						  ctx.get("SF_MUO_TRIGGER_BEFORE_FILE", "IsoMu24_PtEtaBins"),
 						  0.5,
 						  "trigger",
@@ -16,7 +16,7 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
 						  ctx.get("SYS_MUO_TRIGGER", "nominal")));
 
   m_sf_trigger_after.reset(new MCMuonScaleFactor(ctx,
-						 ctx.get("SF_MUO_TRIGGER_AFTER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/EfficienciesAndSF_2018Data_AfterMuonHLTUpdate.root"),
+						 ctx.get("SF_MUO_TRIGGER_AFTER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_AfterMuonHLTUpdate.root"),
 						 ctx.get("SF_MUO_TRIGGER_AFTER_FILE", "IsoMu24_PtEtaBins"),
 						 0.5,
 						 "trigger",
@@ -24,7 +24,7 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
 						 ctx.get("SYS_MUO_TRIGGER", "nominal")));
 
   m_sf_id.reset(new MCMuonScaleFactor(ctx,
-				      ctx.get("SF_MUO_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/RunABCD_SF_ID.root"),
+				      ctx.get("SF_MUO_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_ID_SF_RunABCD.root"),
 				      ctx.get("SF_MUO_ID", "NUM_TightID_DEN_TrackerMuons_pt_abseta"),
 				      1.0,
 				      "tight_id",
@@ -32,7 +32,7 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
 				      ctx.get("SYS_MUO_ID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
-				       ctx.get("SF_MUO_ISO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/RunABCD_SF_ISO.root"),
+				       ctx.get("SF_MUO_ISO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Iso_SF_RunABCD.root"),
 				       ctx.get("SF_MUO_ISO_FILE", "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"),
 				       1.0,
 				       "isolation",
