@@ -3,15 +3,15 @@
 
 	  <!-- <!ENTITY TargetLumi      "59970"> -->
 	  <!ENTITY TargetLumi      "28040">
-	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/PreSelection/Muon/2018/NOMINAL">
+	  <!ENTITY PRESELdir       "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/PreSelection/Electron/2018/NOMINAL">
 	  <!ENTITY b_Cacheable     "False">
 	  <!ENTITY NEVT            "-1">
 	  <!ENTITY PROOFdir        "/nfs/dust/cms/user/froehlia/.proof2">
 
 
-	  <!ENTITY DATA_A SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_SingleMuon2018_RunA.xml">
-	  <!ENTITY DATA_B SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_SingleMuon2018_RunB.xml">
-	  <!ENTITY DATA_C SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_SingleMuon2018_RunC.xml">
+	  <!ENTITY DATA_A SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_EGamma2018_RunA.xml">
+	  <!ENTITY DATA_B SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_EGamma2018_RunB.xml">
+	  <!ENTITY DATA_C SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_EGamma2018_RunC.xml">
 	  <!-- <!ENTITY DATA_D SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/DATA_SingleMuon2018_RunD.xml"> -->
 
 	  <!ENTITY BstarToTW0700LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-700_LH.xml">
@@ -76,26 +76,21 @@
 	  <!ENTITY WZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WZ_TuneCP5_13TeV-pythia8.xml">
 	  <!ENTITY ZZ SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ZZ_TuneCP5_13TeV-pythia8.xml">
 
-	  <!ENTITY QCD_MuEnriched_Pt-15to20 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-15to20_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-20to30 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-20to30_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-30to50 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-30to50_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-50to80 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-50to80_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-80to120 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-80to120_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-120to170 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-120to170_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-170to300 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-170to300_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-300to470 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-300to470_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-470to600 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-470to600_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-600to800 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-600to800_MuEnrichedPt5.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-800to1000 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-800to1000_MuEnrichedPt5_ext3-v2.xml">
-	  <!ENTITY QCD_MuEnriched_Pt-1000toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-1000toInf_MuEnrichedPt5.xml">
-
+	  <!ENTITY QCD_EMEnriched_Pt-15to20 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-15to20_EMEnriched_ext1-v2.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-20to30 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-20to30_EMEnriched.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-30to50 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-30to50_EMEnriched.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-50to80 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-50to80_EMEnriched.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-80to120 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-80to120_EMEnriched.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-120to170 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-120to170_EMEnriched.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-170to300 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-170to300_EMEnriched.xml">
+	  <!ENTITY QCD_EMEnriched_Pt-300toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_QCD_Pt-300toInf_EMEnriched.xml">	  
 ]>
 
 
 
 <!--
 <ConfigParse NEventsBreak="0" FileSplit="30" AutoResubmit="5"/>
-<ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_MuoPreSel18"/>
+<ConfigSGE RAM ="4" DISK ="3" Mail="alexander.froehlich@desy.de" Notification="as" Workdir="workdir_ElePreSel18"/>
 -->
 
 <!-- OutputLevel controls which messages are printed; set to VERBOSE or DEBUG for more verbosity, to WARNING or ERROR for less -->
@@ -456,74 +451,50 @@
   </InputData>
 
 
- <InputData Lumi="1.606195858" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-15to20_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-15to20;
+ <InputData Lumi="10.9363931" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-15to20_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-15to20;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="12.02842358" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-20to30_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-20to30;
+ <InputData Lumi="2.87812982" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-20to30_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-20to30;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="22.10400592" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-30to50_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-30to50;
+ <InputData Lumi="6.96680093" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-30to50_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-30to50;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="54.15140796" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-50to80_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-50to80;
+ <InputData Lumi="5.45090005" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-50to80_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-50to80;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="287.6138581" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-80to120_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-80to120;
+ <InputData Lumi="26.29814936" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-80to120_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-80to120;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="1015.527489" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-120to170_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-120to170;
+ <InputData Lumi="149.9269184" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-120to170_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-120to170;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="5107.685832" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-170to300_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-170to300;
+ <InputData Lumi="223.2215274" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-170to300_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-170to300;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="47401.64443" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-300to470_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-300to470;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="350055.5081" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-470to600_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-470to600;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="920718.9474" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-600to800_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-600to800;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="5156993.227" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-800to1000_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-800to1000;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="9953379.759" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-1000toInf_2018" Cacheable="&b_Cacheable;">
-    &QCD_MuEnriched_Pt-1000toInf;
+ <InputData Lumi="2674.059908" NEventsMax="&NEVT;" Type="MC" Version="QCD_EMEnriched_Pt-300toInf_2018" Cacheable="&b_Cacheable;">
+    &QCD_EMEnriched_Pt-300toInf;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
@@ -589,7 +560,7 @@
 	    <Item Name="jersmear_direction" Value="nominal" />
             
 	    <!-- Channel? ELECTRON or MUON -->
-	    <Item Name="analysis_channel" Value="MUON"/>
+	    <Item Name="analysis_channel" Value="ELECTRON"/>
 
         </UserConfig>
     </Cycle>
