@@ -363,6 +363,12 @@
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
+ <InputData Lumi="411111168.2" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_2500toInf;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
 
  <InputData Lumi="217986.8459" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2018" Cacheable="&b_Cacheable;">
     &ST_tW_antitop;
