@@ -29,7 +29,7 @@ void TopTagPerformanceHists::fill(const Event & event){
   double weight = event.weight;
   const vector<TopJet> & topjets = h_topjetcollection ? event.get(*h_topjetcollection) : *event.topjets;
 
-  double matching_dist = 0.4;
+  const double matching_dist = 0.4;
   
   if (b_is_qcd)
     {

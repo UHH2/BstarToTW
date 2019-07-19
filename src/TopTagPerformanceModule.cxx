@@ -1,7 +1,6 @@
 #include "UHH2/core/include/AnalysisModule.h"
 #include "UHH2/core/include/Event.h"
 
-#include "UHH2/common/include/PrintingModules.h"
 #include "UHH2/common/include/CommonModules.h"
 #include <UHH2/common/include/JetCorrections.h>
 #include <UHH2/common/include/JetCorrectionSets.h>
@@ -40,147 +39,73 @@ namespace uhh2 {
 
   private:
 
-    std::unique_ptr<AnalysisModule> printer;
-
     Event::Handle<vector<TopJet>> h_ak8jets; // handle for ak8_SoftDrop collection
     std::unique_ptr<CommonModules> common;
     std::unique_ptr<AnalysisModule> genjet_cleaner, hotvr_jetlep_cleaner;
-    std::unique_ptr<AnalysisModule> jec_subj_mc, jec_subj_B, jec_subj_C, jec_subj_D, jec_subj_E, jec_subj_F, jec_subj_G, jec_subj_H;
-    std::unique_ptr<AnalysisModule> jec_topj_mc, jec_topj_B, jec_topj_C, jec_topj_D, jec_topj_E, jec_topj_F, jec_topj_G, jec_topj_H;
+    std::unique_ptr<AnalysisModule> jec_subj_mc;
+    std::unique_ptr<AnalysisModule> jec_topj_mc;
 
-    std::unique_ptr<AnalysisModule> cl_topjet1, cl_topjet2;
-    std::unique_ptr<Selection> sel_ntop1, sel_ntop2;
-    std::unique_ptr<AnalysisModule> cl_muon;
-    std::unique_ptr<AnalysisModule> BstarToTWgenprod;
-    std::unique_ptr<AnalysisModule> primary_lep, w_reco, w_disc;
-    std::unique_ptr<Hists> hist_w_reco;
-    std::unique_ptr<Selection> sel_toptag1, sel_toptag2;
-    std::unique_ptr<AndHists> hist_toptag1, hist_toptag2;
+    std::unique_ptr<AnalysisModule> cl_topjet_hotvr, cl_topjet_ak8;
+    std::unique_ptr<Selection> sel_ntop_hotvr, sel_ntop_ak8;
 
+    std::unique_ptr<Selection> sel_toptag_hotvr, sel_toptag_softdrop;
+    std::unique_ptr<AndHists> hist_toptag_hotvr, hist_toptag_softdrop;
 
-    std::unique_ptr<Selection> trig_IsoMu24, trig_IsoTkMu24;
-    std::unique_ptr<Selection> sel_ngenjet,sel_lumi, sel_1muo, sel_met, sel_1top, veto_ele;
+    std::unique_ptr<Selection> sel_trigger, sel_muo, sel_ngenjet;
 
     std::unique_ptr<Hists> hist_pileup;
     bool is_mc, is_qcd;
 
-    // Run Numbers taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2016Analysis
-    const int runnr_B = 275376;
-    const int runnr_C = 276283;
-    const int runnr_D = 276811;
-    const int runnr_E = 277420;
-    const int runnr_F = 278802; // 278808 actually but here EFearly
-    const int runnr_G = 280385;
-    const int runnr_H = 284044;
-
     // --- Scans --- //
-    std::unique_ptr<Hists> hist_hotvr_pre, hist_cmstt_pre;
-    std::vector<std::unique_ptr<Selection>> sel_hotvr, sel_cmstt;
-    std::vector<std::unique_ptr<Hists>> hist_hotvr, hist_cmstt;
+    std::unique_ptr<Hists> hist_hotvr_pre, hist_softdrop_pre;
+    std::vector<std::unique_ptr<Selection>> sel_hotvr, sel_softdrop;
+    std::vector<std::unique_ptr<Hists>> hist_hotvr, hist_softdrop;
     int n_points = 100;
 
   };
 
   TopTagPerformanceModule::TopTagPerformanceModule(Context & ctx) {
 
-    printer.reset(new GenParticlesPrinter(ctx)); 
-
     is_mc = ctx.get("dataset_type") == "MC";
     is_qcd = (ctx.get("dataset_version").find("QCD") == 0 || ctx.get("dataset_version").find("WJets") == 0);
 
-    std::string ak8jets_name = "slimmedJetsAK8_SoftDrop";
+    std::string ak8jets_name = "jetsAk8PuppiSubstructure_SoftDropPuppi";
     h_ak8jets = ctx.get_handle<vector<TopJet>>(ak8jets_name);
 
-    double deltaPhi_min = M_PI/2;  // minimum delta phi between muon and top
     double top_pt_min = 200.0;
     double top_eta_max = 2.5;
     TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max);
-    TopJetId id_topjet2 =  PtEtaCut(400., top_eta_max);
-    TopJetId id_wreco  = AndId<TopJet>(id_topjet, DeltaPhiCut(ctx, deltaPhi_min));
     TopJetId id_hotvr_base = HOTVRTopTag(0.8, 140., 220., 50);
-    TopJetId id_cmstt_base =  Type2TopTag(105., 220., Type2TopTag::MassType::groomed);
-    TopJetId id_toptag1 = AndId<TopJet>(id_hotvr_base, Tau32Groomed(0.56));
-    TopJetId id_toptag2 = AndId<TopJet>(id_cmstt_base, Tau32(0.57));
+    TopJetId id_softdrop_base =  Type2TopTag(105., 220., Type2TopTag::MassType::groomed);
+    TopJetId id_hotvr = AndId<TopJet>(id_hotvr_base, Tau32Groomed(0.56));
+    TopJetId id_softdrop = AndId<TopJet>(id_softdrop_base, Tau32(0.57));
 
-    double met_min     = 50.;
-    double lep_eta_max = 2.4;
-    double muo_pt_min  = 53.; 
-    double muo_iso_max = 0.15;
-    double lep_pt_min  = 30.0;
     double jet_pt_min  = 30.0;
     double jet_eta_max = 2.4;
-    MuonId id_muo_loose = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), PtEtaCut(muo_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-    ElectronId id_ele = AndId<Electron>(ElectronID_Summer16_loose, PtEtaCut(lep_pt_min, lep_eta_max));
+    double lep_pt_min  = 50.0;
+    double lep_eta_max = 2.4;
     JetId id_jet = AndId<Jet>(JetPFID(JetPFID::WP_TIGHT_CHS), PtEtaCut(jet_pt_min, jet_eta_max));
+    MuonId id_muo = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), PtEtaCut(lep_pt_min, lep_eta_max));
 
     common.reset(new CommonModules());
-    common->switch_jetlepcleaner(true);
-    common->set_muon_id(id_muo_loose);
-    common->set_electron_id(id_ele);
     common->set_jet_id(id_jet);
+    common->set_muon_id(id_muo);
+    common->disable_jec();
+    common->disable_jersmear();
     common->init(ctx);
 
-    genjet_cleaner.reset(new GenJetCleaner(ctx, 100., 2.5));
+    genjet_cleaner.reset(new GenJetCleaner(ctx, jet_pt_min, jet_eta_max));
     sel_ngenjet.reset(new NGenJetSelection(1, -1));
 
-    cl_muon.reset(new MuonCleaner(id_muo_tight));
+    sel_muo.reset(new NMuonSelection(1,-1));
 
-    trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
-    trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
-    sel_lumi.reset(new LumiSelection(ctx));
-    veto_ele.reset(new NElectronSelection(0, 0));
-    sel_1muo.reset(new NMuonSelection(1, 1)); 
-    sel_met.reset(new METSelection(met_min));
-    sel_1top.reset(new NTopJetSelection(1,1,id_wreco));
-    // sel_toptag1.reset(new NTopJetSelection(1,1,id_toptag1));
-    // sel_toptag2.reset(new NTopJetSelection(1,1,id_toptag2));
-    // hist_toptag1.reset(new AndHists(ctx,,id_toptag1));
-    // hist_toptag2.reset(new AndHists(1,1,id_toptag2));
-		      
+    cl_topjet_hotvr.reset(new TopJetCleaner(ctx, id_topjet));
+    cl_topjet_ak8.reset(new TopJetCleaner(ctx, id_topjet, ak8jets_name));
+    sel_ntop_hotvr.reset(new NTopJetSelection(1, -1));
+    sel_ntop_ak8.reset(new NTopJetSelection(1, -1, boost::none, h_ak8jets));
 
-    primary_lep.reset(new PrimaryLepton(ctx));
-    w_reco.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, "WReconstruction", id_wreco));
-    w_disc.reset(new BstarToTWChi2Discriminator(ctx, "WReconstruction"));
-    hist_w_reco.reset(new BstarToTWHypothesisHists(ctx, "WReco", "WReconstruction", "Chi2"));
-
-    cl_topjet1.reset(new TopJetCleaner(ctx, id_topjet));
-    cl_topjet2.reset(new TopJetCleaner(ctx, id_topjet, ak8jets_name));
-    sel_ntop1.reset(new NTopJetSelection(1, -1));
-    sel_ntop2.reset(new NTopJetSelection(1, -1, boost::none, h_ak8jets));
-
-
-    if(is_mc)
-      {
-    	jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFPuppi_MC));
-    	jec_topj_mc.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK8PFchs_MC, ak8jets_name));
-      }
-    else
-      { 
-    	jec_subj_B.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK4PFPuppi_DATA));
-    	jec_subj_C.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK4PFPuppi_DATA));
-    	jec_subj_D.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK4PFPuppi_DATA));
-    	jec_subj_E.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK4PFPuppi_DATA));
-    	jec_subj_F.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK4PFPuppi_DATA));
-    	jec_subj_G.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK4PFPuppi_DATA));
-    	jec_subj_H.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK4PFPuppi_DATA));
-
-    	jec_topj_B.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_B_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_C.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_C_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_D.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_D_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_E.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_E_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_F.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_F_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_G.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_G_L123_AK8PFchs_DATA, ak8jets_name));
-    	jec_topj_H.reset(new GenericTopJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_H_L123_AK8PFchs_DATA, ak8jets_name));
-
-      }
-
-    hist_pileup.reset(new HOTVRPileUpHists(ctx, "HOTVR_PileUp"));
-    // --- Scans --- //
-    // TopJetId id_hotvr_base = AndId<TopJet>(HOTVRTopTag(0.8, 140., 220., 50), DeltaPhiCut(deltaPhi_min));
-    // TopJetId id_cmstt_base =  AndId<TopJet>(Type2TopTag(105., 220., Type2TopTag::MassType::groomed), DeltaPhiCut(deltaPhi_min));   
-    // TopJetId id_cmstt_base =  AndId<TopJet>(id_topjet2, Type2TopTag(105., 220., Type2TopTag::MassType::groomed), DeltaPhiCut(deltaPhi_min));
-
+    jec_subj_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_L123_AK4PFPuppi_MC));
+    jec_topj_mc.reset(new GenericTopJetCorrector(ctx, JERFiles::Autumn18_V8_L123_AK8PFPuppi_MC, ak8jets_name));
 
     for (int i = 0; i < n_points; ++i)
       {
@@ -196,135 +121,50 @@ namespace uhh2 {
     	hist.reset(new TopTagPerformanceHists(ctx, "HOTVR_Performance_" + to_string(i), is_qcd,  id));
     	hist_hotvr.push_back(std::move(hist));
 
-	// - CMSTT - //
-    	id = AndId<TopJet>(id_cmstt_base, Tau32(tau32));
+	// - Softdrop - //
+    	id = AndId<TopJet>(id_softdrop_base, Tau32(tau32));
     	sel.reset(new NTopJetSelection(1, -1, id, h_ak8jets));
-    	sel_cmstt.push_back(std::move(sel));
+    	sel_softdrop.push_back(std::move(sel));
 
-    	hist.reset(new TopTagPerformanceHists(ctx, "CMSTT_Performance_" + to_string(i), is_qcd, id, h_ak8jets));
-    	hist_cmstt.push_back(std::move(hist));
+    	hist.reset(new TopTagPerformanceHists(ctx, "Softdrop_Performance_" + to_string(i), is_qcd, id, h_ak8jets));
+    	hist_softdrop.push_back(std::move(hist));
       }
 
 
     hist_hotvr_pre.reset(new TopTagPerformanceHists(ctx, "HOTVR_Pre", is_qcd, id_topjet));
-    hist_cmstt_pre.reset(new TopTagPerformanceHists(ctx, "CMSTT_Pre", is_qcd, id_topjet, h_ak8jets));
+    hist_softdrop_pre.reset(new TopTagPerformanceHists(ctx, "Softdrop_Pre", is_qcd, id_topjet, h_ak8jets));
 
   }
 
   bool TopTagPerformanceModule::process(Event & event) {
 
-    // printer->process(event);
-   if(!is_mc)
-      {
-	if(!sel_lumi->passes(event)) return false;
-      }
     if(!common->process(event)) return false;
     if(is_qcd) genjet_cleaner->process(event);
 
-    // cl_muon->process(event);
-    // if(!sel_nmuo->passes(event)) return false;
+    // if (!sel_trigger->passes(event) && !sel_muo->passes(event)) return false;
+    if (!sel_muo->passes(event)) return false;
+    jec_subj_mc->process(event);
+    jec_topj_mc->process(event);
+    
+    cl_topjet_hotvr->process(event);
+    cl_topjet_ak8->process(event);
 
-    if (is_mc)
+    bool sel_pt_hotvr = sel_ntop_hotvr->passes(event);
+    hist_hotvr_pre->fill(event);
+    bool sel_pt_softdrop = sel_ntop_ak8->passes(event);
+    hist_softdrop_pre->fill(event);
+
+    if (!sel_pt_hotvr && !sel_pt_softdrop) return false;
+    for (int i = 0; i < n_points; ++i)
       {
-	jec_subj_mc->process(event);
-	jec_topj_mc->process(event);
-      }
-    else
-      {
-	if(event.run <= runnr_B)
+	if (sel_pt_hotvr)
 	  {
-	    jec_subj_B->process(event);
-	    jec_topj_B->process(event);
+	    if (sel_hotvr.at(i)->passes(event)) hist_hotvr.at(i)->fill(event);
 	  }
-	else if(event.run <= runnr_C)
+	if (sel_pt_softdrop)
 	  {
-	    jec_subj_C->process(event);
-	    jec_topj_C->process(event);
+	    if (sel_softdrop.at(i)->passes(event)) hist_softdrop.at(i)->fill(event);
 	  }
-
-	else if(event.run <= runnr_D)
-	  {
-	    jec_subj_D->process(event);
-	    jec_topj_D->process(event);
-	  }
-
-	else if(event.run <= runnr_E)
-	  {
-	    jec_subj_E->process(event);
-	    jec_topj_E->process(event);
-	  }
-
-	else if(event.run < runnr_F) // "<" is correct since checking for Fearly
-	  {
-	    jec_subj_F->process(event);
-	    jec_topj_F->process(event);
-	  }
-
-	else if(event.run <= runnr_G)
-	  {
-	    jec_subj_G->process(event);
-	    jec_topj_G->process(event);
-	  }
-	else if(event.run <= runnr_H)
-	  {
-	    jec_subj_H->process(event);
-	    jec_topj_H->process(event);
-	  }
-	else runtime_error("CommonModules.cxx: run number not covered by if-statements in process-routine.");
-	
-	// else if(event.run < runnr_EFearly) //< is correct, not <= 
-	//   {
-	//     jec_subj_EFearly->process(event);
-	//     jec_topj_EFearly->process(event);
-	//   }
-	// else if(event.run <= runnr_FlateG) 
-	//   {
-	//     jec_subj_FlateG->process(event);
-	//     jec_topj_FlateG->process(event);
-	//   }
-	// else if(event.run > runnr_FlateG)  
-	//   {
-	//     jec_subj_H->process(event);
-	//     jec_topj_H->process(event);
-	//   }
-      }
-
-
-    cl_topjet1->process(event);
-    cl_topjet2->process(event);
-    if(is_mc)
-      {
-	bool sel_pt_hotvr = sel_ntop1->passes(event);
-	// if(sel_pt_hotvr) 
-	hist_hotvr_pre->fill(event);
-	bool sel_pt_cmstt = sel_ntop2->passes(event);
-	// if(sel_pt_cmstt)
-	hist_cmstt_pre->fill(event);
-
-	if (!sel_pt_hotvr && !sel_pt_cmstt) return false;
-	for (int i = 0; i < n_points; ++i)
-	  {
-	    if (sel_pt_hotvr)
-	      {
-		if (sel_hotvr.at(i)->passes(event)) hist_hotvr.at(i)->fill(event);
-	      }
-	    if (sel_pt_cmstt)
-	      {
-		if (sel_cmstt.at(i)->passes(event)) hist_cmstt.at(i)->fill(event);
-	      }
-	  }
-      }
-
-    if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
-    primary_lep->process(event);
-    if(!sel_1muo->passes(event)) return false;
-    if(!sel_met->passes(event)) return false;
-
-    if(sel_1top->passes(event))
-      {
-	w_reco->process(event);
-	w_disc->process(event);
-	hist_w_reco->fill(event);
       }
 
     return true;
