@@ -193,7 +193,7 @@ BstarToTWAnalysisHists::BstarToTWAnalysisHists(uhh2::Context &ctx, const std::st
   Hists(ctx,dirname) {
   h_primlep = ctx.get_handle<FlavorParticle>("PrimaryLepton");
   h_toptag = ctx.get_handle<vector<TopJet> >("toptag");
-  h_btag = ctx.get_handle<vector<Jet> >("btag_loose");
+  h_btag = ctx.get_handle<vector<Jet> >("btag_medium");
   h_ht = ctx.get_handle<double>("HT");
 
   // --- Book histograms
@@ -225,17 +225,15 @@ BstarToTWAnalysisHists::BstarToTWAnalysisHists(uhh2::Context &ctx, const std::st
 
 void BstarToTWAnalysisHists::fill(const Event &event) {
   // check if handles were set, otherwise return
-  if (!event.is_valid(h_primlep) || !event.is_valid(h_toptag) || !event.is_valid(h_btag) || !event.is_valid(h_ht))
+  if (!event.is_valid(h_primlep) || !event.is_valid(h_ht))
     return;
 
   double weight = event.weight;
   FlavorParticle lep = event.get(h_primlep);
-  vector<TopJet> topjets = event.get(h_toptag);
-  vector<Jet> bjets = event.get(h_btag);
   double met = event.met->pt();
   double ht = event.get(h_ht);
   double htlep = lep.pt() + met;
-  double st = ht + lep.pt() + met;
+  double st = ht + htlep;
   
   pt_lep->Fill(lep.pt(), weight);
   event_met->Fill(met, weight);
@@ -248,7 +246,25 @@ void BstarToTWAnalysisHists::fill(const Event &event) {
 
   ratio_ht->Fill(ht/htlep, weight);
   asymm_st->Fill((ht-htlep)/st, weight);
-  
+
+  for (const Electron &ele : *event.electrons)
+    {
+      lep_isolation->Fill(ele.relIsorho(event.rho), weight);
+    }
+
+  for (const Muon &muo : *event.muons)
+    {
+      lep_isolation->Fill(muo.relIso(), weight);
+    }
+
+  deltaPhi_lepmet->Fill(deltaPhi(lep.v4(),event.met->v4()), weight);  
+
+  if (!event.is_valid(h_toptag) || !event.is_valid(h_btag))
+    return;
+
+  vector<TopJet> topjets = event.get(h_toptag);
+  vector<Jet> bjets = event.get(h_btag);
+
   for (TopJet &topjet : topjets) 
     {
       deltaPhi_toplep->Fill(deltaPhi(topjet.v4(), lep.v4()), weight);
@@ -263,18 +279,6 @@ void BstarToTWAnalysisHists::fill(const Event &event) {
     {
       deltaPhi_blep->Fill(deltaPhi(lep.v4(), bjet.v4()), weight);
       deltaR_blep->Fill(deltaR(lep.v4(), bjet.v4()), weight);
-    }
-
-  deltaPhi_lepmet->Fill(deltaPhi(lep.v4(),event.met->v4()), weight);
-
-  for (const Electron &ele : *event.electrons)
-    {
-      lep_isolation->Fill(ele.relIsorho(event.rho), weight);
-    }
-
-  for (const Muon &muo : *event.muons)
-    {
-      lep_isolation->Fill(muo.relIso(), weight);
     }
  
 }

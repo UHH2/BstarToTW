@@ -56,3 +56,27 @@ bool MuonScaleFactors2018::process(Event &event) {
   return true;
 }
 
+ElectronScaleFactors2018::ElectronScaleFactors2018(Context &ctx) {
+
+  m_sf_reco.reset(new MCElecScaleFactor(ctx,
+				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Electron_reco_SF_RunABCD.root"),
+				      1.0,
+				      "reco",
+				      ctx.get("SYS_ELE_RECO", "nominal")));
+
+  m_sf_id.reset(new MCElecScaleFactor(ctx,
+				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Electron_ID_tight_SF_RunABCD.root"),
+				      1.0,
+				      "tight_id",
+				      ctx.get("SYS_ELE_ID", "nominal")));
+
+
+}
+
+bool ElectronScaleFactors2018::process(Event &event) {
+
+  m_sf_reco->process(event);
+  m_sf_id->process(event);
+
+  return true;
+}

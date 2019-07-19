@@ -4,6 +4,8 @@
 #include "UHH2/core/include/AnalysisModule.h"
 #include "UHH2/core/include/Event.h"
 
+#include "UHH2/common/include/MCWeight.h"
+#include "UHH2/common/include/EventVariables.h"
 #include "UHH2/common/include/CleaningModules.h"
 #include "UHH2/common/include/MuonIds.h"
 #include "UHH2/common/include/TopJetIds.h"
@@ -37,16 +39,16 @@ namespace uhh2 {
 
   private:  
 
-    std::unique_ptr<AnalysisModule> primary_lepton;
+    std::unique_ptr<AnalysisModule> primary_lepton, ht_calculator;
     std::unique_ptr<AnalysisModule> object_setup;
+    std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight;
     // Cleaner
-    std::unique_ptr<AnalysisModule> cl_objects, cl_muo_tight, cl_ele_tight;
+    std::unique_ptr<AnalysisModule> cl_muo_tight, cl_ele_tight;
 
     // Selections
     bool is_data;
     std::unique_ptr<Selection> sel_lumi;
-    std::unique_ptr<Selection> trig_IsoMu24, trig_IsoTkMu24;
-    std::unique_ptr<Selection> trig_Ele27, trig_Ele115, trig_Pho175;
+    std::unique_ptr<Selection> sel_trigger;
     std::unique_ptr<Selection> veto_muo;
     std::unique_ptr<Selection> veto_ele;
     std::unique_ptr<Selection> sel_1muo;
@@ -71,7 +73,14 @@ namespace uhh2 {
 
     // --- Additional Modules ---
     primary_lepton.reset(new PrimaryLepton(ctx));
+    ht_calculator.reset(new HTCalculator(ctx));
     object_setup.reset(new ObjectSetup(ctx));
+    if (is_mc)
+      {
+	sf_mc_lumiweight.reset(new MCLumiWeight(ctx));
+	std::string syst_pu = "central";
+	sf_mc_pu_reweight.reset(new MCPileupReweight(ctx, syst_pu));
+      }
 
     // -- Kinematic Variables --
     double met_min = 50.;
@@ -85,7 +94,6 @@ namespace uhh2 {
     ElectronId id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
 
     // Cleaner
-    cl_objects.reset(new ObjectCleaner(ctx));
     cl_muo_tight.reset(new MuonCleaner(id_muo_tight));
     cl_ele_tight.reset(new ElectronCleaner(id_ele_tight));
     
@@ -93,13 +101,7 @@ namespace uhh2 {
     // - Lumi -
     sel_lumi.reset(new LumiSelection(ctx));
     // - Trigger -
-    // Muon (recommended trigger selections for 2016)
-    trig_IsoMu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
-    // trig_IsoTkMu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
-    // Electron (recommended trigger selections for 2016)
-    trig_Ele27.reset(new TriggerSelection("HLT_Ele27_WPTight_Gsf_v*"));
-    trig_Ele115.reset(new TriggerSelection("HLT_Ele115_CaloIdVT_GsfTrkIdT_v*"));
-    trig_Pho175.reset(new TriggerSelection("HLT_Photon175_v*"));
+    sel_trigger.reset(new BstarToTWTriggerSelection(ctx));
     // - Lepton vetos
     veto_muo.reset(new NMuonSelection(0, 0));
     veto_ele.reset(new NElectronSelection(0, 0));
@@ -140,9 +142,15 @@ namespace uhh2 {
       {
 	if(!sel_lumi->passes(event)) return false;
       }
-    // if(!(cl_objects->process(event))) return false;
+    else if(is_mc)
+      {
+	sf_mc_lumiweight->process(event);
+	sf_mc_pu_reweight->process(event);
+      }
+    
     if(!object_setup->process(event)) return false;
     primary_lepton->process(event);
+    ht_calculator->process(event);
 
     hist_cleaner->fill(event);
 
@@ -154,11 +162,8 @@ namespace uhh2 {
 	cl_muo_tight->process(event);
 	if(!sel_1muo->passes(event)) return false;
 	hist_1lep->fill(event);
-	// --- Trigger
-	// if(!(trig_IsoMu24->passes(event) || trig_IsoTkMu24->passes(event))) return false;
-	if(!trig_IsoMu24->passes(event)) return false;
-	hist_trigger->fill(event);
       }
+    
     // - Electron Channel
     else if (is_ele)
       {
@@ -166,11 +171,8 @@ namespace uhh2 {
 	cl_ele_tight->process(event);
 	if(!sel_1ele->passes(event)) return false;
 	hist_1lep->fill(event);
-	// --- Trigger
-	if(!(trig_Ele27->passes(event) || trig_Ele115->passes(event) || trig_Pho175->passes(event))) return false;
-	hist_trigger->fill(event);
       }
-     
+
     // --- Jet selection
     if (!sel_njet->passes(event)) return false;
     hist_njet->fill(event);
@@ -187,6 +189,9 @@ namespace uhh2 {
     if(!sel_ntop->passes(event)) return false;
     hist_ntop->fill(event);
 
+    if (!sel_trigger->passes(event)) return false;
+    hist_trigger->fill(event);
+     
     // done
     return true;
   }

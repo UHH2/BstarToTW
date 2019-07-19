@@ -12,3 +12,13 @@ class MuonScaleFactors2018: public uhh2::AnalysisModule {
   const int m_hlt_runnr = 316361;
   std::unique_ptr<AnalysisModule> m_sf_trigger_before, m_sf_trigger_after, m_sf_id, m_sf_iso;
 };
+
+class ElectronScaleFactors2018: public uhh2::AnalysisModule {
+ public:
+  explicit ElectronScaleFactors2018(uhh2::Context &ctx);
+  virtual bool process(uhh2::Event &event) override;
+  
+ private:
+  std::unique_ptr<AnalysisModule> m_sf_trigger, m_sf_id, m_sf_reco;
+};
+

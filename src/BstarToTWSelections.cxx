@@ -4,31 +4,13 @@
 #include "UHH2/core/include/TopJet.h"
 #include "UHH2/core/include/Jet.h"
 #include "UHH2/common/include/Utils.h"
+#include "UHH2/common/include/TriggerSelection.h"
 
 #include <stdexcept>
 #include <vector>
 
 using namespace uhh2;
 using namespace std;
-
-NHotvrSelection::NHotvrSelection(unsigned int n_min_, unsigned int n_max_, double pt_min_, double eta_max_) {
-  n_min   = n_min_;
-  n_max   = n_max_;
-  pt_min  = pt_min_;
-  eta_max = eta_max_;
-}
-
-bool NHotvrSelection::passes(const Event &event) {
-  vector<TopJet> topjets = *event.topjets;
-  unsigned int n = 0;
-  for (TopJet topjet : topjets)
-    { 
-      double pt = topjet.v4().pt();
-      double eta = abs(topjet.v4().eta());
-      if ( (pt_min < pt) && (eta < eta_max) ) ++n;
-    }
-  return (n_min <= n && n <= n_max);
-}
 
 METSelection::METSelection(double met_min_) {
   met_min = met_min_;
@@ -116,6 +98,7 @@ bool JetDeltaPhiSelection::passes(const Event &event) {
   else
     return false;
 }
+
 LeadingJetDeltaRSelection::LeadingJetDeltaRSelection(Context &ctx, double delta_R_min, const boost::optional<Event::Handle<std::vector<Jet> > > jet_collection) {
   m_delta_R_min = delta_R_min;  
   h_jets = jet_collection;
@@ -207,3 +190,61 @@ bool NGenJetSelection::passes(const Event &event) {
   return (n_min < event.genjets->size() && event.genjets->size() < n_max);
 }
 
+BstarToTWTriggerSelection::BstarToTWTriggerSelection(Context &ctx) {
+  year = extract_year(ctx);
+  is_ele = ctx.get("analysis_channel") == "ELECTRON";
+  is_muo = ctx.get("analysis_channel") == "MUON";    
+
+  trig_isomu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
+  trig_isotkmu24.reset(new TriggerSelection("HLT_IsoTkMu24_v*"));
+  trig_isomu27.reset(new TriggerSelection("HLT_IsoMu27_v*"));
+
+  trig_ele27.reset(new TriggerSelection("HLT_Ele27_WPTight_Gsf_v*"));
+  trig_ele32.reset(new TriggerSelection("HLT_Ele32_WPTight_Gsf_v*"));
+  trig_ele35.reset(new TriggerSelection("HLT_Ele35_WPTight_Gsf_v*"));
+
+  trig_photon175.reset(new TriggerSelection("HLT_Photon175_v*"));
+  trig_photon200.reset(new TriggerSelection("HLT_Photon200_v*"));
+
+}
+
+bool BstarToTWTriggerSelection::passes(const Event &event) {
+
+  if (year == Year::is2016v3) 
+    {
+      if (is_ele)
+	{
+	  return (trig_ele27->passes(event) || trig_photon175->passes(event));
+	}
+      if (is_muo)
+	{
+	  return (trig_isomu24->passes(event) || trig_isotkmu24->passes(event));
+	}
+    }
+
+  else if (year == Year::is2017v2) 
+    {
+      if (is_ele)
+	{
+	  return (trig_ele35->passes(event) || trig_photon200->passes(event));
+	}
+      if (is_muo)
+	{
+	  return (trig_isomu27->passes(event));
+	}
+    }
+  
+  else if (year == Year::is2018)
+    {
+      if (is_ele)
+	{
+	  return (trig_ele32->passes(event));
+	}
+      if (is_muo)
+	{
+	  return (trig_isomu24->passes(event));
+	}
+    }
+
+  return false;
+}

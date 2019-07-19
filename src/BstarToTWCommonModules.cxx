@@ -9,7 +9,7 @@ JEC2016Module::JEC2016Module(Context &ctx) {
   if(is_mc)
     {  
       jec_ak4_mc.reset(new JetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFchs_MC));
-      // jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
+      jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
       jlc_ak4_mc.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFchs_MC));
       jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Summer16_07Aug2017_V11_L123_AK4PFPuppi_MC));
     }  
@@ -56,8 +56,8 @@ bool JEC2016Module::process(Event &event) {
       if (b_jetlep)
 	jlc_ak4_mc->process(event);
       jec_ak4_mc->process(event);
+      jet_resolution_smearer->process(event);
       jec_ak4_mc->correct_met(event);
-      // jet_resolution_smearer->process(event);
       jec_hotvr_mc->process(event);
     }
   else{
@@ -119,15 +119,118 @@ bool JEC2016Module::process(Event &event) {
   return true;
 }
 
-JEC2018Module::JEC2018Module(Context &ctx) {
+JEC2017Module::JEC2017Module(Context &ctx) {
   is_mc = ctx.get("dataset_type") == "MC";
   // JetCorrectors
   if(is_mc)
     {  
+      jec_ak4_mc.reset(new JetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_L123_AK4PFchs_MC));
+      jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
+      jlc_ak4_mc.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Fall17_17Nov2017_V32_L123_AK4PFchs_MC));
+      jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_L123_AK4PFPuppi_MC));
+    }  
+  else
+    { 
+      // -- ak4
+      // JEC
+      jec_ak4_B.reset(new JetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_B_L123_AK4PFchs_DATA));
+      jec_ak4_C.reset(new JetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_C_L123_AK4PFchs_DATA));
+      jec_ak4_D.reset(new JetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_D_L123_AK4PFchs_DATA));
+      jec_ak4_E.reset(new JetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_E_L123_AK4PFchs_DATA));
+      jec_ak4_F.reset(new JetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_F_L123_AK4PFchs_DATA));
+      // Jet Lepton Cleaning
+      jlc_ak4_B.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Fall17_17Nov2017_V32_B_L123_AK4PFchs_DATA));
+      jlc_ak4_C.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Fall17_17Nov2017_V32_C_L123_AK4PFchs_DATA));
+      jlc_ak4_D.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Fall17_17Nov2017_V32_D_L123_AK4PFchs_DATA));
+      jlc_ak4_E.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Fall17_17Nov2017_V32_E_L123_AK4PFchs_DATA));
+      jlc_ak4_F.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Fall17_17Nov2017_V32_F_L123_AK4PFchs_DATA));
+
+      // -- HOTVR
+      // JEC
+      jec_hotvr_B.reset(new HOTVRJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_B_L123_AK4PFPuppi_DATA));
+      jec_hotvr_C.reset(new HOTVRJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_C_L123_AK4PFPuppi_DATA));
+      jec_hotvr_D.reset(new HOTVRJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_D_L123_AK4PFPuppi_DATA));
+      jec_hotvr_E.reset(new HOTVRJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_E_L123_AK4PFPuppi_DATA));
+      jec_hotvr_F.reset(new HOTVRJetCorrector(ctx, JERFiles::Fall17_17Nov2017_V32_F_L123_AK4PFPuppi_DATA));
+    }  
+  jlc_hotvr.reset(new HOTVRJetLeptonCleaner());
+
+}
+
+bool JEC2017Module::process(Event &event) {
+
+  if (b_jetlep)
+    jlc_hotvr->process(event);
+  if(is_mc) 
+    {
+      if (b_jetlep)
+	jlc_ak4_mc->process(event);
+      jec_ak4_mc->process(event);
+      jet_resolution_smearer->process(event);
+      jec_ak4_mc->correct_met(event);
+      jec_hotvr_mc->process(event);
+    }
+  else{
+	if(event.run <= runnr_B)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_B->process(event);
+	    jec_ak4_B->process(event);
+	    jec_hotvr_B->process(event);
+	  }
+	else if(event.run <= runnr_C)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_C->process(event);
+	    jec_ak4_C->process(event);
+	    jec_hotvr_C->process(event);
+	  }
+
+	else if(event.run <= runnr_D)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_D->process(event);
+	    jec_ak4_D->process(event);
+	    jec_hotvr_D->process(event);
+	  }
+
+	else if(event.run <= runnr_E)
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_E->process(event);
+	    jec_ak4_E->process(event);
+	    jec_hotvr_E->process(event);
+	  }
+
+	else if(event.run < runnr_F) // "<" is correct since checking for Fearly
+	  {
+	    if (b_jetlep)
+	      jlc_ak4_F->process(event);
+	    jec_ak4_F->process(event);
+	    jec_hotvr_F->process(event);
+	  }
+
+	else runtime_error("ObjectCleaner.cxx: run number not covered by if-statements in process-routine.");
+  }
+  return true;
+}
+
+
+JEC2018Module::JEC2018Module(Context &ctx) {
+  is_mc = ctx.get("dataset_type") == "MC";
+  std::string userJetColl = string2lowercase(ctx.get("TopJetCollection"));
+  bool is_hotvr = userJetColl.find("hotvr") != std::string::npos ;
+ 
+  // JetCorrectors
+  if(is_mc)
+    {  
       jec_ak4_mc.reset(new JetCorrector(ctx, JERFiles::Autumn18_V8_L123_AK4PFchs_MC));
-      // jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
+      jet_resolution_smearer.reset(new JetResolutionSmearer(ctx));
       jlc_ak4_mc.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JERFiles::Autumn18_V8_L123_AK4PFchs_MC));
-      jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_L123_AK4PFPuppi_MC));
+      if (is_hotvr) 
+	jec_hotvr_mc.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_L123_AK4PFPuppi_MC));
+      else 
+	jec_hotvr_mc.reset(new TopJetCorrector(ctx, JERFiles::Autumn18_V8_L123_AK8PFPuppi_MC));	
     }  
   else
     { 
@@ -145,26 +248,35 @@ JEC2018Module::JEC2018Module(Context &ctx) {
 
       // -- HOTVR
       // JEC
-      jec_hotvr_A.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_A_L123_AK4PFPuppi_DATA));
-      jec_hotvr_B.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_B_L123_AK4PFPuppi_DATA));
-      jec_hotvr_C.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_C_L123_AK4PFPuppi_DATA));
-      jec_hotvr_D.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_D_L123_AK4PFPuppi_DATA));
-    }  
-  jlc_hotvr.reset(new HOTVRJetLeptonCleaner());
-
+      if (is_hotvr)
+	{
+	  jec_hotvr_A.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_A_L123_AK4PFPuppi_DATA));
+	  jec_hotvr_B.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_B_L123_AK4PFPuppi_DATA));
+	  jec_hotvr_C.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_C_L123_AK4PFPuppi_DATA));
+	  jec_hotvr_D.reset(new HOTVRJetCorrector(ctx, JERFiles::Autumn18_V8_D_L123_AK4PFPuppi_DATA));
+	}
+      else
+	{
+	  jec_hotvr_A.reset(new TopJetCorrector(ctx, JERFiles::Autumn18_V8_A_L123_AK8PFPuppi_DATA));
+	  jec_hotvr_B.reset(new TopJetCorrector(ctx, JERFiles::Autumn18_V8_B_L123_AK8PFPuppi_DATA));
+	  jec_hotvr_C.reset(new TopJetCorrector(ctx, JERFiles::Autumn18_V8_C_L123_AK8PFPuppi_DATA));
+	  jec_hotvr_D.reset(new TopJetCorrector(ctx, JERFiles::Autumn18_V8_D_L123_AK8PFPuppi_DATA));
+	}
+    }
+    jlc_hotvr.reset(new HOTVRJetLeptonCleaner());  
 }
 
 bool JEC2018Module::process(Event &event) {
-
   if (b_jetlep)
     jlc_hotvr->process(event);
   if(is_mc) 
     {
       if (b_jetlep)
 	jlc_ak4_mc->process(event);
-      jec_ak4_mc->process(event);
+      jec_ak4_mc->process(event); 
+      jet_resolution_smearer->process(event);
+      // cl_jetmet->process(event); // cleaning jets with pt < 15.0
       jec_ak4_mc->correct_met(event);
-      // jet_resolution_smearer->process(event);
       jec_hotvr_mc->process(event);
     }
   else{
@@ -173,6 +285,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_A->process(event);
 	    jec_ak4_A->process(event);
+	    // cl_jetmet->process(event); // cleaning jets with pt < 15.0
 	    jec_ak4_A->correct_met(event);
 	    jec_hotvr_A->process(event);
 	  }
@@ -181,6 +294,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_B->process(event);
 	    jec_ak4_B->process(event);
+	    // cl_jetmet->process(event); // cleaning jets with pt < 15.0
 	    jec_ak4_B->correct_met(event);
 	    jec_hotvr_B->process(event);
 	  }
@@ -190,6 +304,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_C->process(event);
 	    jec_ak4_C->process(event);
+	    // cl_jetmet->process(event); // cleaning jets with pt < 15.0
 	    jec_ak4_C->correct_met(event);
 	    jec_hotvr_C->process(event);
 	  }
@@ -199,6 +314,7 @@ bool JEC2018Module::process(Event &event) {
 	    if (b_jetlep)
 	      jlc_ak4_D->process(event);
 	    jec_ak4_D->process(event);
+	    // cl_jetmet->process(event); // cleaning jets with pt < 15.0
 	    jec_ak4_D->correct_met(event);
 	    jec_hotvr_D->process(event);
 	  }
@@ -221,15 +337,21 @@ ObjectSetup::ObjectSetup(Context & ctx){
   TopJetId id_topjet =  PtEtaCut(top_pt_min, top_eta_max);
 
   // Set era dependend stuff (JEC, IDs, whatnot)  
-  if (year == Year::is2018) {
-    id_ele_veto = AndId<Electron>(ElectronID_Fall17_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
-    jec_module.reset(new JEC2018Module(ctx));
-  }
-  // else if (year == Year::is2017v2) jec_module.reset(new JEC2017Module(ctx));
-  else if (year == Year::is2016v3) {
-    id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
-    jec_module.reset(new JEC2016Module(ctx));
-  }
+  if (year == Year::is2018) 
+    {
+      id_ele_veto = AndId<Electron>(ElectronID_Fall17_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+      jec_module.reset(new JEC2018Module(ctx));
+    }
+  else if (year == Year::is2017v2) 
+    {
+      id_ele_veto = AndId<Electron>(ElectronID_Fall17_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+      jec_module.reset(new JEC2017Module(ctx));
+    }
+  else if (year == Year::is2016v3) 
+    {
+      id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+      jec_module.reset(new JEC2016Module(ctx));
+    }
 
   // Cleaner
   cl_pv.reset(new PrimaryVertexCleaner(id_pv));
@@ -275,6 +397,9 @@ bool ObjectSetup::process(Event & event){
   
   cl_jet->process(event);
   cl_topjet->process(event);
+
+  sort_by_pt(*event.jets);
+  sort_by_pt(*event.topjets);
 
   return true;
 }

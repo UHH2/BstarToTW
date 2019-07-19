@@ -4,6 +4,7 @@
 #include "UHH2/core/include/Selection.h"
 
 #include "UHH2/common/include/TopJetIds.h"
+#include "UHH2/common/include/Utils.h"
 
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesis.h"
@@ -14,14 +15,6 @@ namespace uhh2 {
    * This class selects event by requiring there to be at least n_min
    * and maximal n_max topjets, with pt > pt_min and eta < eta_max
    */
-  class NHotvrSelection: public uhh2::Selection {
-  public:
-    NHotvrSelection(unsigned int n_min_, unsigned int n_max_, double pt_min_, double eta_max_);
-    virtual bool passes(const uhh2::Event &event) override;
-  private:
-    unsigned int n_min, n_max;
-    double pt_min, eta_max;
-  };
 
   /**
    * This class selects events by requiring MET > met_min
@@ -127,5 +120,17 @@ namespace uhh2 {
     virtual bool passes(const uhh2::Event &event) override;
   private:
     unsigned int n_min, n_max;
+  };
+
+  class BstarToTWTriggerSelection : public uhh2::Selection {
+  public:
+    BstarToTWTriggerSelection(uhh2::Context &ctx);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    Year year;
+    bool is_muo, is_ele;
+    std::unique_ptr<uhh2::Selection> trig_isomu24, trig_isotkmu24, trig_isomu27;
+    std::unique_ptr<uhh2::Selection> trig_ele27, trig_ele32, trig_ele35;
+    std::unique_ptr<uhh2::Selection> trig_photon175, trig_photon200;
   };
 }

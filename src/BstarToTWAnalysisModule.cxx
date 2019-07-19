@@ -53,6 +53,7 @@ namespace uhh2 {
 
     // Scale Factors
     std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight;
+    std::unique_ptr<AnalysisModule> sf_top_pt_reweight;
     std::unique_ptr<AnalysisModule> sf_lepton;
     std::unique_ptr<AnalysisModule> sf_btag;
     std::unique_ptr<AnalysisModule> sf_toptag;
@@ -70,7 +71,7 @@ namespace uhh2 {
     std::unique_ptr<AndHists> hist_sel_deltaPhi_metlep;
     std::unique_ptr<Selection> sel_deltaR_jetlep; // delta R between primary lepton and ak4-jets
     std::unique_ptr<AndHists> hist_sel_deltaR_jetlep;
-    std::unique_ptr<Selection> sel_deltaR_leadingjetlep, sel_deltaR_leadingbjetlep; // delta R between primary lepton and b-jet/leading-jet
+    std::unique_ptr<Selection> sel_deltaR_leadingjetlep, sel_deltaR_bjetlep; // delta R between primary lepton and b-jet/leading-jet
     std::unique_ptr<AndHists> hist_sel_1btagdr, hist_sel_2btagdr, hist_sel_0btagdr;
     
     std::unique_ptr<Selection> sel_1btag; // btag
@@ -99,7 +100,8 @@ namespace uhh2 {
     is_muo = ctx.get("analysis_channel") == "MUON";
     do_for_cr = ctx.get("do_for_cr") == "true";
     is_mc = ctx.get("dataset_type") == "MC";
-    // h_tot_weight = ctx.declare_event_output<float>("weight_total");
+    std::string userJetColl = string2lowercase(ctx.get("TopJetCollection"));
+    bool is_hotvr = userJetColl.find("hotvr") != std::string::npos;
 
     // Selection Parameters
     double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
@@ -107,7 +109,7 @@ namespace uhh2 {
     double top_m_max     = 220.;   // maximum topjet mass
     double top_mpair_min = 50.;    // minimum pairwise mass of first three subjets
     double top_tau32_max = 0.56;   // maximum nsubjetiness tau_3/2
-    double chi2_max      = 30.0;   // maximum chi2 of the reconstructed bstar hypothesis
+    double chi2_max      = 20.0;   // maximum chi2 of the reconstructed bstar hypothesis
     double deltaR_blep_min = 2.0;  // minimuim deltaR between lepton and (b)jet
     double deltaPhi_metlep_max = M_PI/2; // maximum deltaPhi between missign ET and lepton
     BTag::algo btag_algo = BTag::DEEPCSV;
@@ -115,6 +117,10 @@ namespace uhh2 {
 
     // Toptags:
     TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max));
+    if (!is_hotvr)
+      id_toptag = AndId<TopJet>(Type2TopTag(105., 220., Type2TopTag::MassType::groomed), Tau32(0.50));
+
+
     TopJetId id_toptag_veto = VetoId<TopJet>(id_toptag);
     // btag:
     JetId id_btag = BTag(btag_algo, btag_wp);
@@ -124,13 +130,17 @@ namespace uhh2 {
     hadronic_top.reset(new HadronicTop(ctx));
     ht_calculator.reset(new HTCalculator(ctx));
     object_tagger.reset(new ObjectTagger());
+    object_tagger->set_toptag_id(id_toptag);
     object_tagger->init(ctx);
-    // if (do_for_cr)
-    //   output_module.reset(new BstarToTWOutputModule(ctx,"0TopTagReconstruction"));
-    // else
-    //   output_module.reset(new BstarToTWOutputModule(ctx,"1TopTagReconstruction"));
+    if (do_for_cr)
+      output_module.reset(new BstarToTWOutputModule(ctx,"0TopTagReconstruction"));
+    else
+      output_module.reset(new BstarToTWOutputModule(ctx,"1TopTagReconstruction"));
 
     // Scale Factor
+
+    bool do_top_pt_reweight = ctx.get("b_TopPtReweight") == "true";
+    sf_top_pt_reweight.reset(new TopPtReweight(ctx, 0.0615, -0.0005, "", "", do_top_pt_reweight, 1.0)); // https://twiki.cern.ch/twiki/bin/view/CMS/TopPtReweighting
     if (is_mc)
       {
 	sf_mc_lumiweight.reset(new MCLumiWeight(ctx));
@@ -140,14 +150,14 @@ namespace uhh2 {
     //include years!
     if (is_muo)
       {
-	sf_lepton.reset(new MuonScaleFactors2018(ctx));
+    	sf_lepton.reset(new MuonScaleFactors2018(ctx));
       }
     else if (is_ele)
       {
-	// To Do
+    	sf_lepton.reset(new ElectronScaleFactors2018(ctx));
       }
     sf_btag.reset(new MCBTagScaleFactor(ctx, btag_algo, btag_wp, "jets", "NOMINAL", "mujets", "incl", "MCBtagEfficiencies"));
-    sf_toptag.reset(new HOTVRScaleFactor(ctx, id_toptag, "HadronicTop", "TopTagSF", "HOTVRTopTagSFs"));
+    // sf_toptag.reset(new HOTVRScaleFactor(ctx, id_toptag, ctx.get("Systematic_TopTag", "nominal"), "HadronicTop", "TopTagSF", "HOTVRTopTagSFs"));
 
     // Reconstruction Modules
     reco_1toptag.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, "1TopTagReconstruction", id_toptag));
@@ -176,7 +186,7 @@ namespace uhh2 {
     veto_btag.reset(new NJetSelection(0, 0, id_btag));
     hist_sel_0btag.reset(new AndHists(ctx, "0btag"));
     // deltaR btag/leading jet
-    sel_deltaR_leadingbjetlep.reset(new LeadingJetDeltaRSelection(ctx, deltaR_blep_min, ctx.get_handle<vector<Jet> >("btag_loose")));
+    sel_deltaR_bjetlep.reset(new JetDeltaRSelection(ctx, deltaR_blep_min, ctx.get_handle<vector<Jet> >("btag_medium")));
     hist_sel_1btagdr.reset(new AndHists(ctx, "1btagdr"));
     sel_deltaR_leadingjetlep.reset(new LeadingJetDeltaRSelection(ctx, deltaR_blep_min));
     hist_sel_0btagdr.reset(new AndHists(ctx, "0btagdr"));
@@ -222,23 +232,30 @@ namespace uhh2 {
 	bstar_gen->process(event);
       }
 
+    // if (dataset_name.find("ST_") == 0)
+    //   {
+    // 	event.weight *= 1. / abs(event.genInfo->originalXWGTUP());
+    //   }
+
     // Scale Factors
     if(is_mc)
       {
 	sf_mc_lumiweight->process(event);
 	sf_mc_pu_reweight->process(event);
       }
+
     sf_lepton->process(event);
+    sf_top_pt_reweight->process(event);
     // TO DO!
 
     hist_presel->fill(event);
+    // deltaR jet-lep
+    if(!sel_deltaR_jetlep->passes(event)) return false;
+    hist_sel_deltaR_jetlep->fill(event);
 
     // deltaPhi met-lep
     if(!sel_deltaPhi_metlep->passes(event)) return false;
     hist_sel_deltaPhi_metlep->fill(event);
-    // deltaR jet-lep
-    if(!sel_deltaR_jetlep->passes(event)) return false;
-    hist_sel_deltaR_jetlep->fill(event);
 
     hist_btag_mc_efficiency->fill(event);
     sf_btag->process(event);
@@ -249,7 +266,6 @@ namespace uhh2 {
 	// - deltaR jet, lepton - //
 	if (!sel_deltaR_leadingjetlep->passes(event)) return false;
 	hist_sel_0btagdr->fill(event);
-	sf_toptag->process(event);
 	// - 1 toptag - //
 	if (sel_1toptag->passes(event))
 	  {
@@ -272,9 +288,8 @@ namespace uhh2 {
 	      {	      
 		hist_sel_0btag0toptag20chi2->fill(event);
 	      }
-	    // event.set(h_tot_weight, event.weight);
-	    // if (do_for_cr)
-	    //   output_module->process(event);
+	    if (do_for_cr)
+	      output_module->process(event);
 	    return do_for_cr;
 	  }
 	return false;
@@ -283,9 +298,8 @@ namespace uhh2 {
     else if (sel_1btag->passes(event)) 
       {
 	hist_sel_1btag->fill(event);
-	if (!sel_deltaR_leadingbjetlep->passes(event)) return false;
+	if (!sel_deltaR_bjetlep->passes(event)) return false;
 	hist_sel_1btagdr->fill(event);
-	sf_toptag->process(event);
 	// - Signal Region - //
 	if(sel_1toptag->passes(event))
 	  {	    
@@ -304,9 +318,8 @@ namespace uhh2 {
 	    hist_sel_1btag1toptag20chi2->fill(event);
 	    if (!sel_subjet_btag->passes(event)) return false;
 	    hist_sel_subjet_btag->fill(event);
-	    // event.set(h_tot_weight, event.weight);
-	    // if (!do_for_cr)
-	    //   output_module->process(event);
+	    if (!do_for_cr)
+	      output_module->process(event);
 	    return !do_for_cr;
 	  }
 	// - Non-top control Region - //
