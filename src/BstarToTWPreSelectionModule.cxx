@@ -4,6 +4,7 @@
 #include "UHH2/core/include/AnalysisModule.h"
 #include "UHH2/core/include/Event.h"
 
+#include "UHH2/common/include/CommonModules.h"
 #include "UHH2/common/include/MCWeight.h"
 #include "UHH2/common/include/EventVariables.h"
 #include "UHH2/common/include/CleaningModules.h"
@@ -19,11 +20,11 @@
 
 #include "UHH2/BstarToTW/include/AndHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWModules.h"
-#include "UHH2/BstarToTW/include/BstarToTWCommonModules.h"
 #include "UHH2/BstarToTW/include/BstarToTWHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWSelections.h"
 
 #include "UHH2/HOTVR/include/HOTVRHists.h"
+#include "UHH2/HOTVR/include/HOTVRJetCorrectionModule.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrectionHists.h"
 
 using namespace std;
@@ -39,11 +40,12 @@ namespace uhh2 {
 
   private:  
 
+    Year year;
+    std::unique_ptr<CommonModules> common_modules;
+    std::unique_ptr<AnalysisModule> hotvr_jec_module;
     std::unique_ptr<AnalysisModule> primary_lepton, ht_calculator;
-    std::unique_ptr<AnalysisModule> object_setup;
-    std::unique_ptr<AnalysisModule> sf_mc_lumiweight, sf_mc_pu_reweight;
     // Cleaner
-    std::unique_ptr<AnalysisModule> cl_muo_tight, cl_ele_tight;
+    std::unique_ptr<AnalysisModule> cl_muo_tight, cl_ele_tight, cl_hotvr;
 
     // Selections
     bool is_data;
@@ -67,36 +69,59 @@ namespace uhh2 {
   BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
 
     // --- Config ---
+    year = extract_year(ctx);
     is_mc = ctx.get("dataset_type") == "MC";
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
     is_muo = ctx.get("analysis_channel") == "MUON";
 
-    // --- Additional Modules ---
-    primary_lepton.reset(new PrimaryLepton(ctx));
-    ht_calculator.reset(new HTCalculator(ctx));
-    object_setup.reset(new ObjectSetup(ctx));
-    if (is_mc)
-      {
-	sf_mc_lumiweight.reset(new MCLumiWeight(ctx));
-	std::string syst_pu = "central";
-	sf_mc_pu_reweight.reset(new MCPileupReweight(ctx, syst_pu));
-      }
-
-    // -- Kinematic Variables --
-    double met_min = 50.;
-    double st_min = 400.;
-    double lep_eta_max = 2.4;
-    double lep_pt_min  = 50.0; 
-    double muo_iso_max = 0.15;
+    // -- Kinematic Variables -- 
+    double jet_pt_min     = 30.0;
+    double jet_eta_max    = 2.4;
+    double lep_eta_max    = 2.4;
+    double lepveto_pt_min = 30.0;
+    double lep_pt_min     = 50.0; 
+    double muo_iso_max    = 0.15;
+    double met_min        = 50.;
+    double st_min         = 400.;
+    double top_pt_min     = 200.;
+    double top_eta_max    = 2.5;
 
     // --- IDs ---
+    JetId id_jet = PtEtaCut(jet_pt_min, jet_eta_max);
+    MuonId id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
     MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
-    ElectronId id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+    ElectronId id_ele_veto;
+    ElectronId id_ele_tight;
+    if (year == Year::is2016v2 || year == Year::is2016v3)
+      {
+	id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
+	id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+      }
+    else
+      {
+	id_ele_veto = AndId<Electron>(ElectronID_Fall17_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
+	id_ele_tight = AndId<Electron>(ElectronID_Fall17_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+      }
+    TopJetId id_hotvr = PtEtaCut(top_pt_min, top_eta_max);
 
+    // --- Additional Modules ---
+    common_modules.reset(new CommonModules());
+    common_modules->switch_jetlepcleaner(true);
+    common_modules->switch_jetPtSorter(true);
+    common_modules->switch_metcorrection(true);
+    common_modules->set_jet_id(id_jet);
+    common_modules->set_muon_id(id_muo_veto);
+    common_modules->set_electron_id(id_ele_veto);
+    common_modules->init(ctx);
+    hotvr_jec_module.reset(new HOTVRJetCorrectionModule(ctx));
+
+    primary_lepton.reset(new PrimaryLepton(ctx));
+    ht_calculator.reset(new HTCalculator(ctx));
+    
     // Cleaner
     cl_muo_tight.reset(new MuonCleaner(id_muo_tight));
     cl_ele_tight.reset(new ElectronCleaner(id_ele_tight));
-    
+    cl_hotvr.reset(new TopJetCleaner(ctx, id_hotvr));
     // --- Selections ---
     // - Lumi -
     sel_lumi.reset(new LumiSelection(ctx));
@@ -138,20 +163,9 @@ namespace uhh2 {
   bool BstarToTWPreSelectionModule::process(Event & event) {
     
     // --- Object Setup and Cleaning
-    if(!is_mc)
-      {
-	if(!sel_lumi->passes(event)) return false;
-      }
-    else if(is_mc)
-      {
-	sf_mc_lumiweight->process(event);
-	sf_mc_pu_reweight->process(event);
-      }
-    
-    if(!object_setup->process(event)) return false;
+    if (!common_modules->process(event)) return false;
     primary_lepton->process(event);
     ht_calculator->process(event);
-
     hist_cleaner->fill(event);
 
     // --- Lepton selection & additional lepton veto
@@ -162,8 +176,7 @@ namespace uhh2 {
 	cl_muo_tight->process(event);
 	if(!sel_1muo->passes(event)) return false;
 	hist_1lep->fill(event);
-      }
-    
+      }    
     // - Electron Channel
     else if (is_ele)
       {
@@ -186,6 +199,8 @@ namespace uhh2 {
     hist_st->fill(event);
 
     // --- TopJet Selection
+    hotvr_jec_module->process(event);
+    cl_hotvr->process(event);
     if(!sel_ntop->passes(event)) return false;
     hist_ntop->fill(event);
 
