@@ -61,8 +61,8 @@
 
 	  <!-- <!ENTITY ST_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_tW_antitop_inclusiveDecays_P8M1_PUMoriond17.xml"> -->
 	  <!-- <!ENTITY ST_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_tW_top_inclusiveDecays_P8M1_PUMoriond17.xml"> -->
-	  <!-- <!ENTITY ST_t-ch_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_t-channel_antitop_inclusiveDecays.xml"> -->
-	  <!-- <!ENTITY ST_t-ch_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_t-channel_top_inclusiveDecays.xml"> -->
+	  <!ENTITY ST_t-ch_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_t-channel_antitop_5f.xml">
+	  <!ENTITY ST_t-ch_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_t-channel_top_5f.xml">
 	  <!-- <!ENTITY ST_s-ch SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2017/MC_ST_s-channel_inclusiveDecays.xml"> -->
 
 	  <!-- <!ENTITY DYJetsToLL_HT-100to200 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2016/MC_DYJetsToLL_M-50_HT-100to200.xml"> -->
@@ -407,29 +407,29 @@
  <!--  </InputData> -->
 
 
- <!-- <InputData Lumi="217986.8459" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2016v3" Cacheable="&b_Cacheable;"> -->
+ <!-- <InputData Lumi="217986.8459" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2017v2" Cacheable="&b_Cacheable;"> -->
  <!--    &ST_tW_antitop; -->
  <!--    <InputTree Name="AnalysisTree" /> -->
  <!--    <OutputTree Name="AnalysisTree" /> -->
  <!--  </InputData> -->
 
- <!-- <InputData Lumi="274935.5486" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2016v3" Cacheable="&b_Cacheable;"> -->
+ <!-- <InputData Lumi="274935.5486" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2017v2" Cacheable="&b_Cacheable;"> -->
  <!--    &ST_tW_top; -->
  <!--    <InputTree Name="AnalysisTree" /> -->
  <!--    <OutputTree Name="AnalysisTree" /> -->
  <!--  </InputData> -->
 
- <!-- <InputData Lumi="3952648.88" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_antitop_2016v3" Cacheable="&b_Cacheable;"> -->
- <!--    &ST_tW_antitop; -->
- <!--    <InputTree Name="AnalysisTree" /> -->
- <!--    <OutputTree Name="AnalysisTree" /> -->
- <!--  </InputData> -->
+ <InputData Lumi="3386024.049" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_antitop_2017v2" Cacheable="&b_Cacheable;">
+    &ST_t-ch_antitop;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
 
- <!-- <InputData Lumi="5901890.867" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_top_2016v3" Cacheable="&b_Cacheable;"> -->
- <!--    &ST_tW_top; -->
- <!--    <InputTree Name="AnalysisTree" /> -->
- <!--    <OutputTree Name="AnalysisTree" /> -->
- <!--  </InputData> -->
+ <InputData Lumi="5192499.578" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_top_2017v2" Cacheable="&b_Cacheable;">
+    &ST_t-ch_top;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
 
 
  <!-- <InputData Lumi="71396.34675" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-100to200_2016v3" Cacheable="&b_Cacheable;"> -->
@@ -580,7 +580,7 @@
 	    <Item Name="GenParticleCollection" Value="GenParticles" />
 	    <Item Name="GenInfoName" Value="genInfo" />
 
-            <Item Name="lumi_file" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.root" />
+            <Item Name="lumi_file" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.root" />
             <Item Name="lumihists_lumi_per_bin" Value="1000."/>
 
             
@@ -618,9 +618,8 @@
             <Item Name="use_sframe_weight" Value="false" />
             
             <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
-            <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MyMCPileupHistogram.root" /> 
-	    <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MyDataPileupHistogram.root" />
-\
+            <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MyMCPileupHistogram.root" /> 
+	    <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MyDataPileupHistogram.root"/>
 	    <Item Name="ScaleVariationMuR" Value="none" />
 	    <Item Name="ScaleVariationMuF" Value="none" />
 	    <Item Name="jecsmear_direction" Value="nominal" />
