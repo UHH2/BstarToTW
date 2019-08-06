@@ -221,6 +221,15 @@ BstarToTWAnalysisHists::BstarToTWAnalysisHists(uhh2::Context &ctx, const std::st
   deltaR_btop = book<TH1F>("deltaR_btop", "#Delta R_{b,t}", 60, 0, 6);
   deltaR_toplep = book<TH1F>("deltaR_toplep", "#Delta R_{t,l}", 60, 0, 6);
 
+  // gen particle distributions
+  gen_b_number = book<TH1F>("gen_b_number", "number b", 21, -.5 , 20.5);
+  gen_b_pt = book<TH1F>("gen_b_pt", "p_{T}", 50, 20 , 800);
+  gen_b_eta = book<TH1F>("gen_b_eta", "#eta", 100, -5 , 5);
+  gen_b1_pt = book<TH1F>("gen_b1_pt", "p_{T,1}", 50, 20 , 800);
+  gen_b1_eta = book<TH1F>("gen_b1_eta", "#eta 1", 100, -5 , 5);
+  gen_b2_pt = book<TH1F>("gen_b2_pt", "p_{T,2}", 50, 20 , 800);
+  gen_b2_eta = book<TH1F>("gen_b2_eta", "#eta 2", 100, -5 , 5);
+
 }
 
 void BstarToTWAnalysisHists::fill(const Event &event) {
@@ -259,28 +268,54 @@ void BstarToTWAnalysisHists::fill(const Event &event) {
 
   deltaPhi_lepmet->Fill(deltaPhi(lep.v4(),event.met->v4()), weight);  
 
-  if (!event.is_valid(h_toptag) || !event.is_valid(h_btag))
-    return;
-
-  vector<TopJet> topjets = event.get(h_toptag);
-  vector<Jet> bjets = event.get(h_btag);
-
-  for (TopJet &topjet : topjets) 
+  if (event.is_valid(h_toptag) && event.is_valid(h_btag))
     {
-      deltaPhi_toplep->Fill(deltaPhi(topjet.v4(), lep.v4()), weight);
-      deltaR_toplep->Fill(deltaR(topjet.v4(), lep.v4()), weight);
+
+      vector<TopJet> topjets = event.get(h_toptag);
+      vector<Jet> bjets = event.get(h_btag);
+
+      for (TopJet &topjet : topjets) 
+	{
+	  deltaPhi_toplep->Fill(deltaPhi(topjet.v4(), lep.v4()), weight);
+	  deltaR_toplep->Fill(deltaR(topjet.v4(), lep.v4()), weight);
+	  for (Jet &bjet : bjets)
+	    {
+	      deltaPhi_btop->Fill(deltaPhi(topjet.v4(), bjet.v4()), weight);
+	      deltaR_btop->Fill(deltaR(topjet.v4(), bjet.v4()), weight);
+	    }
+	}
       for (Jet &bjet : bjets)
 	{
-	  deltaPhi_btop->Fill(deltaPhi(topjet.v4(), bjet.v4()), weight);
-	  deltaR_btop->Fill(deltaR(topjet.v4(), bjet.v4()), weight);
+	  deltaPhi_blep->Fill(deltaPhi(lep.v4(), bjet.v4()), weight);
+	  deltaR_blep->Fill(deltaR(lep.v4(), bjet.v4()), weight);
 	}
     }
-  for (Jet &bjet : bjets)
+  if (event.isRealData)
+    return;
+  
+  int n_b = 0;
+  for (auto genp : *event.genparticles)
     {
-      deltaPhi_blep->Fill(deltaPhi(lep.v4(), bjet.v4()), weight);
-      deltaR_blep->Fill(deltaR(lep.v4(), bjet.v4()), weight);
+      
+      if(abs(genp.pdgId()) == 5) // pdgId 5 = b
+	{
+	  ++n_b;
+	  gen_b_pt->Fill(genp.pt(), weight);
+	  gen_b_eta->Fill(genp.eta(), weight);
+	  if (n_b == 1)
+	    {
+	      gen_b1_pt->Fill(genp.pt(), weight);
+	      gen_b1_eta->Fill(genp.eta(), weight);
+	    }
+	  else if (n_b == 2)
+	    {
+	      gen_b2_pt->Fill(genp.pt(), weight);
+	      gen_b2_eta->Fill(genp.eta(), weight);
+	    }
+	}
     }
- 
+  gen_b_number->Fill(n_b, weight);
+  
 }
 
 BstarToTWAnalysisHists::~BstarToTWAnalysisHists(){}

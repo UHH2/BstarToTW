@@ -72,7 +72,7 @@ namespace uhh2 {
     TH1F *pt_lep, *event_met, *event_ht, *event_htlep, *ratio_ht, *asymm_st, *event_st, *event_st_half, *event_st_fifth, *event_rho, *lep_isolation;
     TH1F *deltaPhi_blep, *deltaPhi_btop, *deltaPhi_toplep, *deltaPhi_lepmet;
     TH1F *deltaR_blep, *deltaR_btop, *deltaR_toplep;
-    
+    TH1F *gen_b_number, *gen_b_pt, *gen_b_eta, *gen_b1_pt, *gen_b1_eta, *gen_b2_pt, *gen_b2_eta;
   };
 
   class TopMatchHists: public uhh2::Hists {

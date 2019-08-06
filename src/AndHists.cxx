@@ -30,21 +30,12 @@ AndHists::AndHists(Context &ctx, const string & dirname, const boost::optional<T
   hists_vector.push_back(new MuonHists(ctx, dirname + "_Muon"));
   hists_vector.push_back(new ElectronHists(ctx, dirname + "_Electron"));
   hists_vector.push_back(new JetHists(ctx, dirname + "_Jet"));
-
-  JetHists* bJetLooseHists = new JetHists(ctx, dirname + "_bJet_loose", 2);
-  JetId btag_loose = DeepCSVBTag(DeepCSVBTag::WP_LOOSE);
-  bJetLooseHists->set_JetId(btag_loose);
-  hists_vector.push_back(bJetLooseHists);
-
-  JetHists* bJetMediumHists = new JetHists(ctx, dirname + "_bJet_medium", 2);
-  JetId btag_medium = DeepCSVBTag(DeepCSVBTag::WP_MEDIUM);
-  bJetMediumHists->set_JetId(btag_medium);
-  hists_vector.push_back(bJetMediumHists);
-
-  JetHists* bJetTightHists = new JetHists(ctx, dirname + "_bJet_tight", 2);
-  JetId btag_tight = DeepCSVBTag(DeepCSVBTag::WP_TIGHT);
-  bJetTightHists->set_JetId(btag_tight);
-  hists_vector.push_back(bJetTightHists);
+  if (!(ctx.get("AnalysisModule") == "BstarToTWPreSelectionModule")) // don't fill these in preselection
+    {
+      hists_vector.push_back(new JetHists(ctx, dirname + "_bJet_loose", 2, "btag_loose"));
+      hists_vector.push_back(new JetHists(ctx, dirname + "_bJet_medium", 2, "btag_medium"));
+      hists_vector.push_back(new JetHists(ctx, dirname + "_bJet_tight", 2, "btag_tight"));
+    }
 }
 
 void AndHists::fill(const Event & event) {  
