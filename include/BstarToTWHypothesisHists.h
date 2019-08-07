@@ -34,3 +34,19 @@ protected:
     std::string m_discriminator_name;
     
 };
+
+class LeptonicTopHypothesisHists: public uhh2::Hists {
+public:
+    LeptonicTopHypothesisHists(uhh2::Context & ctx, const std::string & dirname, const std::string & hyps_name, const std::string & discriminator_name);
+
+    virtual void fill(const uhh2::Event & event) override;
+
+protected:
+    TH1F *Discriminator, *Discriminator_2, *Discriminator_3;
+    TH1F *Top_reco_M, *Top_reco_pt;
+
+    uhh2::Event::Handle<std::vector<LeptonicTopHypothesis> > h_hyps;
+    std::string m_name;
+    std::string m_discriminator_name;
+    
+};

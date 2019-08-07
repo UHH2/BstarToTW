@@ -115,3 +115,44 @@ void BstarToTWHypothesisHists::fill(const uhh2::Event & e){
   PtTop_over_PtW->Fill(hyp->get_topjet().Pt() / hyp->get_w().Pt(), weight);
 
 }
+
+LeptonicTopHypothesisHists::LeptonicTopHypothesisHists(uhh2::Context & ctx, const std::string & dirname, const std::string & hyps_name, const std::string & discriminator_name ): Hists(ctx, dirname){
+
+  TString name = discriminator_name;
+    if(discriminator_name=="Chi2"){
+      name = "#chi^{2}";
+    }
+    else{
+      name += " discriminator";
+    }
+    Discriminator =   book<TH1F>("Discriminator", name,   100, 0, 500);
+    Discriminator_2 = book<TH1F>("Discriminator_2", name, 50,  0, 500);
+    Discriminator_3 = book<TH1F>("Discriminator_3", name, 300, 0,  30);     
+
+    Top_reco_M = book<TH1F>("toplep_M", "M_{t}^{reco} [GeV]", 70, 0, 700);
+    Top_reco_pt = book<TH1F>("toplep_pt", "p_{T, t}^{reco} [GeV]", 100, 0, 2000);
+    
+    h_hyps = ctx.get_handle<std::vector<LeptonicTopHypothesis>>(hyps_name);
+    m_name = hyps_name;
+    m_discriminator_name = discriminator_name;
+}
+
+
+void LeptonicTopHypothesisHists::fill(const uhh2::Event & event){
+  std::vector<LeptonicTopHypothesis> hyps = event.get(h_hyps);
+  const LeptonicTopHypothesis* hyp = get_best_hypothesis( hyps, m_discriminator_name );
+  if (!hyp)
+    {
+      cout << "WARNING: " + m_name  +": " + m_discriminator_name + " No hypothesis was valid!" << endl;
+      return;
+    }
+  double weight = event.weight;
+  
+  Discriminator->Fill(hyp->get_discriminator(m_discriminator_name), weight);
+  Discriminator_2->Fill(hyp->get_discriminator(m_discriminator_name), weight);
+  Discriminator_3->Fill(hyp->get_discriminator(m_discriminator_name), weight);
+
+  double mtop = (hyp->get_toplep().isTimelike()) ? hyp->get_toplep().M() : sqrt(-(hyp->get_toplep()).mass2());
+  Top_reco_M->Fill(mtop, weight);
+  Top_reco_pt->Fill(hyp->get_toplep().pt());
+}
