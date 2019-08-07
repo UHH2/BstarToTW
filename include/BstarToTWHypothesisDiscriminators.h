@@ -9,6 +9,7 @@
 
 
 const BstarToTWHypothesis * get_best_hypothesis(const std::vector<BstarToTWHypothesis> & hyps, const std::string & label);
+const LeptonicTopHypothesis * get_best_hypothesis(const std::vector<LeptonicTopHypothesis> & hyps, const std::string & label);
 
 
 class BstarToTWChi2Discriminator: public uhh2::AnalysisModule {
@@ -52,6 +53,29 @@ class BstarToTWChi2Discriminator: public uhh2::AnalysisModule {
   float m_deltaPt_mean, m_deltaPt_sigma;
 
 };
+
+class LeptonicTopChi2Discriminator: public uhh2::AnalysisModule {
+
+ public:
+
+  LeptonicTopChi2Discriminator(uhh2::Context&, const std::string&);
+  virtual bool process(uhh2::Event&) override;
+
+  virtual void set_mtop_mean (const float m){ m_mtop_mean  = m; }
+  virtual void set_mtop_sigma(const float s){
+    m_mtop_sigma = s; 
+    if(s <= 0.) throw std::runtime_error("Chi2Discriminator::set_mtop_sigma -- logic error: non-positive input value: "+std::to_string(s));
+  }
+
+  virtual float get_mtop_mean () const { return m_mtop_mean; }
+  virtual float get_mtop_sigma() const { return m_mtop_sigma; }
+
+ private:
+  uhh2::Event::Handle<std::vector<LeptonicTopHypothesis>> h_hyps;
+  float m_mtop_mean, m_mtop_sigma;
+
+};
+
 
 /** \brief Try to match the reconstruction hypotheses to Monte-Carlo truth, jet-by-jet
  * 

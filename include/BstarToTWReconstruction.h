@@ -27,3 +27,14 @@ class BstarToTWReconstruction: public uhh2::AnalysisModule {
 
   TopJetId m_topjetid;
 };
+
+class LeptonicTopReconstruction: public uhh2::AnalysisModule {
+ public:
+  explicit LeptonicTopReconstruction(uhh2::Context &ctx, const std::string &hyps_name, const std::string &bjet_name, const std::string &label = "LeptonicTopReco");
+  virtual bool process(uhh2::Event &event) override;
+
+ private:
+  uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_recohyps;
+  uhh2::Event::Handle<std::vector<Jet> > h_bjets;
+  uhh2::Event::Handle<std::vector<LeptonicTopHypothesis> > h_toplephyps;
+};

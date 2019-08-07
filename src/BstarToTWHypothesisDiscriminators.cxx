@@ -39,6 +39,31 @@ const BstarToTWHypothesis * get_best_hypothesis(const std::vector<BstarToTWHypot
     }
 }
 
+const LeptonicTopHypothesis * get_best_hypothesis(const std::vector<LeptonicTopHypothesis> & hyps, const std::string & label) {
+
+  const LeptonicTopHypothesis * best = nullptr;
+  float current_best_disc = numeric_limits<float>::infinity();
+
+  for(const auto & hyp : hyps)
+    {
+      if(!hyp.has_discriminator(label)) continue;
+      auto disc = hyp.get_discriminator(label);
+      if(disc < current_best_disc)
+	{
+	  best = &hyp;
+	  current_best_disc = disc;
+        }
+    }
+  if(std::isfinite(current_best_disc))
+    {
+      return best;
+    }
+  else
+    {
+      return nullptr;
+    }
+}
+
 
 BstarToTWChi2Discriminator::BstarToTWChi2Discriminator(Context & ctx, const std::string & rechyps_name) {
 
@@ -91,6 +116,33 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
       hyp.set_discriminator("Chi2_deltaPt", chi2_deltaPt);
       hyp.set_discriminator("Chi2", chi2_deltaPhi + chi2_deltaPt);
       hyp.set_discriminator("Chi2_with_mass", chi2_mtop + chi2_deltaPhi + chi2_deltaPt);
+    }
+
+  return true;
+}
+
+
+LeptonicTopChi2Discriminator::LeptonicTopChi2Discriminator(Context & ctx, const std::string & rechyps_name) {
+
+  h_hyps = ctx.get_handle<vector<LeptonicTopHypothesis>>(rechyps_name);
+
+  // from fits to matched distribution
+  m_mtop_mean  = 172.5;
+  m_mtop_sigma =  5.0;
+
+}
+
+bool LeptonicTopChi2Discriminator::process(uhh2::Event& event) {
+
+  auto& hyps = event.get(h_hyps);
+
+  for(auto& hyp : hyps)
+    {
+      // double mtophad = inv_mass(hyp.get_tophad());
+      double mtoplep = inv_mass(hyp.get_toplep());
+      const double chi2_mtoplep = pow((mtoplep - m_mtop_mean) / m_mtop_sigma, 2);
+
+      hyp.set_discriminator("Chi2", chi2_mtoplep);
     }
 
   return true;
