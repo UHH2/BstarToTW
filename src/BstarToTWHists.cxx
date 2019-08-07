@@ -297,7 +297,7 @@ void BstarToTWAnalysisHists::fill(const Event &event) {
   for (auto genp : *event.genparticles)
     {
       
-      if(abs(genp.pdgId()) == 5) // pdgId 5 = b
+      if(abs(genp.pdgId()) == 5 && genp.status() == 23) // pdgId 5 = b
 	{
 	  ++n_b;
 	  gen_b_pt->Fill(genp.pt(), weight);
