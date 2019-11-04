@@ -55,13 +55,14 @@ namespace uhh2 {
     std::unique_ptr<Selection> veto_ele;
     std::unique_ptr<Selection> sel_1muo;
     std::unique_ptr<Selection> sel_1ele;
-    std::unique_ptr<Selection> sel_njet;
+    std::unique_ptr<Selection> sel_njet; 
+    std::unique_ptr<Selection> sel_ht;
     std::unique_ptr<Selection> sel_met;
     std::unique_ptr<Selection> sel_st;
     std::unique_ptr<Selection> sel_ntop;
 
     // Hists
-    std::unique_ptr<Hists> hist_trigger, hist_cleaner, hist_1lep, hist_njet, hist_met, hist_st, hist_ntop;
+    std::unique_ptr<Hists> hist_trigger, hist_cleaner, hist_1lep, hist_njet, hist_ht, hist_met, hist_st, hist_ntop;
 
     bool is_mc, is_ele, is_muo;
   };
@@ -81,6 +82,7 @@ namespace uhh2 {
     double lepveto_pt_min = 30.0;
     double lep_pt_min     = 50.0; 
     double muo_iso_max    = 0.15;
+    double ht_min         = 200.; 
     double met_min        = 50.;
     double st_min         = 400.;
     double top_pt_min     = 200.;
@@ -94,6 +96,11 @@ namespace uhh2 {
     ElectronId id_ele_tight;
     if (year == Year::is2016v2 || year == Year::is2016v3)
       {
+	if (year == Year::is2016v2)
+	  {
+	    id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::Loose), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+	    id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::Tight), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+	  }
 	id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
 	id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
       }
@@ -135,10 +142,12 @@ namespace uhh2 {
     sel_1ele.reset(new NElectronSelection(1, 1));
     // - JET
     sel_njet.reset(new NJetSelection(1, -1));
+    // - HT
+    sel_ht.reset(new HTSelection(ctx, ht_min));
     // - MET
     sel_met.reset(new METSelection(met_min));
     // - ST
-    sel_st.reset(new STSelection(st_min));
+    sel_st.reset(new STSelection(ctx, st_min));
     // - TopJet
     sel_ntop.reset(new NTopJetSelection(1, -1));
 
@@ -150,7 +159,9 @@ namespace uhh2 {
     // - Jet -
     hist_njet.reset(new AndHists(ctx, "1JetCut"));
     // - Trigger -
-    hist_trigger.reset(new AndHists(ctx, "Trigger"));
+    hist_trigger.reset(new AndHists(ctx, "Trigger")); 
+    // - HT -
+    hist_ht.reset(new AndHists(ctx, "100HTCut"));
     // - MET -
     hist_met.reset(new AndHists(ctx, "50METCut"));
     // - ST -
@@ -189,6 +200,10 @@ namespace uhh2 {
     // --- Jet selection
     if (!sel_njet->passes(event)) return false;
     hist_njet->fill(event);
+
+    // --- HT selection
+    if(!sel_ht->passes(event)) return false;
+    hist_ht->fill(event);
 
     // --- MET selection
     if(!sel_met->passes(event)) return false;

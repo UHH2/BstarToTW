@@ -20,22 +20,22 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
 
     double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 3500};
     double xbins_fitbin[13] = {0,500, 700, 900, 1100, 1300, 1500, 1700, 1900, 2100, 2300, 2500, 3500};
-    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV/c^{2}]", 25, 100, 3500);
-    Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV/c^{2}]", 100, 100, 3500);
-    Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV/c^{2}]", 12, xbins_fitbin);
-    Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV/c^{2}]", 16, xbins);
+    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 25, 100, 3500);
+    Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV]", 100, 100, 3500);
+    Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV]", 12, xbins_fitbin);
+    Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
     
     // Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{b*}^{reco} [GeV/c^{2}]", 50, 0, 5000);
     Bstar_reco_Pt = book<TH1F>("Bstar_reco_Pt", "p_{T, b#ast}^{reco}", 40, 0, 400);
     
-    W_reco_M = book<TH1F>("W_reco_M", "M_{W}^{reco} [GeV/c^{2}", 30, 0, 300);
-    W_reco_Pt = book<TH1F>("W_reco_Pt", "p_{T, W}^{reco} [GeV/c]", 100, 0, 2000);
+    W_reco_M = book<TH1F>("W_reco_M", "M_{W}^{reco} [GeV]", 30, 0, 300);
+    W_reco_Pt = book<TH1F>("W_reco_Pt", "p_{T, W}^{reco} [GeV]", 100, 0, 2000);
 
-    Top_reco_M = book<TH1F>("Top_reco_M", "M_{t}^{reco} [GeV/c^{2}]", 70, 0, 700);
-    Top_reco_Pt = book<TH1F>("Top_reco_Pt", "p_{T, t}^{reco} [GeV/c]", 100, 0, 2000);
+    Top_reco_M = book<TH1F>("Top_reco_M", "M_{t}^{reco} [GeV]", 70, 0, 700);
+    Top_reco_Pt = book<TH1F>("Top_reco_Pt", "p_{T, t}^{reco} [GeV]", 100, 0, 2000);
     DeltaR_top_W = book<TH1F>("DeltaR_top_W", "#Delta R_{t,W}", 60, 0, 6);
     DeltaPhi_top_W = book<TH1F>("DeltaPhi_top_W", "#Delta #phi_{t,W}", 50, 2.5, 3.5);
-    DeltaPt_top_W = book<TH1F>("DeltaPt_top_W", "#Delta p_{T, t,W} [GeV/c]", 80, -400, 400);
+    DeltaPt_top_W = book<TH1F>("DeltaPt_top_W", "#Delta p_{T, t,W} [GeV]", 80, -400, 400);
     DeltaPt_top_W_over_pt = book<TH1F>("DeltaPt_top_W_over_pt", "#Delta p_{T t,W}/p_{T t}", 50, -0.5, 0.5);
     // DeltaEta_top_W = book<TH1F>("DeltaEta_top_W", "#Delta #eta_{t,W}", 20,-5,5);
 
@@ -154,5 +154,5 @@ void LeptonicTopHypothesisHists::fill(const uhh2::Event & event){
 
   double mtop = (hyp->get_toplep().isTimelike()) ? hyp->get_toplep().M() : sqrt(-(hyp->get_toplep()).mass2());
   Top_reco_M->Fill(mtop, weight);
-  Top_reco_pt->Fill(hyp->get_toplep().pt());
+  Top_reco_pt->Fill(hyp->get_toplep().pt(), weight);
 }
