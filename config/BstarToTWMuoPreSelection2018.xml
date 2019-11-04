@@ -59,8 +59,10 @@
 	  <!ENTITY WJetsToLNu_HT_1200to2500 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-1200To2500.xml">
 	  <!ENTITY WJetsToLNu_HT_2500toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-2500ToInf.xml">
 
-	  <!ENTITY ST_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_antitop_5f_inclusiveDecays.xml">
-	  <!ENTITY ST_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_top_5f_inclusiveDecays.xml">
+	  <!-- <!ENTITY ST_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_antitop_5f_inclusiveDecays.xml"> -->
+	  <!-- <!ENTITY ST_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_top_5f_inclusiveDecays.xml"> -->
+	  <!ENTITY ST_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_antitop_5f_NoFullyHadronicDecays.xml">
+	  <!ENTITY ST_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_top_5f_NoFullyHadronicDecays.xml">
 	  <!ENTITY ST_t-ch_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_SingleTop_t-channel_antitop.xml">
 	  <!ENTITY ST_t-ch_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_SingleTop_t-channel_top.xml">
 	  <!ENTITY ST_s-ch_leptonic SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_s-channel_4f_leptonDecays.xml">
@@ -383,13 +385,13 @@
   </InputData>
 
 
- <InputData Lumi="7619971.92" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2018" Cacheable="&b_Cacheable;">
+ <InputData Lumi="12339449.8" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2018" Cacheable="&b_Cacheable;">
     &ST_tW_antitop;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="9592515.955" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2018" Cacheable="&b_Cacheable;">
+ <InputData Lumi="15548592.94" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2018" Cacheable="&b_Cacheable;">
     &ST_tW_top;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />

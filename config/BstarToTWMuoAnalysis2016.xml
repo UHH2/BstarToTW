@@ -347,13 +347,13 @@
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
-
+    
     <InputData Lumi="29330.24387" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_100to200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
-
+    
     <InputData Lumi="53015.65749" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_200to400;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
@@ -514,7 +514,7 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="129.6825214" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-80to120_2016v3" Cacheable="&b_Cacheable;">
+    <InputData Lumi="222.1998272" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-80to120_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&QCD_MuEnriched_Pt-80to120;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
@@ -532,7 +532,7 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="9954.929731" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-300to470_2016v3" Cacheable="&b_Cacheable;">
+    <InputData Lumi="57642.52956" NEventsMax="&NEVT;" Type="MC" Version="QCD_MuEnriched_Pt-300to470_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&QCD_MuEnriched_Pt-300to470;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
@@ -576,7 +576,7 @@
       <Item Name="GenParticleCollection" Value="GenParticles" />
       <Item Name="GenInfoName" Value="genInfo" />
 
-      <Item Name="lumi_file" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.root" />
+      <Item Name="lumi_file" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/Cert_271036-284044_13TeV_ReReco_07Aug2017_Collisions16_JSON.root" />
       <Item Name="lumihists_lumi_per_bin" Value="1000."/>
       
       <!-- The list of available collections to read in corresponds to the pointer members in event. The 'Name's to use here in the configuration are:
@@ -616,9 +616,11 @@
       
       <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MyMCPileupHistogram.root" /> 
       <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MyDataPileupHistogram.root" />
+      <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MyDataPileupHistogram_72383.root" />
+      <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MyDataPileupHistogram_66017.root" />
       
-      <Item Name="MCBtagEfficiencies" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/BTagMEfficiencyMuon2018.root" />
-      <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/DeepCSV_102XSF_WP_V1.csv" />
+      <Item Name="MCBtagEfficiencies" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/BTagMCEfficiencyDeepJet_Muon2016.root" />
+      <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/DeepJet_2016LegacySF_WP_V1.csv" />
 
       <Item Name="HOTVRTopTagSFs" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/HOTVR/data/2016TopTaggingScaleFactors.root" />
       
@@ -634,7 +636,6 @@
       <Item Name="Systematic_MuonID"      Value="nominal" />
       <Item Name="Systematic_MuonTrigger" Value="nominal" />
       <Item Name="Systematic_MuonIso"     Value="nominal" />
-      <Item Name="Systematic_MuonTrk"     Value="nominal" />
 
       <Item Name="Systematic_BTag"        Value="central" />
       <Item Name="Systematic_TopTag"      Value="nominal" />
