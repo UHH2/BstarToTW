@@ -32,10 +32,21 @@ namespace uhh2 {
    */
   class STSelection: public uhh2::Selection {
   public:
-    STSelection(double st_min);
+    STSelection(uhh2::Context &ctx, double st_min);
     virtual bool passes(const uhh2::Event &event) override;
   private:
+    uhh2::Event::Handle<double> h_ht;
+    uhh2::Event::Handle<FlavorParticle> h_primlep;
     double m_st_min;
+  };
+
+  class HTSelection: public uhh2::Selection {
+  public:
+    HTSelection(uhh2::Context &ctx, double ht_min);
+    virtual bool passes(const uhh2::Event &event) override;
+  private:
+    uhh2::Event::Handle<double> h_ht;
+    double m_ht_min;
   };
 
   class Chi2Selection: public uhh2::Selection {

@@ -20,29 +20,29 @@ bool METSelection::passes(const Event &event) {
   return (met_min < event.met->pt());
 }
 
-STSelection::STSelection(double st_min):
+STSelection::STSelection(Context &ctx, double st_min):
+  h_ht(ctx.get_handle<double>("HT")),
+  h_primlep(ctx.get_handle<FlavorParticle>("PrimaryLepton")),
   m_st_min(st_min) {}
 
 bool STSelection::passes(const Event &event) {
-  auto met = event.met->pt();
+  double met = event.met->pt();
+  double ht_jets = event.get(h_ht);
+  double ht_lep = event.get(h_primlep).pt();
 
-  double ht = 0.0;
-  double ht_jets = 0.0;
-  double ht_lep = 0.0;
-  for(const auto & jet : *event.jets){
-    ht_jets += jet.pt();
-  }
-  for(const auto & electron : *event.electrons){
-    ht_lep += electron.pt();
-  }
-  for(const auto & muon : *event.muons){
-    ht_lep += muon.pt();
-  }
-
-  ht = ht_lep + ht_jets + met;
-
+  double st = ht_lep + ht_jets + met;
   
-  return ht > m_st_min;
+  return st > m_st_min;
+}
+
+HTSelection::HTSelection(Context &ctx, double ht_min):
+  h_ht(ctx.get_handle<double>("HT")),
+  m_ht_min(ht_min) {}
+
+bool HTSelection::passes(const Event &event) {
+
+  double ht = event.get(h_ht);  
+  return ht > m_ht_min;
 }
 
 Chi2Selection::Chi2Selection(Context &ctx, string label, double chi2_max, const string disc_name):
@@ -210,7 +210,7 @@ BstarToTWTriggerSelection::BstarToTWTriggerSelection(Context &ctx) {
 
 bool BstarToTWTriggerSelection::passes(const Event &event) {
 
-  if (year == Year::is2016v3) 
+  if (year == Year::is2016v2 || year == Year::is2016v3) 
     {
       if (is_ele)
 	{
