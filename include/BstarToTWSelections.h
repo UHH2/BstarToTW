@@ -9,6 +9,8 @@
 #include "UHH2/BstarToTW/include/BstarToTWGen.h"
 #include "UHH2/BstarToTW/include/BstarToTWHypothesis.h"
 
+#include <TRandom.h>
+
 namespace uhh2 {
 
   /** 
@@ -143,5 +145,23 @@ namespace uhh2 {
     std::unique_ptr<uhh2::Selection> trig_isomu24, trig_isotkmu24, trig_isomu27;
     std::unique_ptr<uhh2::Selection> trig_ele27, trig_ele32, trig_ele35;
     std::unique_ptr<uhh2::Selection> trig_photon175, trig_photon200;
+  };
+
+  class BadHCALSelection: public uhh2::Selection {
+  public:
+    BadHCALSelection(uhh2::Context &ctx, long int seed = 123456789);
+    virtual bool passes(const uhh2::Event &event) override;
+
+  private:
+    TRandom *m_rng;
+    long int m_seed;
+    Year year;
+    int m_runnumber = 319077;
+    double m_lumi_ratio = 0.648;
+
+    double m_interval_eta = -1.3;
+    double m_interval_phi_low = -1.57;
+    double m_interval_phi_high = -0.87;
+
   };
 }

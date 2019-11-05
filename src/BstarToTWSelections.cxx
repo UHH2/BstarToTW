@@ -5,7 +5,7 @@
 #include "UHH2/core/include/Jet.h"
 #include "UHH2/common/include/Utils.h"
 #include "UHH2/common/include/TriggerSelection.h"
-
+#include <TRandomGen.h>
 #include <stdexcept>
 #include <vector>
 
@@ -247,4 +247,29 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
     }
 
   return false;
+}
+
+BadHCALSelection::BadHCALSelection(Context &ctx, long int seed) {
+  m_seed = seed;
+  m_rng = new TRandomMixMax();
+  m_rng->SetSeed(m_seed);
+  year = extract_year(ctx);  
+}
+
+bool BadHCALSelection::passes(const Event &event) {
+
+  if (year != Year::is2018) return true;
+
+  // check if event should be removed:
+  // for data: if event is affected by HEM15/16
+  // for mc: draw random sample according to lumi ratio of affected data
+  if ((event.isRealData && event.run >= m_runnumber) || (!event.isRealData && m_rng->Uniform() < m_lumi_ratio))
+    {
+      for (const Electron & e : *event.electrons)
+	{
+	  if (e.eta() < m_interval_eta && e.phi() > m_interval_phi_low && e.phi() < m_interval_phi_high) return false;
+	}
+    }
+
+  return true;
 }
