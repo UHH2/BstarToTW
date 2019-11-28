@@ -124,9 +124,6 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx, long int seed) {
 
 bool MuonScaleFactors2018::process(Event &event) {
 
-  if (event.isRealData)
-    return true;
-
   if ( m_rng->Uniform() < m_lumi_fraction )
     {
       m_sf_trigger_before->process(event);
