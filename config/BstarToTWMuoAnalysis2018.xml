@@ -334,49 +334,49 @@
     </InputData>
 
 
-    <InputData Lumi="21906.58658" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2018" Cacheable="&b_Cacheable;">
-      <In FileName="&WJetsToLNu_HT_70to100;" Lumi="0.0"/>
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
+    <!-- <InputData Lumi="21906.58658" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2018" Cacheable="&b_Cacheable;"> -->
+    <!--   <In FileName="&WJetsToLNu_HT_70to100;" Lumi="0.0"/> -->
+    <!--   <InputTree Name="AnalysisTree" /> -->
+    <!--   <OutputTree Name="AnalysisTree" /> -->
+    <!-- </InputData> -->
 
-    <InputData Lumi="21612.12022" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="17152.47637" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_100to200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="61037.07283" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="41241.26543" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_200to400;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="100434.7448" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="79710.11496" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_400to600;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1515840.055" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="1471689.374" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_600to800;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1498230.148" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="1426885.856" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_800to1200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="6814210.755" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="8849624.357" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_1200to2500;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
     
-    <InputData Lumi="400493744.9" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="520121746.6" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2018" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_2500toInf;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
@@ -420,80 +420,43 @@
     </InputData>
 
 
-    <!-- <InputData Lumi="212635.983264" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2018" Cacheable="&b_Cacheable;"> -->
-    <!--   <In FileName="&ST_tW_antitop;" Lumi="0.0"/> -->
-    <!--   <InputTree Name="AnalysisTree" /> -->
-    <!--   <OutputTree Name="AnalysisTree" /> -->
-    <!-- </InputData> -->
-
-    <!-- <InputData Lumi="267726.638773" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2018" Cacheable="&b_Cacheable;"> -->
-    <!--   <In FileName="&ST_tW_top;" Lumi="0.0"/> -->
-    <!--   <InputTree Name="AnalysisTree" /> -->
-    <!--   <OutputTree Name="AnalysisTree" /> -->
-    <!-- </InputData> -->
-
-    <!-- <InputData Lumi="48857.6158122" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_antitop_2018" Cacheable="&b_Cacheable;"> -->
-    <!--   <In FileName="&ST_t-ch_antitop;" Lumi="0.0"/> -->
-    <!--   <InputTree Name="AnalysisTree" /> -->
-    <!--   <OutputTree Name="AnalysisTree" /> -->
-    <!-- </InputData> -->
-    
-    <!-- <InputData Lumi="43402.9995589" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_top_2018" Cacheable="&b_Cacheable;"> -->
-    <!--   <In FileName="&ST_t-ch_top;" Lumi="0.0"/> -->
-    <!--   <InputTree Name="AnalysisTree" /> -->
-    <!--   <OutputTree Name="AnalysisTree" /> -->
-    <!-- </InputData> -->
-
-    <!-- <InputData Lumi="5898203.59281" NEventsMax="&NEVT;" Type="MC" Version="ST_s-ch_leptonic_2018" Cacheable="&b_Cacheable;"> -->
-    <!--   <In FileName="&ST_s-ch_leptonic;" Lumi="0.0"/> -->
-    <!--   <InputTree Name="AnalysisTree" /> -->
-    <!--   <OutputTree Name="AnalysisTree" /> -->
-    <!-- </InputData> -->
-    
-    <!-- <InputData Lumi="1382808.02292" NEventsMax="&NEVT;" Type="MC" Version="ST_s-ch_hadronic_2018" Cacheable="&b_Cacheable;"> -->
-    <!--   <In FileName="&ST_s-ch_hadronic;" Lumi="0.0"/> -->
-    <!--   <InputTree Name="AnalysisTree" /> -->
-    <!--   <OutputTree Name="AnalysisTree" /> -->
-    <!-- </InputData> -->
-
-
-    <InputData Lumi="71396.34675" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-100to200_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="49235.81117" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-100to200_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-100to200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="230937.8111" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-200to400_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="144336.132" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-200to400_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-200to400;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1407620.555" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="1091178.724" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-400to600;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="5004011.293" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-600to800_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="4549101.176" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-600to800_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-600to800;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="3834606.576" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-800to1200_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="3652006.262" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-800to1200_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-800to1200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="2798205.529" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-1200to2500_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="3542032.316" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-1200to2500_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-1200to2500;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="121910077.1" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-2500toInf_2018" Cacheable="&b_Cacheable;">
+    <InputData Lumi="154316553.3" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-2500toInf_2018" Cacheable="&b_Cacheable;">
       <In FileName="&DYJetsToLL_HT-2500toInf;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />

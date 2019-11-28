@@ -338,49 +338,49 @@
   </InputData>
 
 
-  <InputData Lumi="7337.300986" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2017v2" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_70to100;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
+  <!-- <InputData Lumi="7337.300986" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2017v2" Cacheable="&b_Cacheable;"> -->
+  <!--   &WJetsToLNu_HT_70to100; -->
+  <!--   <InputTree Name="AnalysisTree" /> -->
+  <!--   <OutputTree Name="AnalysisTree" /> -->
+  <!-- </InputData> -->
 
- <InputData Lumi="24497.36654" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="19185.5955" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2017v2" Cacheable="&b_Cacheable;">
     &WJetsToLNu_HT_100to200;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="45872.06211" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="29988.801" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2017v2" Cacheable="&b_Cacheable;">
     &WJetsToLNu_HT_200to400;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="246755.2208" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="192079.047" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2017v2" Cacheable="&b_Cacheable;">
     &WJetsToLNu_HT_400to600;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="1662735.67" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="1613063.746" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2017v2" Cacheable="&b_Cacheable;">
     &WJetsToLNu_HT_600to800;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="2182790.874" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="1958307.943" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2017v2" Cacheable="&b_Cacheable;">
     &WJetsToLNu_HT_800to1200;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="39031433.57" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="45836371.85" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2017v2" Cacheable="&b_Cacheable;">
     &WJetsToLNu_HT_1200to2500;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="2656452174" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="3412294150" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2017v2" Cacheable="&b_Cacheable;">
    &WJetsToLNu_HT_2500toInf;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
@@ -418,43 +418,43 @@
   </InputData>
 
 
- <InputData Lumi="69226.78638" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-100to200_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="47739.65528" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-100to200_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-100to200;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="219614.0918" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-200to400_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="137258.8073" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-200to400_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-200to400;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="1476963.275" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="1144932.771" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-400to600_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-400to600;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="4907740.26" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-600to800_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="4461582.054" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-600to800_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-600to800;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="3804595.493" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-800to1200_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="3623424.279" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-800to1200_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-800to1200;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="3218169.014" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-1200to2500_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="4073631.663" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-1200to2500_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-1200to2500;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
- <InputData Lumi="114568655.4" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-2500toInf_2017v2" Cacheable="&b_Cacheable;">
+ <InputData Lumi="145023614.5" NEventsMax="&NEVT;" Type="MC" Version="DYJetsToLL_HT-2500toInf_2017v2" Cacheable="&b_Cacheable;">
     &DYJetsToLL_HT-2500toInf;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
@@ -606,6 +606,7 @@
             <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
             <Item Name="pileup_directory" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MyMCPileupHistogram.root" /> 
 	    <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MyDataPileupHistogram2017.root"/>
+
 	    <Item Name="ScaleVariationMuR" Value="none" />
 	    <Item Name="ScaleVariationMuF" Value="none" />
 	    <Item Name="jecsmear_direction" Value="nominal" />
