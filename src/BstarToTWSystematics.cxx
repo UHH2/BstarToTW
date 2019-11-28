@@ -2,6 +2,8 @@
 #include "UHH2/common/include/MCWeight.h"
 #include "UHH2/common/include/Utils.h"
 
+#include <TRandomGen.h>
+
 using namespace std;
 using namespace uhh2;
 
@@ -17,18 +19,18 @@ MuonScaleFactors2016::MuonScaleFactors2016(Context &ctx) {
   
   m_sf_id.reset(new MCMuonScaleFactor(ctx,
 				      ctx.get("SF_MUO_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MuonID_EfficienciesAndSF_average_RunBtoH.root"),
-				      ctx.get("SF_MUO_ID_FILE", "MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"),
+				      ctx.get("SF_MUO_ID_FILE", "NUM_TightID_DEN_genTracks_eta_pt"),
 				      1.0,
 				      "tight_id",
-				      false,
+				      true,
 				      ctx.get("SYS_MUO_ID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
 				       ctx.get("SF_MUO_ISO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MuonIso_EfficienciesAndSF_average_RunBtoH.root"),
-				       ctx.get("SF_MUO_ISO_FILE", "TightISO_TightID_pt_eta"),
+				       ctx.get("SF_MUO_ISO_FILE", "NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt"),
 				       1.0,
 				       "isolation",
-				       false,
+				       true,
 				       ctx.get("SYS_MUO_ISO", "nominal")));
 
 }
@@ -81,7 +83,11 @@ bool MuonScaleFactors2017::process(Event &event) {
 }
 
 
-MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
+MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx, long int seed) {
+
+  m_seed = seed;
+  m_rng = new TRandomMixMax();
+  m_rng->SetSeed(m_seed);
 
   m_sf_trigger_before.reset(new MCMuonScaleFactor(ctx,
 						  ctx.get("SF_MUO_TRIGGER_BEFORE_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_BeforeMuonHLTUpdate.root"),
@@ -118,7 +124,10 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
 
 bool MuonScaleFactors2018::process(Event &event) {
 
-  if (event.run < m_hlt_runnr)
+  if (event.isRealData)
+    return true;
+
+  if ( m_rng->Uniform() < m_lumi_fraction )
     {
       m_sf_trigger_before->process(event);
     }
