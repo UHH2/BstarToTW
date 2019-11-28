@@ -269,6 +269,10 @@ bool BadHCALSelection::passes(const Event &event) {
 	{
 	  if (e.eta() < m_interval_eta && e.phi() > m_interval_phi_low && e.phi() < m_interval_phi_high) return false;
 	}
+      for (const Jet & j : *event.jets)
+	{
+	  if (j.eta() < m_interval_eta && j.phi() > m_interval_phi_low && j.phi() < m_interval_phi_high) return false;
+	}
     }
 
   return true;

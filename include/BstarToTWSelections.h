@@ -157,7 +157,7 @@ namespace uhh2 {
     long int m_seed;
     Year year;
     int m_runnumber = 319077;
-    double m_lumi_ratio = 0.648;
+    double m_lumi_ratio = 0.64844705699; // (Run 319077(17.370008 pb-1) + Run C + Run D) / all 2018
 
     double m_interval_eta = -1.3;
     double m_interval_phi_low = -1.57;
