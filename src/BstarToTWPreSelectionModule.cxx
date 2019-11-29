@@ -25,6 +25,7 @@
 
 #include "UHH2/HOTVR/include/HOTVRHists.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrectionModule.h"
+#include "UHH2/HOTVR/include/HOTVRJetCorrector.h"
 #include "UHH2/HOTVR/include/HOTVRJetCorrectionHists.h"
 
 using namespace std;
@@ -42,7 +43,7 @@ namespace uhh2 {
 
     Year year;
     std::unique_ptr<CommonModules> common_modules;
-    std::unique_ptr<AnalysisModule> hotvr_jec_module;
+    std::unique_ptr<AnalysisModule> hotvr_jlc_module, hotvr_jec_module;
     std::unique_ptr<AnalysisModule> primary_lepton, ht_calculator;
     // Cleaner
     std::unique_ptr<AnalysisModule> cl_muo_tight, cl_ele_tight, cl_hotvr;
@@ -60,6 +61,14 @@ namespace uhh2 {
     std::unique_ptr<Selection> sel_met;
     std::unique_ptr<Selection> sel_st;
     std::unique_ptr<Selection> sel_ntop;
+
+    std::unique_ptr<Selection> sel_badhcal;
+    std::unique_ptr<AndHists> hist_badhcal;
+    std::unique_ptr<Selection> sel_deltaPhi_metlep; // delta phi between primary lepton and MET
+    std::unique_ptr<AndHists> hist_sel_deltaPhi_metlep;
+    std::unique_ptr<Selection> sel_deltaR_jetlep; // delta R between primary lepton and ak4-jets
+    std::unique_ptr<AndHists> hist_sel_deltaR_jetlep;
+
 
     // Hists
     std::unique_ptr<Hists> hist_trigger, hist_cleaner, hist_1lep, hist_njet, hist_ht, hist_met, hist_st, hist_ntop;
@@ -87,6 +96,7 @@ namespace uhh2 {
     double st_min         = 400.;
     double top_pt_min     = 200.;
     double top_eta_max    = 2.5;
+    double deltaPhi_metlep_max = M_PI/2; // maximum deltaPhi between missign ET and lepton
 
     // --- IDs ---
     JetId id_jet = PtEtaCut(jet_pt_min, jet_eta_max);
@@ -120,6 +130,8 @@ namespace uhh2 {
     common_modules->set_muon_id(id_muo_veto);
     common_modules->set_electron_id(id_ele_veto);
     common_modules->init(ctx);
+
+    hotvr_jlc_module.reset(new HOTVRJetLeptonCleaner());
     hotvr_jec_module.reset(new HOTVRJetCorrectionModule(ctx));
 
     primary_lepton.reset(new PrimaryLepton(ctx));
@@ -148,6 +160,15 @@ namespace uhh2 {
     sel_met.reset(new METSelection(met_min));
     // - ST
     sel_st.reset(new STSelection(ctx, st_min));
+    // - bad HCAL
+    sel_badhcal.reset(new BadHCALSelection(ctx));
+    hist_badhcal.reset(new AndHists(ctx, "BadHCAL"));
+    // - deltaPhi met-lep
+    sel_deltaPhi_metlep.reset(new METDeltaPhiSelection(ctx, deltaPhi_metlep_max));
+    hist_sel_deltaPhi_metlep.reset(new AndHists(ctx, "deltaPhiMETLep"));
+    // - deltaR jet-lep
+    sel_deltaR_jetlep.reset(new JetDeltaRSelection(ctx, 0.4));
+    hist_sel_deltaR_jetlep.reset(new AndHists(ctx, "deltaR_jetlep"));
     // - TopJet
     sel_ntop.reset(new NTopJetSelection(1, -1));
 
@@ -197,6 +218,9 @@ namespace uhh2 {
 	hist_1lep->fill(event);
       }
 
+    if (!sel_trigger->passes(event)) return false;
+    hist_trigger->fill(event);
+
     // --- Jet selection
     if (!sel_njet->passes(event)) return false;
     hist_njet->fill(event);
@@ -213,14 +237,24 @@ namespace uhh2 {
     if(!sel_st->passes(event)) return false;
     hist_st->fill(event);
 
+    // bad HCAL selection
+    if (!sel_badhcal->passes(event)) return false;
+    hist_badhcal->fill(event);
+
+    // deltaR jet-lep
+    if(!sel_deltaR_jetlep->passes(event)) return false;
+    hist_sel_deltaR_jetlep->fill(event);
+
+    // deltaPhi met-lep
+    if(!sel_deltaPhi_metlep->passes(event)) return false;
+    hist_sel_deltaPhi_metlep->fill(event);
+
     // --- TopJet Selection
+    hotvr_jlc_module->process(event);
     hotvr_jec_module->process(event);
     cl_hotvr->process(event);
     if(!sel_ntop->passes(event)) return false;
     hist_ntop->fill(event);
-
-    if (!sel_trigger->passes(event)) return false;
-    hist_trigger->fill(event);
      
     // done
     return true;
