@@ -137,10 +137,10 @@ namespace uhh2 {
     object_tagger->set_btag_tight_id(BTag(btag_algo, BTag::WP_TIGHT));
     object_tagger->set_toptag_id(id_toptag);
     object_tagger->init(ctx);
-    if (do_for_cr)
-      output_module.reset(new BstarToTWOutputModule(ctx,"0TopTagReconstruction"));
-    else
-      output_module.reset(new BstarToTWOutputModule(ctx,"1TopTagReconstruction"));
+    // if (do_for_cr)
+    //   output_module.reset(new BstarToTWOutputModule(ctx,"0TopTagReconstruction"));
+    // else
+    output_module.reset(new BstarToTWOutputModule(ctx,"1TopTagReconstruction"));
 
     // Scale Factor
 
@@ -274,6 +274,9 @@ namespace uhh2 {
 	      {
 		hist_sel_0btag1toptag20chi2->fill(event);
 	      }
+	    if (do_for_cr)
+	      output_module->process(event);
+	    return do_for_cr;
 	  }
 	else if (veto_toptag->passes(event))
 	  {
@@ -285,9 +288,6 @@ namespace uhh2 {
 	      {	      
 		hist_sel_0btag0toptag20chi2->fill(event);
 	      }
-	    if (do_for_cr)
-	      output_module->process(event);
-	    return do_for_cr;
 	  }
 	return false;
       }
