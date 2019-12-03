@@ -22,7 +22,7 @@ MuonScaleFactors2016::MuonScaleFactors2016(Context &ctx) {
 				      ctx.get("SF_MUO_ID_FILE", "NUM_TightID_DEN_genTracks_eta_pt"),
 				      1.0,
 				      "tight_id",
-				      true,
+				      false,
 				      ctx.get("SYS_MUO_ID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
@@ -30,7 +30,7 @@ MuonScaleFactors2016::MuonScaleFactors2016(Context &ctx) {
 				       ctx.get("SF_MUO_ISO_FILE", "NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt"),
 				       1.0,
 				       "isolation",
-				       true,
+				       false,
 				       ctx.get("SYS_MUO_ISO", "nominal")));
 
 }
@@ -60,7 +60,7 @@ MuonScaleFactors2017::MuonScaleFactors2017(Context &ctx) {
 				      ctx.get("SF_MUO_ID_FILE", "NUM_TightID_DEN_genTracks_pt_abseta"),
 				      1.0,
 				      "tight_id",
-				      false,
+				      true,
 				      ctx.get("SYS_MUO_ID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
@@ -68,7 +68,7 @@ MuonScaleFactors2017::MuonScaleFactors2017(Context &ctx) {
 				       ctx.get("SF_MUO_ISO_FILE", "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"),
 				       1.0,
 				       "isolation",
-				       false,
+				       true,
 				       ctx.get("SYS_MUO_ISO", "nominal")));
 
 }
