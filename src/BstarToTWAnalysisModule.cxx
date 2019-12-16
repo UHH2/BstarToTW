@@ -45,7 +45,7 @@ namespace uhh2 {
 
   private:  
     bool is_ele, is_muo, do_for_cr, is_mc;
-    std::string dataset_name;
+    std::string dataset_name, prefiring_direction;
     // Event::Handle<float> h_tot_weight;
 
     // Modules for setting up event handles
@@ -69,6 +69,8 @@ namespace uhh2 {
 
     // Selection + Hists
     std::unique_ptr<AndHists> hist_presel;
+    std::unique_ptr<Selection> sel_badhcal;
+    std::unique_ptr<AndHists> hist_badhcal;
     std::unique_ptr<Hists> hist_btag_mc_efficiency;
 
     std::unique_ptr<Selection> sel_deltaR_leadingjetlep, sel_deltaR_bjetlep; // delta R between primary lepton and b-jet/leading-jet
@@ -101,10 +103,9 @@ namespace uhh2 {
     is_muo = ctx.get("analysis_channel") == "MUON";
     do_for_cr = ctx.get("do_for_cr") == "true";
     is_mc = ctx.get("dataset_type") == "MC";
-    std::string userJetColl = string2lowercase(ctx.get("TopJetCollection"));
-    bool is_hotvr = userJetColl.find("hotvr") != std::string::npos;
+    prefiring_direction = ctx.get("PrefiringVariation", "none");
 
-    genprinter.reset(new GenParticlesPrinter(ctx));
+    // genprinter.reset(new GenParticlesPrinter(ctx));
 
     // Selection Parameters
     double top_fpt_max   = 0.8;    // maximum pt fraction of leading subjet
@@ -119,8 +120,8 @@ namespace uhh2 {
 
     // Toptags:
     TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max));
-    if (!is_hotvr)
-      id_toptag = AndId<TopJet>(Type2TopTag(105., 220., Type2TopTag::MassType::groomed), Tau32(0.50));
+    // if (!is_hotvr)
+    //   id_toptag = AndId<TopJet>(Type2TopTag(105., 220., Type2TopTag::MassType::groomed), Tau32(0.50));
 
 
     TopJetId id_toptag_veto = VetoId<TopJet>(id_toptag);
@@ -177,7 +178,11 @@ namespace uhh2 {
 
     // Selection + Hists
     hist_presel.reset(new AndHists(ctx, "PreSel"));
+    hist_presel->add_hist(new HOTVRPerformanceHists(ctx, "PreSel_Performance_HOTVR"));
     hist_btag_mc_efficiency.reset(new BTagMCEfficiencyHists(ctx,"BTagMCEfficiency", id_btag));    
+    // - bad HCAL
+    sel_badhcal.reset(new BadHCALSelection(ctx));
+    hist_badhcal.reset(new AndHists(ctx, "BadHCAL"));
     
     // btag
     sel_1btag.reset(new NJetSelection(1, 1, id_btag));
@@ -198,12 +203,15 @@ namespace uhh2 {
     hist_sel_1btag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "1btag1toptag_reco", "1TopTagReconstruction", "Chi2"));
     hist_sel_1btag1toptag->add_hist(new LeptonicTopHypothesisHists(ctx, "1btag1toptag_toplep", "TopLepReco", "Chi2"));
     hist_sel_1btag1toptag->add_hist(new HOTVRMatchingHists(ctx, "1btag1toptag_topmatch"));
+    hist_sel_1btag1toptag->add_hist(new HOTVRHists(ctx, "1btag1toptag_HOTVR_tagged", id_toptag));
     hist_sel_2btag1toptag.reset(new AndHists(ctx, "2btag1toptag"));
     hist_sel_2btag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "2btag1toptag_reco", "1TopTagReconstruction", "Chi2"));
     hist_sel_2btag1toptag->add_hist(new LeptonicTopHypothesisHists(ctx, "2btag1toptag_toplep", "TopLepReco", "Chi2"));
     hist_sel_2btag1toptag->add_hist(new HOTVRMatchingHists(ctx, "2btag1toptag_topmatch"));
+    hist_sel_2btag1toptag->add_hist(new HOTVRHists(ctx, "2btag1toptag_HOTVR_tagged", id_toptag));
     hist_sel_0btag1toptag.reset(new AndHists(ctx, "0btag1toptag"));
     hist_sel_0btag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_reco", "1TopTagReconstruction", "Chi2"));
+    hist_sel_0btag1toptag->add_hist(new HOTVRHists(ctx, "0btag1toptag_HOTVR_tagged", id_toptag));
     veto_toptag.reset(new NTopJetSelection(0, 0, id_toptag));
     hist_sel_1btag0toptag.reset(new AndHists(ctx, "1btag0toptag"));
     hist_sel_1btag0toptag->add_hist(new BstarToTWHypothesisHists(ctx, "1btag0toptag_reco", "0TopTagReconstruction", "Chi2"));
@@ -216,6 +224,7 @@ namespace uhh2 {
     sel_1toptag20chi2.reset(new Chi2Selection(ctx, "1TopTagReconstruction", chi2_max, "Chi2"));
     hist_sel_1btag1toptag20chi2.reset(new AndHists(ctx, "1btag1toptag20chi2"));
     hist_sel_1btag1toptag20chi2->add_hist(new BstarToTWHypothesisHists(ctx, "1btag1toptag20chi2_reco", "1TopTagReconstruction", "Chi2"));
+    hist_sel_1btag1toptag20chi2->add_hist(new HOTVRHists(ctx, "1btag1toptag20chi2_HOTVR_tagged", id_toptag));
     hist_sel_0btag1toptag20chi2.reset(new AndHists(ctx, "0btag1toptag20chi2"));
     hist_sel_0btag1toptag20chi2->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag20chi2_reco", "1TopTagReconstruction", "Chi2"));
     sel_0toprecomass.reset(new RecoMassSelection(ctx, 500., "0TopTagReconstruction"));
@@ -254,11 +263,25 @@ namespace uhh2 {
     sf_lepton->process(event);
     sf_top_pt_reweight->process(event);
     sf_ewk->process(event);
+
+    if ( (!event.isRealData) ) 
+      {
+	if (prefiring_direction == "nominal") event.weight *= event.prefiringWeight;
+	else if (prefiring_direction == "up") event.weight *= event.prefiringWeightUp;
+	else if (prefiring_direction == "down") event.weight *= event.prefiringWeightDown;
+      }
+
     // Fill PreSel Histograms with all scale factors
     hist_presel->fill(event);
 
+    // bad HCAL selection
+    if (!sel_badhcal->passes(event)) return false;
+    hist_badhcal->fill(event);
+
     hist_btag_mc_efficiency->fill(event);
     sf_btag->process(event);
+    // sf_toptag->process(event);
+
     // - 0 btag regions - //
     if (veto_btag->passes(event))
       {

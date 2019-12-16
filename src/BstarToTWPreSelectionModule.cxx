@@ -62,8 +62,6 @@ namespace uhh2 {
     std::unique_ptr<Selection> sel_st;
     std::unique_ptr<Selection> sel_ntop;
 
-    std::unique_ptr<Selection> sel_badhcal;
-    std::unique_ptr<AndHists> hist_badhcal;
     std::unique_ptr<Selection> sel_deltaPhi_metlep; // delta phi between primary lepton and MET
     std::unique_ptr<AndHists> hist_sel_deltaPhi_metlep;
     std::unique_ptr<Selection> sel_deltaR_jetlep; // delta R between primary lepton and ak4-jets
@@ -160,9 +158,6 @@ namespace uhh2 {
     sel_met.reset(new METSelection(met_min));
     // - ST
     sel_st.reset(new STSelection(ctx, st_min));
-    // - bad HCAL
-    sel_badhcal.reset(new BadHCALSelection(ctx));
-    hist_badhcal.reset(new AndHists(ctx, "BadHCAL"));
     // - deltaPhi met-lep
     sel_deltaPhi_metlep.reset(new METDeltaPhiSelection(ctx, deltaPhi_metlep_max));
     hist_sel_deltaPhi_metlep.reset(new AndHists(ctx, "deltaPhiMETLep"));
@@ -236,10 +231,6 @@ namespace uhh2 {
     // --- ST selection
     if(!sel_st->passes(event)) return false;
     hist_st->fill(event);
-
-    // bad HCAL selection
-    if (!sel_badhcal->passes(event)) return false;
-    hist_badhcal->fill(event);
 
     // deltaR jet-lep
     if(!sel_deltaR_jetlep->passes(event)) return false;
