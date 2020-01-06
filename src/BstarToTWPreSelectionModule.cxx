@@ -71,7 +71,7 @@ namespace uhh2 {
     // Hists
     std::unique_ptr<Hists> hist_trigger, hist_cleaner, hist_1lep, hist_njet, hist_ht, hist_met, hist_st, hist_ntop;
 
-    bool is_mc, is_ele, is_muo;
+    bool is_mc, is_ele, is_muo, is_pho;
   };
 
   BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
@@ -80,6 +80,7 @@ namespace uhh2 {
     year = extract_year(ctx);
     is_mc = ctx.get("dataset_type") == "MC";
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
+    is_pho = ctx.get("analysis_channel") == "PHOTON";
     is_muo = ctx.get("analysis_channel") == "MUON";
 
     // -- Kinematic Variables -- 
@@ -205,7 +206,7 @@ namespace uhh2 {
 	hist_1lep->fill(event);
       }    
     // - Electron Channel
-    else if (is_ele)
+    else if (is_ele || is_pho)
       {
 	if(!(sel_1ele->passes(event) && veto_muo->passes(event))) return false;
 	cl_ele_tight->process(event);
