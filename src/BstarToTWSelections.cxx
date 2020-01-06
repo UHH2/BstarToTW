@@ -193,6 +193,7 @@ bool NGenJetSelection::passes(const Event &event) {
 BstarToTWTriggerSelection::BstarToTWTriggerSelection(Context &ctx) {
   year = extract_year(ctx);
   is_ele = ctx.get("analysis_channel") == "ELECTRON";
+  is_pho = ctx.get("analysis_channel") == "PHOTON";
   is_muo = ctx.get("analysis_channel") == "MUON";    
 
   trig_isomu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
@@ -216,6 +217,10 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
 	{
 	  return (trig_ele27->passes(event) || trig_photon175->passes(event));
 	}
+      if (is_pho)
+	{
+	  return (!trig_ele27->passes(event) && trig_photon175->passes(event)); // only select events without ele27 trigger, since they are already in SingleElectron
+	}
       if (is_muo)
 	{
 	  return (trig_isomu24->passes(event) || trig_isotkmu24->passes(event));
@@ -228,6 +233,10 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
 	{
 	  return (trig_ele35->passes(event) || trig_photon200->passes(event));
 	}
+      if (is_pho)
+	{
+	  return (!trig_ele35->passes(event) && trig_photon200->passes(event)); // only select events without ele35 trigger, since they are already in SingleElectron
+	}
       if (is_muo)
 	{
 	  return (trig_isomu27->passes(event));
@@ -236,10 +245,11 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
   
   else if (year == Year::is2018)
     {
-      if (is_ele)
+      if (is_ele) 
 	{
 	  return (trig_ele32->passes(event));
 	}
+      // no need for photon case here
       if (is_muo)
 	{
 	  return (trig_isomu24->passes(event));
