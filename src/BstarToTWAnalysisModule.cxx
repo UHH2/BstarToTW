@@ -157,7 +157,7 @@ namespace uhh2 {
 
     sf_lepton.reset(new LeptonScaleFactors(ctx));
     sf_btag.reset(new MCBTagScaleFactor(ctx, btag_algo, btag_wp, "jets", "central", "comb", "incl", "MCBtagEfficiencies"));
-    // sf_toptag.reset(new HOTVRScaleFactor(ctx, id_toptag, ctx.get("Systematic_TopTag", "nominal"), "HadronicTop", "TopTagSF", "HOTVRTopTagSFs"));
+    sf_toptag.reset(new HOTVRScaleFactor(ctx, id_toptag, ctx.get("Systematic_TopTag", "nominal"), "HadronicTop", "TopTagSF", "HOTVRTopTagSFs"));
     sf_ewk.reset(new ElectroweakCorrections(ctx));
 
     // Reconstruction Modules
@@ -280,7 +280,7 @@ namespace uhh2 {
 
     hist_btag_mc_efficiency->fill(event);
     sf_btag->process(event);
-    // sf_toptag->process(event);
+    sf_toptag->process(event);
 
     // - 0 btag regions - //
     if (veto_btag->passes(event))
