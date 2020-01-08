@@ -142,13 +142,13 @@ bool MuonScaleFactors2018::process(Event &event) {
 ElectronScaleFactors2016::ElectronScaleFactors2016(Context &ctx) {
 
   m_sf_reco.reset(new MCElecScaleFactor(ctx,
-				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/egammaEffi.txt_EGM2D_CutBased_Tight_ID.root"),
+				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root"),
 				      1.0,
 				      "reco",
 				      ctx.get("SYS_ELE_RECO", "nominal")));
 
   m_sf_id.reset(new MCElecScaleFactor(ctx,
-				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/egammaEffi.txt_EGM2D_CutBased_Tight_ID.root"),
+				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/2016LegacyReReco_ElectronTight_Fall17V2.root"),
 				      1.0,
 				      "tight_id",
 				      ctx.get("SYS_ELE_ID", "nominal")));
@@ -163,6 +163,32 @@ bool ElectronScaleFactors2016::process(Event &event) {
 
   return true;
 }
+
+ElectronScaleFactors2017::ElectronScaleFactors2017(Context &ctx) {
+
+  m_sf_reco.reset(new MCElecScaleFactor(ctx,
+				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root"),
+				      1.0,
+				      "reco",
+				      ctx.get("SYS_ELE_RECO", "nominal")));
+
+  m_sf_id.reset(new MCElecScaleFactor(ctx,
+				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/2017_ElectronTight.root"),
+				      1.0,
+				      "tight_id",
+				      ctx.get("SYS_ELE_ID", "nominal")));
+
+
+}
+
+bool ElectronScaleFactors2017::process(Event &event) {
+
+  m_sf_reco->process(event);
+  m_sf_id->process(event);
+
+  return true;
+}
+
 
 ElectronScaleFactors2018::ElectronScaleFactors2018(Context &ctx) {
 
@@ -195,6 +221,7 @@ LeptonScaleFactors::LeptonScaleFactors(Context &ctx) {
   if (ctx.get("analysis_channel") == "ELECTRON")
     {
       m_sf_lepton->setup2016(std::make_shared<ElectronScaleFactors2016>(ctx));
+      m_sf_lepton->setup2017(std::make_shared<ElectronScaleFactors2017>(ctx));
       m_sf_lepton->setup2018(std::make_shared<ElectronScaleFactors2018>(ctx));
     }
   else if (ctx.get("analysis_channel") == "MUON")

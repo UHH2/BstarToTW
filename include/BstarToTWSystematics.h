@@ -46,6 +46,15 @@ class ElectronScaleFactors2016: public uhh2::AnalysisModule {
   std::unique_ptr<AnalysisModule> m_sf_trigger, m_sf_id, m_sf_reco;
 };
 
+class ElectronScaleFactors2017: public uhh2::AnalysisModule {
+ public:
+  explicit ElectronScaleFactors2017(uhh2::Context &ctx);
+  virtual bool process(uhh2::Event &event) override;
+  
+ private:
+  std::unique_ptr<AnalysisModule> m_sf_trigger, m_sf_id, m_sf_reco;
+};
+
 class ElectronScaleFactors2018: public uhh2::AnalysisModule {
  public:
   explicit ElectronScaleFactors2018(uhh2::Context &ctx);
