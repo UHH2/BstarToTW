@@ -215,7 +215,7 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
     {
       if (is_ele)
 	{
-	  return (trig_ele27->passes(event) || trig_photon175->passes(event));
+	  return (trig_ele27->passes(event));
 	}
       if (is_pho)
 	{
@@ -231,7 +231,7 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
     {
       if (is_ele)
 	{
-	  return (trig_ele35->passes(event) || trig_photon200->passes(event));
+	  return (trig_ele35->passes(event));
 	}
       if (is_pho)
 	{
