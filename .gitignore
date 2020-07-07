@@ -12,3 +12,4 @@ obj/*
 *.txt
 *.log
 *config/work*/
+*.eps
