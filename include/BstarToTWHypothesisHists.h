@@ -25,7 +25,7 @@ protected:
     TH1F *Bstar_reco_M, *Bstar_reco_M_rebin, *Bstar_reco_M_unbinned, *Bstar_reco_M_fine, *Bstar_reco_Pt;
     TH1F *W_reco_M, *W_reco_Pt;
     TH1F *Top_reco_M, *Top_reco_Pt;
-    TH1F *DeltaR_top_W, *DeltaPhi_top_W, *DeltaPt_top_W, *DeltaPt_top_W_over_pt, *PtTop_over_PtW;
+    TH1F *DeltaR_top_W, *DeltaPhi_top_W, *DeltaPt_top_W, *DeltaPt_top_W_over_pt, *PtTop_over_PtW, *PtBalance;
     TH2F *Discriminator_vs_M_bstar;
 
 

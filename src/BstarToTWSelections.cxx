@@ -192,8 +192,10 @@ bool NGenJetSelection::passes(const Event &event) {
 
 BstarToTWTriggerSelection::BstarToTWTriggerSelection(Context &ctx) {
   year = extract_year(ctx);
+  TString dataset_name = ctx.get("dataset_version");
+  b_electron_stream = dataset_name.Contains("SingleElectron");
+  
   is_ele = ctx.get("analysis_channel") == "ELECTRON";
-  is_pho = ctx.get("analysis_channel") == "PHOTON";
   is_muo = ctx.get("analysis_channel") == "MUON";    
 
   trig_isomu24.reset(new TriggerSelection("HLT_IsoMu24_v*"));
@@ -215,11 +217,17 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
     {
       if (is_ele)
 	{
-	  return (trig_ele27->passes(event));
-	}
-      if (is_pho)
-	{
-	  return (!trig_ele27->passes(event) && trig_photon175->passes(event)); // only select events without ele27 trigger, since they are already in SingleElectron
+	  if (event.isRealData)
+	    {
+	      // is electron stream
+	      if (b_electron_stream)
+		return trig_ele27->passes(event);
+	      // is photon stream
+	      else
+		return (!trig_ele27->passes(event) && trig_photon175->passes(event)); // only select events without ele27 trigger, since they are already in SingleElectron
+	    }
+	  else
+	    return (trig_ele27->passes(event) || trig_photon175->passes(event));
 	}
       if (is_muo)
 	{
@@ -231,11 +239,17 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
     {
       if (is_ele)
 	{
-	  return (trig_ele35->passes(event));
-	}
-      if (is_pho)
-	{
-	  return (!trig_ele35->passes(event) && trig_photon200->passes(event)); // only select events without ele35 trigger, since they are already in SingleElectron
+	  if (event.isRealData)
+	    {
+	      // is electron stream
+	      if (b_electron_stream)
+		return trig_ele35->passes(event);
+	      // is photon stream
+	      else
+		return (!trig_ele35->passes(event) && trig_photon200->passes(event)); // only select events without ele35 trigger, since they are already in SingleElectron
+	    }
+	  else
+	    return (trig_ele35->passes(event) || trig_photon200->passes(event));
 	}
       if (is_muo)
 	{
@@ -247,9 +261,9 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
     {
       if (is_ele) 
 	{
-	  return (trig_ele32->passes(event));
+	  return (trig_ele32->passes(event) || trig_photon200->passes(event));
 	}
-      // no need for photon case here
+      // no need for differentiation between photon and electron stream since EGamma dataset
       if (is_muo)
 	{
 	  return (trig_isomu24->passes(event));
@@ -283,7 +297,12 @@ bool BadHCALSelection::passes(const Event &event) {
 	{
 	  if (j.eta() < m_interval_eta && j.phi() > m_interval_phi_low && j.phi() < m_interval_phi_high) return false;
 	}
+      for (const TopJet & t : *event.topjets)
+	{
+	  if (t.eta() < m_interval_eta && t.phi() > m_interval_phi_low && t.phi() < m_interval_phi_high) return false;
+	}
     }
 
   return true;
 }
+

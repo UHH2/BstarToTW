@@ -83,14 +83,15 @@ BstarToTWChi2Discriminator::BstarToTWChi2Discriminator(Context & ctx, const std:
   // m_deltaPt_sigma = 0.081;
 
   m_deltaPhi_mean = M_PI;
-  m_deltaPhi_sigma = 0.048;
+  m_deltaPhi_sigma = 0.064;
 
   // m_deltaPt_mean = -19.36;
   // m_deltaPt_sigma = 53.89;
 
-  m_deltaPt_mean = 0.05;
-  m_deltaPt_sigma = 0.06;
-
+  // m_deltaPt_mean = 0.05;
+  // m_deltaPt_sigma = 0.06;
+  m_deltaPt_mean = 0.0;
+  m_deltaPt_sigma = 0.046;
 }
 
 bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
@@ -108,7 +109,7 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
 
       // double deltaPt_reco = (hyp.get_topjet().pt() - hyp.get_w().pt());
       // const double chi2_deltaPt = pow((deltaPt_reco - m_deltaPt_mean) / m_deltaPt_sigma, 2);
-      double deltaPt_reco = (hyp.get_topjet().pt() - hyp.get_w().pt()) / hyp.get_topjet().pt();
+      double deltaPt_reco = (hyp.get_topjet().pt() - hyp.get_w().pt()) / (hyp.get_topjet().pt() + hyp.get_w().pt());
       const double chi2_deltaPt = pow((deltaPt_reco - m_deltaPt_mean) / m_deltaPt_sigma, 2);
 
       hyp.set_discriminator("Chi2_top", chi2_mtop);
@@ -169,23 +170,27 @@ bool BstarToTWMatchDiscriminator::process(uhh2::Event & event){
   for(auto & hyp: hyps)
     {
       float deltaR_top = deltaR(bstartotwgen.tbstar(), hyp.get_topjet());
-      if (deltaR_top >= 0.2)
+      if (deltaR_top >= 0.4)
 	{
 	  hyp.set_discriminator(config.discriminator_label, infinity);
 	  continue;
 	}
 
       float deltaR_lep = deltaR(bstartotwgen.ChargedLepton(), hyp.get_lepton());
-      if (deltaR_lep >= 0.2)
+      if (deltaR_lep >= 0.4)
 	{
 	  hyp.set_discriminator(config.discriminator_label, infinity);
 	  continue;
 	}
 
-      float correct_dr = deltaR_top + deltaR_lep;
+      float deltaR_neutrino = deltaR(bstartotwgen.Neutrino(), hyp.get_neutrino());
+      if (deltaR_neutrino >= 0.4)
+	{
+	  hyp.set_discriminator(config.discriminator_label, infinity);
+	  continue;
+	}
 
-      //add deltaR between reconstructed and true neutrino
-      correct_dr += deltaR(bstartotwgen.Neutrino(), hyp.get_neutrino());
+      float correct_dr = deltaR_top + deltaR_lep + deltaR_neutrino;
       hyp.set_discriminator(config.discriminator_label, correct_dr);
     }
   return true;

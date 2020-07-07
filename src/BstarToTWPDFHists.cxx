@@ -33,7 +33,7 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
   //1) the sample is LO (and doesn't have ntupleweights for that reason) (this assumption is protected by a runtime_error later)
   //2) the sample is NLO and yet doesn't have ntupleweights 
 
-  take_ntupleweights =  use_ntupleweights && (!is_LO || m_oname.Contains("DYJets")) && (m_oname != "SingleTop_T_tWch" && m_oname != "SingleTop_Tbar_tWch");
+  take_ntupleweights =  use_ntupleweights && (!is_LO || m_oname.Contains("DYJets")) && !(m_oname.Contains("ST_tW") && m_oname.Contains("2016v3"));
 
   cout << "For this sample '" << m_oname << "' is_LO is set to " << is_LO << endl;
   cout << "Are ntupleweights taken for this sample?: " << take_ntupleweights << endl;
@@ -44,10 +44,10 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
 
   for(int i=0; i<100; i++){
     stringstream ss_name;
-    ss_name << "Bstar_reco_M_PDF_"  << i+1 ;
+    ss_name << "Bstar_reco_M_rebin_PDF_"  << i+1 ;
 
     stringstream ss_title;
-    ss_title << "M_{b*}^{reco} [GeV/c^{2}] for PDF No. "  << i+1 << " out of 100" ;
+    ss_title << "M_{tW} [GeV] for PDF No. "  << i+1 << " out of 100" ;
 
     string s_name = ss_name.str();
     string s_title = ss_title.str();
@@ -55,8 +55,10 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
     const char* char_title = s_title.c_str();
     histo_names[i] = s_name;
 
-    double xbins[21] = {0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 5000};
- 
+    
+    double xbins[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
+
+
     book<TH1F>(char_name, char_title, 20, xbins);
   }
 
@@ -102,8 +104,8 @@ void BstarToTWPDFHists::fill(const Event & event){
 		  double fillweight = weight * pdf_weight/event.genInfo->originalXWGTUP();
 		  const char* name = histo_names[i].c_str();
 
-		  if (mbstar_reco < 5000.) hist(name)->Fill(mbstar_reco, fillweight);
-		  else hist(name)->Fill(4990., fillweight);
+		  if (mbstar_reco <= 4000.) hist(name)->Fill(mbstar_reco, fillweight);
+		  else hist(name)->Fill(3999., fillweight);
 
 		}
 	    }
@@ -119,8 +121,8 @@ void BstarToTWPDFHists::fill(const Event & event){
 		  double fillweight = weight*weights[i];
 		  const char* name = histo_names[i].c_str();
 
-		  if (mbstar_reco < 5000.) hist(name)->Fill(mbstar_reco, fillweight);
-		  else hist(name)->Fill(4990., fillweight);
+		  if (mbstar_reco <= 4000.) hist(name)->Fill(mbstar_reco, fillweight);
+		  else hist(name)->Fill(3999., fillweight);
 
 		}
 	    }

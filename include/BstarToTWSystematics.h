@@ -27,14 +27,11 @@ class MuonScaleFactors2017: public uhh2::AnalysisModule {
 
 class MuonScaleFactors2018: public uhh2::AnalysisModule {
  public:
-  explicit MuonScaleFactors2018(uhh2::Context &ctx, long int seed = 123456789);
+  explicit MuonScaleFactors2018(uhh2::Context &ctx);
   virtual bool process(uhh2::Event &event) override;
   
  private:
-  TRandom *m_rng;
-  long int m_seed;
-  const double m_lumi_fraction = 8.95 / 59.74;
-  std::unique_ptr<AnalysisModule> m_sf_trigger_before, m_sf_trigger_after, m_sf_id, m_sf_iso;
+  std::unique_ptr<AnalysisModule> m_sf_trigger, m_sf_id, m_sf_iso;
 };
 
 class ElectronScaleFactors2016: public uhh2::AnalysisModule {

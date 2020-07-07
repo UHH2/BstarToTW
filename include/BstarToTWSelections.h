@@ -141,7 +141,7 @@ namespace uhh2 {
     virtual bool passes(const uhh2::Event &event) override;
   private:
     Year year;
-    bool is_muo, is_ele, is_pho;
+    bool is_muo, is_ele, b_electron_stream;
     std::unique_ptr<uhh2::Selection> trig_isomu24, trig_isotkmu24, trig_isomu27;
     std::unique_ptr<uhh2::Selection> trig_ele27, trig_ele32, trig_ele35;
     std::unique_ptr<uhh2::Selection> trig_photon175, trig_photon200;

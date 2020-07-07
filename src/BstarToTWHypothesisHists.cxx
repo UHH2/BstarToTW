@@ -19,10 +19,12 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
     Discriminator_3 = book<TH1F>("Discriminator_3", name, 300, 0,  30);     
 
     double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 3500};
-    double xbins_fitbin[13] = {0,500, 700, 900, 1100, 1300, 1500, 1700, 1900, 2100, 2300, 2500, 3500};
-    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 25, 100, 3500);
-    Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV]", 100, 100, 3500);
-    Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV]", 12, xbins_fitbin);
+    // double xbins_fitbin[23] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3000, 3500}; // old binning
+    double xbins_fitbin[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
+    double xbins_extended[22] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200, 4000}; // old binning
+    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 51, 500, 5500); // 100GeV binning for overview
+    Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV]", 21, xbins_extended);
+    Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV]", 20, xbins_fitbin);
     Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
     
     // Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{b*}^{reco} [GeV/c^{2}]", 50, 0, 5000);
@@ -37,6 +39,7 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
     DeltaPhi_top_W = book<TH1F>("DeltaPhi_top_W", "#Delta #phi_{t,W}", 50, 2.5, 3.5);
     DeltaPt_top_W = book<TH1F>("DeltaPt_top_W", "#Delta p_{T, t,W} [GeV]", 80, -400, 400);
     DeltaPt_top_W_over_pt = book<TH1F>("DeltaPt_top_W_over_pt", "#Delta p_{T t,W}/p_{T t}", 50, -0.5, 0.5);
+    PtBalance = book<TH1F>("PtBalance","p_{T balance}", 100, -1, 1);
     // DeltaEta_top_W = book<TH1F>("DeltaEta_top_W", "#Delta #eta_{t,W}", 20,-5,5);
 
     PtTop_over_PtW = book<TH1F>("PtTop_over_PtW", "p_{T}^{jet}/p_{T}^{W}", 40, 0, 2);
@@ -71,16 +74,17 @@ void BstarToTWHypothesisHists::fill(const uhh2::Event & e){
 
   double ptbstar_reco = (hyp->get_topjet()+hyp->get_w()).Pt();
   Bstar_reco_M->Fill(mbstar_reco, weight);
-  // if (mbstar_reco < 5000.) 
-  //   {
-  //     Bstar_reco_M->Fill(mbstar_reco, weight);
-  //   }
-  // else 
-  //   {
-  //     Bstar_reco_M->Fill(4990., weight);
-  //   }
+  if (mbstar_reco <= 4000.) 
+    {
+      Bstar_reco_M_rebin->Fill(mbstar_reco, weight);
+    }
+  else 
+    {
+      Bstar_reco_M_rebin->Fill(3999.0, weight);
+    }
 
-  Bstar_reco_M_rebin->Fill(mbstar_reco, weight);
+
+  // Bstar_reco_M_rebin->Fill(mbstar_reco, weight);
   Bstar_reco_M_unbinned->Fill(mbstar_reco, weight);
   Bstar_reco_M_fine->Fill(mbstar_reco, weight);
 
@@ -111,7 +115,7 @@ void BstarToTWHypothesisHists::fill(const uhh2::Event & e){
   DeltaPhi_top_W->Fill(abs(hyp->get_w().Phi() - hyp->get_topjet().Phi()), weight);
   DeltaPt_top_W->Fill((hyp->get_topjet().Pt() - hyp->get_w().Pt()), weight);
   DeltaPt_top_W_over_pt->Fill((hyp->get_topjet().Pt() - hyp->get_w().Pt()) / hyp->get_topjet().Pt(), weight);
-
+  PtBalance->Fill((hyp->get_topjet().Pt() - hyp->get_w().Pt()) / (hyp->get_topjet().Pt() + hyp->get_w().Pt()), weight);
   PtTop_over_PtW->Fill(hyp->get_topjet().Pt() / hyp->get_w().Pt(), weight);
 
 }

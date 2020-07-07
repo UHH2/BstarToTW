@@ -7,6 +7,7 @@
 #include "UHH2/common/include/CleaningModules.h"
 #include "UHH2/common/include/ObjectIdUtils.h"
 #include "UHH2/common/include/MuonIds.h"
+#include "UHH2/common/include/TTbarGen.h" 
 #include "UHH2/common/include/TopJetIds.h"
 #include "UHH2/common/include/JetIds.h"
 #include "UHH2/common/include/ElectronIds.h"
@@ -25,46 +26,6 @@
 #include <TH1.h>
 #include <TF1.h>
 #include <TGraphAsymmErrors.h>
-
-/* class ObjectCleaner: public uhh2::AnalysisModule { */
-/*  public: */
-/*   explicit ObjectCleaner(uhh2::Context & context); */
-/*   virtual bool process(uhh2::Event &event) override; */
-
-/*   void switch_lepton_cleaning(bool b = true) {b_lepclean = b;} */
-/*   void switch_jet_lepton_cleaning(bool b = true) {b_jetlep = b;} */
-
-/*  private: */
-/*   bool is_mc; */
-/*   bool b_lepclean = true; */
-/*   bool b_jetlep = true; */
-  
-/*   // Run Numbers taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2016Analysis */
-/*   const int runnr_B = 275376; */
-/*   const int runnr_C = 276283; */
-/*   const int runnr_D = 276811; */
-/*   const int runnr_E = 277420; */
-/*   const int runnr_F = 278802; // 278808 actually but here EFearly */
-/*   const int runnr_G = 280385; */
-/*   const int runnr_H = 284044; */
-
-
-/*   double lep_eta_max = 2.4; */
-/*   double lepveto_pt_min  = 30.0; */
-/*   double lep_pt_min  = 50.0;  */
-/*   double muo_iso_max = 0.15; */
-/*   double jet_pt_min  = 30.0; */
-/*   double jet_eta_max = 2.4; */
-/*   double top_pt_min = 200.0; */
-/*   double top_eta_max = 2.5; */
-
-/*   std::unique_ptr<JetCorrector> jec_ak4_mc, jec_ak4_B, jec_ak4_C, jec_ak4_D, jec_ak4_E, jec_ak4_F, jec_ak4_G, jec_ak4_H; */
-/*   std::unique_ptr<JetLeptonCleaner> jlc_ak4_mc, jlc_ak4_B, jlc_ak4_C, jlc_ak4_D, jlc_ak4_E, jlc_ak4_F, jlc_ak4_G, jlc_ak4_H; */
-/*   std::unique_ptr<HOTVRJetCorrector> jec_hotvr_mc, jec_hotvr_B, jec_hotvr_C, jec_hotvr_D, jec_hotvr_E, jec_hotvr_F, jec_hotvr_G, jec_hotvr_H; */
-/*   std::unique_ptr<AnalysisModule> cl_pv, cl_muo, cl_ele, cl_jetpfid, cl_jet, cl_topjet, jlc_hotvr; */
-/*   std::unique_ptr<JetResolutionSmearer> jet_resolution_smearer; */
-/*   std::unique_ptr<AndSelection> metfilters; */
-/* }; */
 
 class ObjectTagger: public uhh2::AnalysisModule {
  public:
@@ -110,28 +71,6 @@ class ObjectTagger: public uhh2::AnalysisModule {
 
 };
 
-class SystematicsModule: public uhh2::AnalysisModule {
- public:
-  explicit SystematicsModule();
-  virtual bool process(uhh2::Event &event) override;
-  void add_module(std::unique_ptr<uhh2::AnalysisModule> &module){modules.push_back(std::move(module));}
-  
- private:
-  bool is_mc;
-  std::vector<std::unique_ptr<uhh2::AnalysisModule>> modules;
-};
-
-class ElectronTriggerWeights: public uhh2::AnalysisModule{
-
- public:
-  explicit ElectronTriggerWeights(uhh2::Context & ctx, TString path_, TString SysDirection_);
-  virtual bool process(uhh2::Event & event) override;
-
- private:
-  TString path, SysDirection;
-  std::unique_ptr<TGraphAsymmErrors> Eff_lowpt_MC, Eff_lowpt_DATA, Eff_highpt_MC, Eff_highpt_DATA;
-};
-
 class CMSTTScaleFactor : public uhh2::AnalysisModule {
 
  public:
@@ -155,4 +94,53 @@ class BstarToTWOutputModule:public uhh2::AnalysisModule {
   uhh2::Event::Handle<float> h_weight;
   uhh2::Event::Handle<float> h_recomass;
   uhh2::Event::Handle<std::vector<BstarToTWHypothesis> > h_hyps;
+};
+
+class ElectronTriggerWeights: public uhh2::AnalysisModule{
+
+ public:
+  explicit ElectronTriggerWeights(uhh2::Context & ctx, TString path_, TString syst_direction_);
+  virtual bool process(uhh2::Event & event) override;
+
+ private:
+  TString path, syst_direction;
+  Year year;
+  std::vector<float> pt_bins;
+  std::unique_ptr<TGraphAsymmErrors> g_sf_pt1, g_sf_pt2;
+  uhh2::Event::Handle<float> h_ele_weight, h_ele_weight_up, h_ele_weight_down;
+
+};
+
+class MuonTriggerWeights: public uhh2::AnalysisModule{
+
+ public:
+  explicit MuonTriggerWeights(uhh2::Context & ctx, TString path_, TString syst_direction_);
+  virtual bool process(uhh2::Event & event) override;
+
+ private:
+  TString path, syst_direction;
+  Year year;
+  std::unique_ptr<TGraphAsymmErrors> g_sf_0to0p9, g_sf_0p9to1p2, g_sf_1p2to2p1, g_sf_2p1to2p4;
+  uhh2::Event::Handle<float> h_muo_weight, h_muo_weight_up, h_muo_weight_down;
+
+};
+
+class TopPtReweighting : public uhh2::AnalysisModule {
+ public:
+  explicit TopPtReweighting(uhh2::Context& ctx,
+			 float a, float b,
+			 const std::string& syst_a,
+			 const std::string& syst_b,
+			 const std::string& ttgen_name ="",
+			 const std::string& weight_name="weight_ttbar");
+
+
+  virtual bool process(uhh2::Event& event) override;
+ private:
+  uhh2::Event::Handle<TTbarGen> h_ttbargen_;
+  uhh2::Event::Handle<float> h_weight_;
+  float a_, b_;
+  std::string version_;
+  std::string ttgen_name_;
+  std::string weight_name_;
 };

@@ -28,6 +28,12 @@
 	  <!ENTITY BstarToTW2600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-2600_LH.xml">
 	  <!ENTITY BstarToTW2800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-2800_LH.xml">
 	  <!ENTITY BstarToTW3000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-3000_LH.xml">
+	  <!ENTITY BstarToTW3200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3200_LH.xml">
+	  <!ENTITY BstarToTW3400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3400_LH.xml">
+	  <!ENTITY BstarToTW3600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3600_LH.xml">
+	  <!ENTITY BstarToTW3800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3800_LH.xml">
+	  <!ENTITY BstarToTW4000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-4000_LH.xml">
+	  <!ENTITY BstarToTW4200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-4200_LH.xml">
 
 	  <!ENTITY BstarToTW0700RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-700_RH.xml">
 	  <!ENTITY BstarToTW0800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-800_RH.xml">
@@ -44,6 +50,38 @@
 	  <!ENTITY BstarToTW2600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-2600_RH.xml">
 	  <!ENTITY BstarToTW2800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-2800_RH.xml">
 	  <!ENTITY BstarToTW3000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/BstarToTW/MC_BstarToTW_M-3000_RH.xml">
+	  <!ENTITY BstarToTW3200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3200_RH.xml">
+	  <!ENTITY BstarToTW3400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3400_RH.xml">
+	  <!ENTITY BstarToTW3600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3600_RH.xml">
+	  <!ENTITY BstarToTW3800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-3800_RH.xml">
+	  <!ENTITY BstarToTW4000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-4000_RH.xml">
+	  <!ENTITY BstarToTW4200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2018/BstarToTW/MC_BstarToTW_M-4200_RH.xml">
+
+	  <!ENTITY BprimeTToTW0700LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-700_LH.xml">
+	  <!ENTITY BprimeTToTW0800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-800_LH.xml">
+	  <!ENTITY BprimeTToTW0900LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-900_LH.xml">
+	  <!ENTITY BprimeTToTW1000LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1000_LH.xml">
+	  <!ENTITY BprimeTToTW1100LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1100_LH.xml">
+	  <!ENTITY BprimeTToTW1200LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1200_LH.xml">
+	  <!ENTITY BprimeTToTW1300LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1300_LH.xml">
+	  <!ENTITY BprimeTToTW1400LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1400_LH.xml">
+	  <!ENTITY BprimeTToTW1500LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1500_LH.xml">
+	  <!ENTITY BprimeTToTW1600LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1600_LH.xml">
+	  <!ENTITY BprimeTToTW1700LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1700_LH.xml">
+	  <!ENTITY BprimeTToTW1800LH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1800_LH.xml">
+	  
+	  <!ENTITY BprimeTToTW0700RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-700_RH.xml">
+	  <!ENTITY BprimeTToTW0800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-800_RH.xml">
+	  <!ENTITY BprimeTToTW0900RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-900_RH.xml">
+	  <!ENTITY BprimeTToTW1000RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1000_RH.xml">
+	  <!ENTITY BprimeTToTW1100RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1100_RH.xml">
+	  <!ENTITY BprimeTToTW1200RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1200_RH.xml">
+	  <!ENTITY BprimeTToTW1300RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1300_RH.xml">
+	  <!ENTITY BprimeTToTW1400RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1400_RH.xml">
+	  <!ENTITY BprimeTToTW1500RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1500_RH.xml">
+	  <!ENTITY BprimeTToTW1600RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1600_RH.xml">
+	  <!ENTITY BprimeTToTW1700RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1700_RH.xml">
+	  <!ENTITY BprimeTToTW1800RH SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v2/2016v3/Bprime/MC_BprimeTToTW_M-1800_RH.xml">
 
 	  <!ENTITY TTToSemiLeptonic SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_TTToSemiLeptonic.xml">
 	  <!ENTITY TTTo2L2Nu SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_TTTo2L2Nu.xml">
@@ -58,8 +96,6 @@
 	  <!ENTITY WJetsToLNu_HT_1200to2500 SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-1200To2500.xml">
 	  <!ENTITY WJetsToLNu_HT_2500toInf SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_WJetsToLNu_HT-2500ToInf.xml">
 
-	  <!-- <!ENTITY ST_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_antitop_5f_inclusiveDecays.xml"> -->
-	  <!-- <!ENTITY ST_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_top_5f_inclusiveDecays.xml"> -->
 	  <!ENTITY ST_tW_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_antitop_5f_NoFullyHadronicDecays.xml">
 	  <!ENTITY ST_tW_top SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_ST_tW_top_5f_NoFullyHadronicDecays.xml">
 	  <!ENTITY ST_t-ch_antitop SYSTEM "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/datasets/RunII_102X_v1/2018/MC_SingleTop_t-channel_antitop.xml">
@@ -224,6 +260,42 @@
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
+  <InputData Lumi="99803.68913" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3200LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3200LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99809.61769" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3400LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3400LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99797.11699" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3600LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3600LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99791.82898" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3800LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3800LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99806.93809" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW4000LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW4000LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99796.065" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW4200LH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW4200LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
 
   <InputData Lumi="99866.2200571" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW0700RH_2018" Cacheable="&b_Cacheable;">
     &BstarToTW0700RH;
@@ -315,6 +387,187 @@
     <OutputTree Name="AnalysisTree" />
   </InputData>
 
+  <InputData Lumi="99807.81038" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3200RH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3200RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99801.02145" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3400RH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3400RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99804.58254" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3600RH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3600RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99798.9014" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3800RH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW3800RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99801.13937" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW4000RH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW4000RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="99792.97349" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW4200RH_2018" Cacheable="&b_Cacheable;">
+    &BstarToTW4200RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="294400.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW0700LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW0700LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW0800LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW0800LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299800.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW0900LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW0900LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299400.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1000LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1000LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="290200.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1100LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1100LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299800.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1200LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1200LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1300LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1300LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1400LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1400LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1500LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1500LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1600LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1600LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1700LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1700LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1800LH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1800LH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW0700RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW0700RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299800.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW0800RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW0800RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299800.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW0900RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW0900RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1000RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1000RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299600.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1100RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1100RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299800.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1200RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1200RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1300RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1300RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1400RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1400RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="300000.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1500RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1500RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299800.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1600RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1600RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299200.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1700RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1700RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+  <InputData Lumi="299200.0" NEventsMax="&NEVT;" Type="MC" Version="BprimeTToTW1800RH_2016v3" Cacheable="&b_Cacheable;">
+    &BprimeTToTW1800RH;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
 
  <InputData Lumi="83703610.9340" NEventsMax="&NEVT;" Type="MC" Version="TTToSemiLeptonic_2018" Cacheable="&b_Cacheable;">
     &TTToSemiLeptonic;
@@ -330,55 +583,6 @@
 
  <InputData Lumi="110354799.2664" NEventsMax="&NEVT;" Type="MC" Version="TTToHadronic_2018" Cacheable="&b_Cacheable;">
     &TTToHadronic;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
-
-  <InputData Lumi="21906.58658" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_70to100;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="21612.12022" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_100to200;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="61037.07283" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_200to400;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="100434.7448" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_400to600;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="1515840.055" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_600to800;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="1498230.148" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_800to1200;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="6814210.755" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_1200to2500;
-    <InputTree Name="AnalysisTree" />
-    <OutputTree Name="AnalysisTree" />
-  </InputData>
-
- <InputData Lumi="400493744.9" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2018" Cacheable="&b_Cacheable;">
-    &WJetsToLNu_HT_2500toInf;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>
@@ -416,6 +620,55 @@
 
  <InputData Lumi="1383537.452" NEventsMax="&NEVT;" Type="MC" Version="ST_s-ch_hadronic_2018" Cacheable="&b_Cacheable;">
     &ST_s-ch_hadronic;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+
+  <!-- <InputData Lumi="21906.58658" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_70to100_2018" Cacheable="&b_Cacheable;"> -->
+  <!--   &WJetsToLNu_HT_70to100; -->
+  <!--   <InputTree Name="AnalysisTree" /> -->
+  <!--   <OutputTree Name="AnalysisTree" /> -->
+  <!-- </InputData> -->
+
+ <InputData Lumi="17152.47637" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_100to200;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="41241.26543" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_200to400;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="79710.11496" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_400to600_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_400to600;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="1471689.374" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_600to800_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_600to800;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="1426885.856" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_800to1200;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="8849624.357" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_1200to2500;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
+
+ <InputData Lumi="520121746.6" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2018" Cacheable="&b_Cacheable;">
+    &WJetsToLNu_HT_2500toInf;
     <InputTree Name="AnalysisTree" />
     <OutputTree Name="AnalysisTree" />
   </InputData>

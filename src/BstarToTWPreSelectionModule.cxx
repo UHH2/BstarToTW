@@ -51,7 +51,6 @@ namespace uhh2 {
     // Selections
     bool is_data;
     std::unique_ptr<Selection> sel_lumi;
-    std::unique_ptr<Selection> sel_trigger;
     std::unique_ptr<Selection> veto_muo;
     std::unique_ptr<Selection> veto_ele;
     std::unique_ptr<Selection> sel_1muo;
@@ -69,18 +68,21 @@ namespace uhh2 {
 
 
     // Hists
-    std::unique_ptr<Hists> hist_trigger, hist_cleaner, hist_1lep, hist_njet, hist_ht, hist_met, hist_st, hist_ntop;
+    std::unique_ptr<Hists> hist_cleaner, hist_1lep, hist_njet, hist_ht, hist_met, hist_st, hist_ntop;
 
-    bool is_mc, is_ele, is_muo, is_pho;
+    bool is_mc, is_ele, is_muo;
+
+    const bool b_debug = false;
+
   };
 
   BstarToTWPreSelectionModule::BstarToTWPreSelectionModule(Context & ctx) {
+    if (b_debug) cout << "setting up pre-selection module ..." << endl;
 
     // --- Config ---
     year = extract_year(ctx);
     is_mc = ctx.get("dataset_type") == "MC";
     is_ele = ctx.get("analysis_channel") == "ELECTRON";
-    is_pho = ctx.get("analysis_channel") == "PHOTON";
     is_muo = ctx.get("analysis_channel") == "MUON";
 
     // -- Kinematic Variables -- 
@@ -101,23 +103,23 @@ namespace uhh2 {
     JetId id_jet = PtEtaCut(jet_pt_min, jet_eta_max);
     MuonId id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdLoose), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon veto ID
     MuonId id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::CutBasedIdTight), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max)); // muon ID
-    ElectronId id_ele_veto;
-    ElectronId id_ele_tight;
-    if (year == Year::is2016v2 || year == Year::is2016v3)
+    ElectronId id_ele_veto = AndId<Electron>(ElectronID_Fall17_loose, PtEtaCut(lepveto_pt_min, lep_eta_max)); // electron veto ID
+    ElectronId id_ele_tight = AndId<Electron>(ElectronID_Fall17_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+    // if (year == Year::is2016v2 || year == Year::is2016v3)
+    //   {
+    if (year == Year::is2016v2)
       {
-	if (year == Year::is2016v2)
-	  {
-	    id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::Loose), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-	    id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::Tight), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
-	  }
-	id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
-	id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+	id_muo_veto = AndId<Muon>(MuonID(Muon::Selector::Loose), PtEtaCut(lepveto_pt_min, lep_eta_max), MuonIso(muo_iso_max));
+	id_muo_tight = AndId<Muon>(MuonID(Muon::Selector::Tight), PtEtaCut(lep_pt_min, lep_eta_max), MuonIso(muo_iso_max));
       }
-    else
-      {
-	id_ele_veto = AndId<Electron>(ElectronID_Fall17_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
-	id_ele_tight = AndId<Electron>(ElectronID_Fall17_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
-      }
+    // 	id_ele_veto = AndId<Electron>(ElectronID_Summer16_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
+    // 	id_ele_tight = AndId<Electron>(ElectronID_Summer16_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+    //   }
+    // else
+    //   {
+    // 	id_ele_veto = AndId<Electron>(ElectronID_Fall17_veto, PtEtaCut(lepveto_pt_min, lep_eta_max));
+    // 	id_ele_tight = AndId<Electron>(ElectronID_Fall17_tight, PtEtaCut(lep_pt_min, lep_eta_max)); // electron ID
+    //   }
     TopJetId id_hotvr = PtEtaCut(top_pt_min, top_eta_max);
 
     // --- Additional Modules ---
@@ -143,8 +145,6 @@ namespace uhh2 {
     // --- Selections ---
     // - Lumi -
     sel_lumi.reset(new LumiSelection(ctx));
-    // - Trigger -
-    sel_trigger.reset(new BstarToTWTriggerSelection(ctx));
     // - Lepton vetos
     veto_muo.reset(new NMuonSelection(0, 0));
     veto_ele.reset(new NElectronSelection(0, 0));
@@ -175,8 +175,6 @@ namespace uhh2 {
     hist_1lep.reset(new AndHists(ctx, "1LepCut"));
     // - Jet -
     hist_njet.reset(new AndHists(ctx, "1JetCut"));
-    // - Trigger -
-    hist_trigger.reset(new AndHists(ctx, "Trigger")); 
     // - HT -
     hist_ht.reset(new AndHists(ctx, "100HTCut"));
     // - MET -
@@ -189,66 +187,87 @@ namespace uhh2 {
   }
 
   bool BstarToTWPreSelectionModule::process(Event & event) {
+
     
     // --- Object Setup and Cleaning
+    if (b_debug) cout << "processing common moduels ..." << endl;
     if (!common_modules->process(event)) return false;
+    if (b_debug) cout << "processing primary lepton ..." << endl;
     primary_lepton->process(event);
+    if (b_debug) cout << "processing ht calculator ..." << endl;
     ht_calculator->process(event);
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_cleaner->fill(event);
 
     // --- Lepton selection & additional lepton veto
+    if (b_debug) cout << "processing lepton selection ..." << endl;
     // - Muon Channel
     if (is_muo)
       {
 	if(!(sel_1muo->passes(event) && veto_ele->passes(event))) return false;
 	cl_muo_tight->process(event);
 	if(!sel_1muo->passes(event)) return false;
+	if (b_debug) cout << "done, fill hists ..." << endl;
 	hist_1lep->fill(event);
       }    
     // - Electron Channel
-    else if (is_ele || is_pho)
+    else if (is_ele)
       {
 	if(!(sel_1ele->passes(event) && veto_muo->passes(event))) return false;
 	cl_ele_tight->process(event);
 	if(!sel_1ele->passes(event)) return false;
+	if (b_debug) cout << "done, fill hists ..." << endl;
 	hist_1lep->fill(event);
       }
 
-    if (!sel_trigger->passes(event)) return false;
-    hist_trigger->fill(event);
-
     // --- Jet selection
+    if (b_debug) cout << "processing ak4-jet selection ..." << endl;
     if (!sel_njet->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_njet->fill(event);
 
     // --- HT selection
+    if (b_debug) cout << "processing HT selection ..." << endl;
     if(!sel_ht->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_ht->fill(event);
 
     // --- MET selection
+    if (b_debug) cout << "processing MET selection ..." << endl;
     if(!sel_met->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_met->fill(event);
 
     // --- ST selection
+    if (b_debug) cout << "processing ST selection ..." << endl;
     if(!sel_st->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_st->fill(event);
 
     // deltaR jet-lep
+    if (b_debug) cout << "processing deltaR jet-lepton selection ..." << endl;
     if(!sel_deltaR_jetlep->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_sel_deltaR_jetlep->fill(event);
 
     // deltaPhi met-lep
+    if (b_debug) cout << "processing deltaPhi MET-lepton selection ..." << endl;
     if(!sel_deltaPhi_metlep->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_sel_deltaPhi_metlep->fill(event);
 
     // --- TopJet Selection
+    if (b_debug) cout << "processing HOTVR JEC/JER ..." << endl;
     hotvr_jlc_module->process(event);
     hotvr_jec_module->process(event);
     cl_hotvr->process(event);
+    if (b_debug) cout << "processing HOTVR-jet selection ..." << endl;
     if(!sel_ntop->passes(event)) return false;
+    if (b_debug) cout << "done, fill hists ..." << endl;
     hist_ntop->fill(event);
      
     // done
+    if (b_debug) cout << "done!" << endl;
     return true;
   }
 

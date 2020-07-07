@@ -1,6 +1,7 @@
 #include "UHH2/BstarToTW/include/BstarToTWSystematics.h"
 #include "UHH2/common/include/MCWeight.h"
 #include "UHH2/common/include/Utils.h"
+#include "UHH2/BstarToTW/include/BstarToTWModules.h"
 
 #include <TRandomGen.h>
 
@@ -9,13 +10,17 @@ using namespace uhh2;
 
 MuonScaleFactors2016::MuonScaleFactors2016(Context &ctx) {
 
-  m_sf_trigger.reset(new MCMuonScaleFactor(ctx,
-					   ctx.get("SF_MUO_TRIGGER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MuonTrigger_EfficienciesAndSF_average_RunBtoH.root"),
-					   ctx.get("SF_MUO_TRIGGER_FILE", "IsoMu24_OR_IsoTkMu24_PtEtaBins"),
-					   0.5,
-					   "trigger",
-					   false,
-					   ctx.get("SYS_MUO_TRIGGER", "nominal")));
+  // m_sf_trigger.reset(new MCMuonScaleFactor(ctx,
+  // 					   ctx.get("SF_MUO_TRIGGER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MuonTrigger_EfficienciesAndSF_average_RunBtoH.root"),
+  // 					   ctx.get("SF_MUO_TRIGGER_FILE", "IsoMu24_OR_IsoTkMu24_PtEtaBins"),
+  // 					   0.5,
+  // 					   "trigger",
+  // 					   false,
+  // 					   ctx.get("Systematic_MuonTrigger", "nominal")));
+  m_sf_trigger.reset(new MuonTriggerWeights(ctx, 
+					    ctx.get("SF_MUO_TR_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data"),
+					    ctx.get("Systematic_MuonTrigger", "nominal")));
+
   
   m_sf_id.reset(new MCMuonScaleFactor(ctx,
 				      ctx.get("SF_MUO_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MuonID_EfficienciesAndSF_average_RunBtoH.root"),
@@ -23,7 +28,7 @@ MuonScaleFactors2016::MuonScaleFactors2016(Context &ctx) {
 				      1.0,
 				      "tight_id",
 				      false,
-				      ctx.get("SYS_MUO_ID", "nominal")));
+				      ctx.get("Systematic_MuonID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
 				       ctx.get("SF_MUO_ISO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/MuonIso_EfficienciesAndSF_average_RunBtoH.root"),
@@ -31,7 +36,7 @@ MuonScaleFactors2016::MuonScaleFactors2016(Context &ctx) {
 				       1.0,
 				       "isolation",
 				       false,
-				       ctx.get("SYS_MUO_ISO", "nominal")));
+				       ctx.get("Systematic_MuonIso", "nominal")));
 
 }
 
@@ -47,13 +52,17 @@ bool MuonScaleFactors2016::process(Event &event) {
 
 MuonScaleFactors2017::MuonScaleFactors2017(Context &ctx) {
 
-  m_sf_trigger.reset(new MCMuonScaleFactor(ctx,
-					   ctx.get("SF_MUO_TRIGGER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MuonTrigger_EfficienciesAndSF_RunBtoF_Nov17Nov2017.root"),
-					   ctx.get("SF_MUO_TRIGGER_FILE", "IsoMu27_PtEtaBins"),
-					   0.5,
-					   "trigger",
-					   false,
-					   ctx.get("SYS_MUO_TRIGGER", "nominal")));
+  // m_sf_trigger.reset(new MCMuonScaleFactor(ctx,
+  // 					   ctx.get("SF_MUO_TRIGGER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MuonTrigger_EfficienciesAndSF_RunBtoF_Nov17Nov2017.root"),
+  // 					   ctx.get("SF_MUO_TRIGGER_FILE", "IsoMu27_PtEtaBins"),
+  // 					   0.5,
+  // 					   "trigger",
+  // 					   false,
+  // 					   ctx.get("Systematic_MuonTrigger", "nominal")));
+
+  m_sf_trigger.reset(new MuonTriggerWeights(ctx, 
+					    ctx.get("SF_MUO_TR_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data"),
+					    ctx.get("Systematic_MuonTrigger", "nominal")));
   
   m_sf_id.reset(new MCMuonScaleFactor(ctx,
 				      ctx.get("SF_MUO_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MuonID_94X_RunBCDEF_SF_ID.root"),
@@ -61,7 +70,7 @@ MuonScaleFactors2017::MuonScaleFactors2017(Context &ctx) {
 				      1.0,
 				      "tight_id",
 				      true,
-				      ctx.get("SYS_MUO_ID", "nominal")));
+				      ctx.get("Systematic_MuonID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
 				       ctx.get("SF_MUO_ISO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/MuonIso_94X_RunBCDEF_SF_ISO.root"),
@@ -69,7 +78,7 @@ MuonScaleFactors2017::MuonScaleFactors2017(Context &ctx) {
 				       1.0,
 				       "isolation",
 				       true,
-				       ctx.get("SYS_MUO_ISO", "nominal")));
+				       ctx.get("Systematic_MuonIso", "nominal")));
 
 }
 
@@ -83,27 +92,28 @@ bool MuonScaleFactors2017::process(Event &event) {
 }
 
 
-MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx, long int seed) {
+MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx) {
 
-  m_seed = seed;
-  m_rng = new TRandomMixMax();
-  m_rng->SetSeed(m_seed);
+  // m_sf_trigger_before.reset(new MCMuonScaleFactor(ctx,
+  // 						  ctx.get("SF_MUO_TRIGGER_BEFORE_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_BeforeMuonHLTUpdate.root"),
+  // 						  ctx.get("SF_MUO_TRIGGER_BEFORE_FILE", "IsoMu24_PtEtaBins"),
+  // 						  0.5,
+  // 						  "trigger",
+  // 						  false,
+  // 						  ctx.get("Systematic_MuonTrigger", "nominal")));
 
-  m_sf_trigger_before.reset(new MCMuonScaleFactor(ctx,
-						  ctx.get("SF_MUO_TRIGGER_BEFORE_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_BeforeMuonHLTUpdate.root"),
-						  ctx.get("SF_MUO_TRIGGER_BEFORE_FILE", "IsoMu24_PtEtaBins"),
-						  0.5,
-						  "trigger",
-						  false,
-						  ctx.get("SYS_MUO_TRIGGER", "nominal")));
+  // m_sf_trigger_after.reset(new MCMuonScaleFactor(ctx,
+  // 						 ctx.get("SF_MUO_TRIGGER_AFTER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_AfterMuonHLTUpdate.root"),
+  // 						 ctx.get("SF_MUO_TRIGGER_AFTER_FILE", "IsoMu24_PtEtaBins"),
+  // 						 0.5,
+  // 						 "trigger",
+  // 						 false,
+  // 						 ctx.get("Systematic_MuonTrigger", "nominal")));
 
-  m_sf_trigger_after.reset(new MCMuonScaleFactor(ctx,
-						 ctx.get("SF_MUO_TRIGGER_AFTER_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Trigger_Eff_SF_AfterMuonHLTUpdate.root"),
-						 ctx.get("SF_MUO_TRIGGER_AFTER_FILE", "IsoMu24_PtEtaBins"),
-						 0.5,
-						 "trigger",
-						 false,
-						 ctx.get("SYS_MUO_TRIGGER", "nominal")));
+  m_sf_trigger.reset(new MuonTriggerWeights(ctx, 
+					    ctx.get("SF_MUO_TR_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data"),
+					    ctx.get("Systematic_MuonTrigger", "nominal")));
+
 
   m_sf_id.reset(new MCMuonScaleFactor(ctx,
 				      ctx.get("SF_MUO_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_ID_SF_RunABCD.root"),
@@ -111,7 +121,7 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx, long int seed) {
 				      1.0,
 				      "tight_id",
 				      true,
-				      ctx.get("SYS_MUO_ID", "nominal")));
+				      ctx.get("Systematic_MuonID", "nominal")));
 
   m_sf_iso.reset(new MCMuonScaleFactor(ctx,
 				       ctx.get("SF_MUO_ISO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Muon_Iso_SF_RunABCD.root"),
@@ -119,19 +129,20 @@ MuonScaleFactors2018::MuonScaleFactors2018(Context &ctx, long int seed) {
 				       1.0,
 				       "isolation",
 				       true,
-				       ctx.get("SYS_MUO_ISO", "nominal")));
+				       ctx.get("Systematic_MuonIso", "nominal")));
 }
 
 bool MuonScaleFactors2018::process(Event &event) {
 
-  if ( m_rng->Uniform() < m_lumi_fraction )
-    {
-      m_sf_trigger_before->process(event);
-    }
-  else
-    {
-      m_sf_trigger_after->process(event);
-    }
+  // if ( m_rng->Uniform() < m_lumi_fraction )
+  //   {
+  //     m_sf_trigger_before->process(event);
+  //   }
+  // else
+  //   {
+  //     m_sf_trigger_after->process(event);
+  //   }
+  m_sf_trigger->process(event);
   m_sf_id->process(event);
   m_sf_iso->process(event);
 
@@ -145,14 +156,17 @@ ElectronScaleFactors2016::ElectronScaleFactors2016(Context &ctx) {
 				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root"),
 				      1.0,
 				      "reco",
-				      ctx.get("SYS_ELE_RECO", "nominal")));
+				      ctx.get("Systematic_ElectronReco", "nominal")));
 
   m_sf_id.reset(new MCElecScaleFactor(ctx,
 				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2016/2016LegacyReReco_ElectronTight_Fall17V2.root"),
 				      1.0,
 				      "tight_id",
-				      ctx.get("SYS_ELE_ID", "nominal")));
+				      ctx.get("Systematic_ElectronID", "nominal")));
 
+  m_sf_trigger.reset(new ElectronTriggerWeights(ctx, 
+						ctx.get("SF_ELE_TR_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data"),
+						ctx.get("Systematic_ElectronTr", "nominal")));
 
 }
 
@@ -160,6 +174,7 @@ bool ElectronScaleFactors2016::process(Event &event) {
 
   m_sf_reco->process(event);
   m_sf_id->process(event);
+  m_sf_trigger->process(event);
 
   return true;
 }
@@ -170,14 +185,17 @@ ElectronScaleFactors2017::ElectronScaleFactors2017(Context &ctx) {
 				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root"),
 				      1.0,
 				      "reco",
-				      ctx.get("SYS_ELE_RECO", "nominal")));
+				      ctx.get("Systematic_ElectronReco", "nominal")));
 
   m_sf_id.reset(new MCElecScaleFactor(ctx,
 				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/2017_ElectronTight.root"),
 				      1.0,
 				      "tight_id",
-				      ctx.get("SYS_ELE_ID", "nominal")));
+				      ctx.get("Systematic_ElectronID", "nominal")));
 
+  m_sf_trigger.reset(new ElectronTriggerWeights(ctx, 
+						ctx.get("SF_ELE_TR_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data"),
+						ctx.get("Systematic_ElectronTr", "nominal")));
 
 }
 
@@ -185,6 +203,7 @@ bool ElectronScaleFactors2017::process(Event &event) {
 
   m_sf_reco->process(event);
   m_sf_id->process(event);
+  m_sf_trigger->process(event);
 
   return true;
 }
@@ -196,14 +215,17 @@ ElectronScaleFactors2018::ElectronScaleFactors2018(Context &ctx) {
 				      ctx.get("SF_ELE_RECO_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Electron_reco_SF_RunABCD.root"),
 				      1.0,
 				      "reco",
-				      ctx.get("SYS_ELE_RECO", "nominal")));
+				      ctx.get("Systematic_ElectronReco", "nominal")));
 
   m_sf_id.reset(new MCElecScaleFactor(ctx,
 				      ctx.get("SF_ELE_ID_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2018/Electron_ID_tight_SF_RunABCD.root"),
 				      1.0,
 				      "tight_id",
-				      ctx.get("SYS_ELE_ID", "nominal")));
+				      ctx.get("Systematic_ElectronID", "nominal")));
 
+  m_sf_trigger.reset(new ElectronTriggerWeights(ctx, 
+						ctx.get("SF_ELE_TR_PATH", "/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data"),
+						ctx.get("Systematic_ElectronTr", "nominal")));
 
 }
 
@@ -211,6 +233,7 @@ bool ElectronScaleFactors2018::process(Event &event) {
 
   m_sf_reco->process(event);
   m_sf_id->process(event);
+  m_sf_trigger->process(event);
 
   return true;
 }
