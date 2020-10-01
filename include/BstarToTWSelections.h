@@ -149,12 +149,10 @@ namespace uhh2 {
 
   class BadHCALSelection: public uhh2::Selection {
   public:
-    BadHCALSelection(uhh2::Context &ctx, long int seed = 123456789);
+    BadHCALSelection(uhh2::Context &ctx);
     virtual bool passes(const uhh2::Event &event) override;
 
   private:
-    TRandom *m_rng;
-    long int m_seed;
     Year year;
     int m_runnumber = 319077;
     double m_lumi_ratio = 0.64844705699; // (Run 319077(17.370008 pb-1) + Run C + Run D) / all 2018

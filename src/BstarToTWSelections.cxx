@@ -273,10 +273,7 @@ bool BstarToTWTriggerSelection::passes(const Event &event) {
   return false;
 }
 
-BadHCALSelection::BadHCALSelection(Context &ctx, long int seed) {
-  m_seed = seed;
-  m_rng = new TRandomMixMax();
-  m_rng->SetSeed(m_seed);
+BadHCALSelection::BadHCALSelection(Context &ctx) {
   year = extract_year(ctx);  
 }
 
@@ -287,7 +284,8 @@ bool BadHCALSelection::passes(const Event &event) {
   // check if event should be removed:
   // for data: if event is affected by HEM15/16
   // for mc: draw random sample according to lumi ratio of affected data
-  if ((event.isRealData && event.run >= m_runnumber) || (!event.isRealData && m_rng->Uniform() < m_lumi_ratio))
+
+  if ((event.isRealData && event.run >= m_runnumber) || (!event.isRealData)) //(!event.isRealData && m_rng->Uniform() < m_lumi_ratio))
     {
       for (const Electron & e : *event.electrons)
 	{
