@@ -1,5 +1,6 @@
 #include "UHH2/BstarToTW/include/BstarToTWHypothesisDiscriminators.h"
 #include "UHH2/core/include/Utils.h"
+#include "UHH2/common/include/Utils.h"
 
 #include <set>
 
@@ -68,7 +69,7 @@ const LeptonicTopHypothesis * get_best_hypothesis(const std::vector<LeptonicTopH
 BstarToTWChi2Discriminator::BstarToTWChi2Discriminator(Context & ctx, const std::string & rechyps_name) {
 
   h_hyps = ctx.get_handle<vector<BstarToTWHypothesis>>(rechyps_name);
-
+  h_bjets = ctx.get_handle<vector<Jet> >("btag_medium");
   // from fits to matched distribution
   m_mtop_mean  = 179.9;
   m_mtop_sigma =  17.7;
@@ -112,11 +113,35 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
       double deltaPt_reco = (hyp.get_topjet().pt() - hyp.get_w().pt()) / (hyp.get_topjet().pt() + hyp.get_w().pt());
       const double chi2_deltaPt = pow((deltaPt_reco - m_deltaPt_mean) / m_deltaPt_sigma, 2);
 
+      double deltaPt_toplep = std::numeric_limits<double>::infinity();
+      double dRmin = std::numeric_limits<double>::infinity();
+
+      vector<Jet> jet_collection = (event.get(h_bjets).size() > 1) ? event.get(h_bjets) : *event.jets; // decide weather to take bjet or jet collection
+      Jet *closest_jet = 0;
+      for (Jet &j : jet_collection)
+	{
+	  double dR = deltaR(hyp.get_w(), j);
+	  if (dR < dRmin)
+	    {
+	      dRmin = dR;
+	      closest_jet = &j;
+	    }
+	}
+      if (dRmin < 2.0) // make sure chosen jet does not overlap with top region
+	{
+	  deltaPt_toplep = (hyp.get_topjet().pt() - (hyp.get_w() + closest_jet->v4()).pt()) / (hyp.get_topjet().pt() + (hyp.get_w() + closest_jet->v4()).pt());
+	}
+
+      double deltaR_lnu = abs(hyp.get_lepton().pz() - hyp.get_neutrino().pz());
+
       hyp.set_discriminator("Chi2_top", chi2_mtop);
       hyp.set_discriminator("Chi2_deltaPhi", chi2_deltaPhi);
       hyp.set_discriminator("Chi2_deltaPt", chi2_deltaPt);
       hyp.set_discriminator("Chi2", chi2_deltaPhi + chi2_deltaPt);
       hyp.set_discriminator("Chi2_with_mass", chi2_mtop + chi2_deltaPhi + chi2_deltaPt);
+      hyp.set_discriminator("deltaPt_W",deltaPt_reco);
+      hyp.set_discriminator("deltaPt_toplep",deltaPt_toplep);
+      hyp.set_discriminator("closest_nu",deltaR_lnu);
     }
 
   return true;

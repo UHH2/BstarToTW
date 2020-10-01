@@ -48,6 +48,7 @@ class BstarToTWChi2Discriminator: public uhh2::AnalysisModule {
 
  private:
   uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyps;
+  uhh2::Event::Handle<std::vector<Jet>> h_bjets;
   float m_mtop_mean, m_mtop_sigma;
   float m_deltaPhi_mean, m_deltaPhi_sigma;
   float m_deltaPt_mean, m_deltaPt_sigma;
