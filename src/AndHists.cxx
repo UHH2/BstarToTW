@@ -19,7 +19,9 @@ AndHists::AndHists(Context &ctx, const string & dirname, const boost::optional<T
   Hists(ctx, dirname+"_Counter")
 {
   // Counting Hist
+  
   nevt = book<TH1F>("NEvt", "", 1,0,1);
+  bool b_is_presel = (ctx.get("AnalysisModule").find("PreSel") != std::string::npos);
 
   // Add common hists to vector
   hists_vector.push_back(new BstarToTWAnalysisHists(ctx, dirname + "_Analysis"));
@@ -30,7 +32,7 @@ AndHists::AndHists(Context &ctx, const string & dirname, const boost::optional<T
   hists_vector.push_back(new MuonHists(ctx, dirname + "_Muon"));
   hists_vector.push_back(new ElectronHists(ctx, dirname + "_Electron"));
   hists_vector.push_back(new JetHists(ctx, dirname + "_Jet"));
-  if (!(ctx.get("AnalysisModule") == "BstarToTWPreSelectionModule")) // don't fill these in preselection
+  if (!b_is_presel) // don't fill these in preselection
     {
       hists_vector.push_back(new JetHists(ctx, dirname + "_bJet_loose", 2, "btag_loose"));
       hists_vector.push_back(new JetHists(ctx, dirname + "_bJet_medium", 2, "btag_medium"));
