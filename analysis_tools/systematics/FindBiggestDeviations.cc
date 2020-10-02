@@ -32,16 +32,16 @@ void FindBiggestDeviations(){
   //In each bin find the lowest and the highest entry of all 6 variations + nominal
   //lowest: down-variation for theta, highest: up-variation for theta, nominal: nominal for theta
 
-  // TString path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/2016/";
-  TString path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Electron/2018/";
+  TString path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/2016/";
+  // TString path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Electron/2016/";
 
 
-  // TString signal_postfix = "_2016v3";
+  TString signal_postfix = "_2016v3";
   // TString signal_postfix = "_2017v2";
-  TString signal_postfix = "_2018";
+  // TString signal_postfix = "_2018";
 
-  // TString channel = "1btag1toptag20chi2";
-  TString channel = "2btag1toptag";
+  TString channel = "1btag1toptag20chi2";
+  // TString channel = "2btag1toptag";
  
   // TString hist_name = channel + "_reco/Bstar_reco_M_rebin";
 

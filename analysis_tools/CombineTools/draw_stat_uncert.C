@@ -2,7 +2,7 @@
 
 void draw_stat_uncert() {
 
-  TFile *f = new TFile("BstarToTW_combined.root");
+  TFile *f = new TFile("BstarToTW_combined_new.root");
 
   TString regions[] = {"muon_region_1b1t__", "muon_region_2b1t__", "electron_region_1b1t__", "electron_region_2b1t__"};
 

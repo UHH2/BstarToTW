@@ -38,7 +38,7 @@ def run_combine(signal_dir, signals, max_jobs):
         print 'Spawning job: {}'.format(signal)        
         n_running += 1
         f = open("log/{}.log".format(signal),'w')
-        command = "nice -n {} combine {}/datacard_{}.txt -M AsymptoticLimits -n {} --run blind --noFitAsimov".format(10, signal_dir, signal, signal)
+        command = "nice -n {} combine {}/datacard_{}.txt -M AsymptoticLimits -n {}".format(10, signal_dir, signal, signal)
         # command = "nice -n {} combine {}/datacard_{}.txt -M HybridNew --LHCmode LHC-limits -n {}".format(10, signal_dir, signal, signal)
         processes.append((subprocess.Popen(command, stdout=f, shell=True),f))
     b_wait = (n_completed < n_jobs) 
@@ -136,9 +136,9 @@ def draw_limits(masspoints,limits, predicted=None):
     g_expected_68.Draw("SAME3")
     g_expected.Draw("SAME") 
     
-    # observed = np.array(limits["observed"], dtype=float)
-    # g_observed = ROOT.TGraph(len(masspoints), masspoints, observed)
-    # g_observed.Draw("SAME")
+    observed = np.array(limits["observed"], dtype=float)
+    g_observed = ROOT.TGraph(len(masspoints), masspoints, observed)
+    g_observed.Draw("SAME")
 
     leg = ROOT.TLegend(0.45,0.6,0.85,0.85,"")
     leg.SetBorderSize(0)

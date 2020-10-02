@@ -22,6 +22,11 @@
 	  <!ENTITY DATA_E_SinglePhoton   "&PRESELdir;/&PRESELfilename;.DATA.DATA_E_SinglePhoton_2017v2.root">
 	  <!ENTITY DATA_F_SinglePhoton   "&PRESELdir;/&PRESELfilename;.DATA.DATA_F_SinglePhoton_2017v2.root">
 
+	  <!ENTITY BstarToTW1000LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW1000LH_2017v2.root">
+	  <!ENTITY BstarToTW2000LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW2000LH_2017v2.root">
+	  <!ENTITY BstarToTW2600LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW2600LH_2017v2.root">
+	  <!ENTITY BstarToTW3000LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW3000LH_2017v2.root">
+
 	  <!ENTITY TTToSemiLeptonic "&PRESELdir;/&PRESELfilename;.MC.TTToSemiLeptonic_2017v2.root">
 	  <!ENTITY TTTo2L2Nu "&PRESELdir;/&PRESELfilename;.MC.TTTo2L2Nu_2017v2.root">
 	  <!ENTITY TTToHadronic "&PRESELdir;/&PRESELfilename;.MC.TTToHadronic_2017v2.root">
@@ -133,6 +138,31 @@
     </InputData>
 
 
+    <InputData Lumi="99972.0" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW1000LH_2017v2" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW1000LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />      
+    </InputData>
+
+    <InputData Lumi="99756.0" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW2000LH_2017v2" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW2000LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />            
+    </InputData>
+
+    <InputData Lumi="99482.0" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW2600LH_2017v2" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW2600LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />      
+    </InputData>
+
+    <InputData Lumi="95238.0" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3000LH_2017v2" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW3000LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />            
+    </InputData>
+
+
     <InputData Lumi="35279949.78" NEventsMax="&NEVT;" Type="MC" Version="TTToSemiLeptonic_2017v2" Cacheable="&b_Cacheable;">
       <In FileName="&TTToSemiLeptonic;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
@@ -192,7 +222,7 @@
     <InputData Lumi="19185.5955" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_100to200_2017v2" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_100to200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />      
     </InputData>
 
     <InputData Lumi="29988.801" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_200to400_2017v2" Cacheable="&b_Cacheable;">
@@ -213,19 +243,19 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1958307.943" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2017v2" Cacheable="&b_Cacheable;">
+    <InputData Lumi="3529938.244" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_800to1200_2017v2" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_800to1200;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="45836371.85" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2017v2" Cacheable="&b_Cacheable;">
+    <InputData Lumi="23407979.92" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_1200to2500_2017v2" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_1200to2500;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
     
-    <InputData Lumi="3412294150" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2017v2" Cacheable="&b_Cacheable;">
+    <InputData Lumi="3412294150.0" NEventsMax="&NEVT;" Type="MC" Version="WJetsToLNu_HT_2500toInf_2017v2" Cacheable="&b_Cacheable;">
       <In FileName="&WJetsToLNu_HT_2500toInf;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />

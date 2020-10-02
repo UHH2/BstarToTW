@@ -2,7 +2,8 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
 	  <!ENTITY TargetLumi      "35920">
-	  <!ENTITY SYST            "Working">
+	  <!-- <!ENTITY SYST            "NOMINAL"> -->
+	  <!ENTITY SYST            "WORKING">
 	  <!ENTITY SELdir          "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Electron/2016/&SYST;">
 	  <!ENTITY b_Cacheable     "False">
 	  <!ENTITY NEVT            "-1">

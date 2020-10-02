@@ -683,14 +683,14 @@
     </InputData>
 
     
-    <InputData Lumi="189386.1646" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2016v3" Cacheable="&b_Cacheable;">
+    <InputData Lumi="442297.3725" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_antitop_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&ST_tW_antitop;" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="190615.0628" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2016v3" Cacheable="&b_Cacheable;">
+    <InputData Lumi="442296.4019" NEventsMax="&NEVT;" Type="MC" Version="ST_tW_top_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&ST_tW_top;" Lumi="0.0"/>
-      <InputTree Name="AnalysisTree" />
+      <InputTree Name="AnalysisTree" />      
     </InputData>
 
     <InputData Lumi="477080.5312" NEventsMax="&NEVT;" Type="MC" Version="ST_t-ch_antitop_2016v3" Cacheable="&b_Cacheable;">

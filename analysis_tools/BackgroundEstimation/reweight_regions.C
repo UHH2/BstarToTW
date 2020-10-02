@@ -7,7 +7,7 @@
 
 void fill_histogram_from_file(TH1F* hist, const TString &fName, const TString &region, const TString &histName, const double &weightSign = 1);
 TFitResultPtr fit_ratio(TH1F* hSignal, TH1F* hControl, TF1* ffit);
-void fill_reweighted(TH1F* hReweight,TH1F* hReweight_up,TH1F* hReweight_down, TF1* fitfun, TFitResultPtr r, const TString &fname, const double &weightSign = 1, double fraction = 1, long int seed = 123456);
+void fill_reweighted(TH1F* hReweight,TH1F* hReweight_up,TH1F* hReweight_down, TF1* fitfun1, TF1* fitfun2, TFitResultPtr r1, TFitResultPtr r2, const TString &fname, const double &weightSign = 1, double fraction = 1, long int seed = 123456);
 void create_output(const TString fout_name, const TString subdir_name, TH1F* hist);
 
 void reweight_regions(TString channel, TString year) {
@@ -30,7 +30,8 @@ void reweight_regions(TString channel, TString year) {
    
   const int nSamples = 3;
   const TString sampleNames[nSamples] = {"WJets", "DYJets", "Diboson"};
-  const int nTopSamples = 5 - nSamples;
+  // const TString sampleNames[nSamples] = {"WJets"};
+  const int nTopSamples = 2;
   const TString topSampleNames[nTopSamples] = {"TT", "ST"};
 
   // read in histograms
@@ -47,9 +48,15 @@ void reweight_regions(TString channel, TString year) {
       TH1F *hReweight_fit_M = new TH1F("reweight_fit", "_reweight_fit", nbins-1, xbins);
       TH1F *hReweight_fit_M_up = new TH1F("reweight_fit_up", "_reweight_fit", nbins-1, xbins);
       TH1F *hReweight_fit_M_down = new TH1F("reweight_fit_down", "_reweight_fit", nbins-1, xbins);
+      TH1F *hReweightInject_fit_M = new TH1F("reweightinject_fit", "_reweight_fit", nbins-1, xbins);
+      TH1F *hReweightInject_fit_M_up = new TH1F("reweightinject_fit_up", "_reweight_fit", nbins-1, xbins);
+      TH1F *hReweightInject_fit_M_down = new TH1F("reweightinject_fit_down", "_reweight_fit", nbins-1, xbins);
       hReweight_fit_M->Sumw2();
       hReweight_fit_M_up->Sumw2();
       hReweight_fit_M_down->Sumw2();
+      hReweightInject_fit_M->Sumw2();
+      hReweightInject_fit_M_up->Sumw2();
+      hReweightInject_fit_M_down->Sumw2();
 
       // fill histograms
       std::cout << "get histograms" << std::endl;
@@ -68,13 +75,24 @@ void reweight_regions(TString channel, TString year) {
       // fit_ratio
       std::cout << "fit ratio" << std::endl;
 
-      TF1 *ffit = new TF1("ffit", "gaus(0)+pol0(3)", 500, 5000);
-      ffit->SetParameters(0.01, 1450.0, 1500.0, 0.005);
-      ffit->SetParLimits(0, 0.0, 0.1);
-      ffit->SetParLimits(3, 0.0, 0.1);
+      TF1 *ffit_gaus = new TF1("ffit_gaus", "gaus(0)+pol0(3)", 500, 5000);
+      // if (region == "1btag1toptag20chi2") 
+      // 	{
+      ffit_gaus->SetParameters(0.01, 1450.0, 1500.0, 0.005);
+      ffit_gaus->SetParLimits(0, 0.0, 0.1);
+      ffit_gaus->SetParLimits(3, 0.0, 0.1);
+      // 	}
+      // else 
+      // 	{
+      // 	  ffit_gaus->SetParameters(0.002, 1450.0, 160.0, 0.005);
+      // 	  ffit_gaus->SetParLimits(0, 0.0, 0.1);
+      // 	  ffit_gaus->SetParLimits(3, 0.0, 0.1);
+      // 	}
+      TFitResultPtr r_gaus = fit_ratio(hSignal_M, hControl_M, ffit_gaus);
 
-
-      TFitResultPtr r = fit_ratio(hSignal_M, hControl_M, ffit);
+      TF1 *ffit_landau = new TF1("ffit_landau", "landau", 500, 5000);
+      TFitResultPtr r_landau = fit_ratio(hSignal_M, hControl_M, ffit_landau);
+      
       // reweight from control region
       double split = 0.66;
       double fraction = (region == "1btag1toptag20chi2") ? split : 1 - split;
@@ -83,16 +101,23 @@ void reweight_regions(TString channel, TString year) {
       for (TString inDir : inDirs)
 	{
 	  std::cout << "reweight data..." << std::endl;
-	  fill_reweighted(hReweight_fit_M, hReweight_fit_M_up, hReweight_fit_M_down, ffit, r, inDir + prefix+ "DATA.DATA.root", 1, fraction);
+	  fill_reweighted(hReweight_fit_M, hReweight_fit_M_up, hReweight_fit_M_down, ffit_gaus, ffit_landau, r_gaus, r_landau, inDir + prefix+ "DATA.DATA.root", 1, fraction);
+	  bool inject_signal = false;
+	  double signal_strength = 0.05;
+	  TString signal_sample = "MC.BstarToTW3000LH.root";
+	  if (inject_signal) 
+	    {
+	      fill_reweighted(hReweight_fit_M, hReweight_fit_M_up, hReweight_fit_M_down, ffit_gaus, ffit_landau, r_gaus, r_landau, inDir + prefix+ signal_sample, signal_strength, 1.);
+	    }
 	  for (int i = 0; i < nTopSamples; ++i)
 	    {
 	      std::cout << "subtract reweighted " <<  topSampleNames[i] <<std::endl;
 	      TString fName = inDir + prefix + "MC." + topSampleNames[i] + ".root";
-	      fill_reweighted(hReweight_fit_M, hReweight_fit_M_up, hReweight_fit_M_down, ffit, r, fName, -1, fraction);
+	      fill_reweighted(hReweight_fit_M, hReweight_fit_M_up, hReweight_fit_M_down, ffit_gaus, ffit_landau, r_gaus, r_landau, fName, -1, 1.);
 	    }
 	}
 
-      // write to file
+
       create_output(prefix+"MC.Other.root",region+"_reco", hReweight_fit_M);
       create_output(prefix+"MC.Other_UP.root",region+"_reco", hReweight_fit_M_up);
       create_output(prefix+"MC.Other_DOWN.root",region+"_reco", hReweight_fit_M_down);
@@ -151,13 +176,10 @@ TFitResultPtr fit_ratio(TH1F* hSignal, TH1F* hControl, TF1* ffit) {
   
   leg->Draw();
 
-  TString outputName; outputName.Form("ratiofit_%s.eps", hSignal->GetTitle());
-  c->Print(outputName);
-
   return r;
 }
 
-void fill_reweighted(TH1F* hReweight,TH1F* hReweight_up,TH1F* hReweight_down, TF1* fitfun, TFitResultPtr r, const TString &fname, const double &weightSign, double fraction, long int seed) {
+void fill_reweighted(TH1F* hReweight,TH1F* hReweight_up,TH1F* hReweight_down, TF1* fitfun1, TF1* fitfun2,  TFitResultPtr r1, TFitResultPtr r2, const TString &fname, const double &weightSign, double fraction, long int seed) {
   TFile *f = new TFile(fname);
   TTreeReader tReader("AnalysisTree", f);
   TTreeReaderValue<float> preWeight(tReader, "final_weight");
@@ -172,13 +194,16 @@ void fill_reweighted(TH1F* hReweight,TH1F* hReweight_up,TH1F* hReweight_down, TF
 	  float mass = (*recoMass);
 	  mass = (mass >= 4000.) ? 3999.9 : mass;
 	  double x[1] = { mass };
-	  double err[1];
+	  double err_1[1], err_2[1];
 
 	  // evaluate fit at masspoint and get 1 sigma deviation from 68.3% confidence interval
-	  float weight = fitfun->Eval(*recoMass);
-	  r->GetConfidenceIntervals(1, 1, 1, x, err, 0.683, false);
-	  float weight_up = weight + err[0];
-	  float weight_down = weight - err[0];
+	  double diff = fitfun1->Eval(*recoMass) - fitfun2->Eval(*recoMass);
+	  float weight = fitfun1->Eval(*recoMass);
+	  r1->GetConfidenceIntervals(1, 1, 1, x, err_1, 0.683, false);
+	  r2->GetConfidenceIntervals(1, 1, 1, x, err_2, 0.683, false);
+	  double err = sqrt( pow(diff/2, 2) + pow(err_1[0], 2) + pow(err_2[0], 2));
+	  float weight_up = weight - diff/2 + err;
+	  float weight_down = weight - diff/2 - err;
 	  weight = (weight < 0) ? 0 : weight * (*preWeight);
 	  weight_up = (weight_up < 0) ? 0 : weight_up * (*preWeight);
 	  weight_down = (weight_down < 0) ? 0 : weight_down * (*preWeight);

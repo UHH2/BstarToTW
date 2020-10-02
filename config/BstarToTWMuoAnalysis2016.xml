@@ -2,7 +2,7 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
 
 	  <!ENTITY TargetLumi      "35920">
-	  <!ENTITY SYST            "Working">
+	  <!ENTITY SYST            "WORKING">
 	  <!ENTITY SELdir          "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/2016/&SYST;">
 	  <!ENTITY b_Cacheable     "False">
 	  <!ENTITY NEVT            "-1">
@@ -951,7 +951,7 @@
       <Item Name="ScaleVariationMuR"      Value="none" />
       <Item Name="ScaleVariationMuF"      Value="none" />
 
-      <Item Name="b_PDFVariation"         Value="false" />
+      <Item Name="b_PDFVariation"         Value="true" />
       <Item Name="b_TopPtReweight"        Value="true" />
 
       <Item Name="Systematic_PU"          Value="central" />
