@@ -31,6 +31,7 @@
 #include "UHH2/BstarToTW/include/BstarToTWPDFHists.h"
 #include "UHH2/BstarToTW/include/BstarToTWHists.h"
 #include "UHH2/BstarToTW/include/ElectroweakCorrections.h"
+#include "UHH2/BstarToTW/include/BstarToTWSupplementPlotsModule.h"
 
 using namespace std;
 using namespace uhh2;
@@ -44,13 +45,14 @@ namespace uhh2 {
     virtual bool process(Event & event) override;
 
   private:  
-    bool is_ele, is_muo, do_for_cr, is_mc, do_scale_variation, do_pdf_variation, do_top_pt_reweight;
+    bool is_ele, is_muo, do_for_cr, is_mc, do_scale_variation, do_pdf_variation, do_top_pt_reweight, do_supplement_plots;
     std::string dataset_name, prefiring_direction;
     // Event::Handle<float> h_tot_weight;
 
     // Modules for setting up event handles
     std::unique_ptr<AnalysisModule> primary_lep, hadronic_top, ht_calculator, bstar_gen;
     std::unique_ptr<AnalysisModule> output_module;
+    std::unique_ptr<AnalysisModule> supplement_plots;
     std::unique_ptr<ObjectTagger> object_tagger;
 
     // Scale Factors & Systematics
@@ -82,7 +84,6 @@ namespace uhh2 {
 
     // b tag categories
     std::unique_ptr<Selection> sel_0btag, sel_1btag, sel_2btag;
-    std::unique_ptr<AndHists> hist_0btag, hist_1btag, hist_2btag; // btag only hists
     std::unique_ptr<AndHists> hist_0btag1toptag, hist_1btag1toptag, hist_2btag1toptag;
     // delta R (b, lepton)
     std::unique_ptr<Selection> sel_deltaR_bjetlep; // delta R between primary lepton and b-jet/leading-jet
@@ -102,6 +103,7 @@ namespace uhh2 {
     do_for_cr = ctx.get("do_for_cr") == "true";
     is_mc = ctx.get("dataset_type") == "MC";
     prefiring_direction = ctx.get("Systematic_Prefiring", "nominal");
+    do_supplement_plots = ctx.get("do_supplement_plots","false") == "true";
 
     // genprinter.reset(new GenParticlesPrinter(ctx));
 
@@ -115,11 +117,11 @@ namespace uhh2 {
     double deltaR_blep_min = 2.0;  // minimuim deltaR between lepton and (b)jet
     BTag::algo btag_algo = BTag::DEEPJET; // b tag algortihm
     BTag::wp btag_wp = BTag::WP_MEDIUM;   // b tag working point
-    // top tag ids
-    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max)); // standard top tag ID
-    // TopJetId id_toptag_without_mass = AndId<TopJet>(HOTVRTopTag(top_fpt_max, 0.0, std::numeric_limits<float>::infinity(), top_mpair_min), Tau32Groomed(top_tau32_max)); // top tag ID without mass window cut
     // b tag id
     JetId id_btag = BTag(btag_algo, btag_wp);
+    // top tag ids
+    TopJetId id_toptag = AndId<TopJet>(HOTVRTopTag(top_fpt_max, top_m_min, top_m_max, top_mpair_min), Tau32Groomed(top_tau32_max)); // standard top tag ID
+    // TopJetId id_toptag_without_mass = AndId<TopJet>(HOTVRTopTag(top_fpt_max, 0.0, std::numeric_limits<double>::infinity(), top_mpair_min), Tau32Groomed(top_tau32_max)); // top tag ID without mass window cut
 
     // --- Reconstruction Modules
     string name_tw_reco = "tW_reco";
@@ -144,6 +146,7 @@ namespace uhh2 {
     object_tagger->set_toptag_id(id_toptag);
     object_tagger->init(ctx);
     output_module.reset(new BstarToTWOutputModule(ctx, name_tw_reco));
+    if (do_supplement_plots) supplement_plots.reset(new BstarToTWSupplementPlotsModule(ctx));
 
     // --- Scale Factors
     // parameters
@@ -184,7 +187,6 @@ namespace uhh2 {
     hist_1toptag->add_hist(new HOTVRHists(ctx, "1toptag_HOTVR_tagged", id_toptag));
     // -- btag
     sel_0btag.reset(new NJetSelection(0, 0, id_btag));
-    hist_0btag.reset(new AndHists(ctx, "0btag"));
 
     // - 0 btag
     hist_0btag1toptag.reset(new AndHists(ctx, "0btag1toptag"));
@@ -266,17 +268,18 @@ namespace uhh2 {
     sf_toptag->process(event);
 
     hist_presel->fill(event);
+    if (do_supplement_plots) supplement_plots->process(event);
     
     // - 1 toptag - //
     if (sel_1toptag->passes(event))
       {
 	reco_1toptag->process(event);
 	disc_1toptag->process(event);
-	    if (dataset_name.find("BstarToTW") == 0)
-	      {
-		disc_match->process(event);
-		hist_bstar_matchreco->fill(event);
-	      }	    
+	if (dataset_name.find("BstarToTW") == 0)
+	  {
+	    disc_match->process(event);
+	    hist_bstar_matchreco->fill(event);
+	  }	    
 	if (!sel_recomass->passes(event)) return false;
 	
 	// - 0 btag regions - //
