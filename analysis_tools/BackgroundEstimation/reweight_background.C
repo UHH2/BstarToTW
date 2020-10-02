@@ -69,13 +69,11 @@ void reweight_background(TString channel, const TString year = "2018", const TSt
   const int nTopSamples = 6 - nSamples;
   const TString topSampleNames[nTopSamples] = {"TT", "ST"};
   // read in histograms
-  const int nbins = 17;
-  const double xbins[nbins] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 3500};
-  const int nbins_rebin = 21;
-  double xbins_rebin[nbins_rebin] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200};
+  const int nbins = 21;
+  double xbins[nbins] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
 
-  TH1F *hSignal_ST = new TH1F("signal_st", channel+"_"+signalRegion, nbins_rebin-1, xbins_rebin);
-  TH1F *hControl_ST = new TH1F("control_st", channel+"_"+controlRegion, nbins_rebin-1, xbins_rebin);
+  TH1F *hSignal_ST = new TH1F("signal_st", channel+"_"+signalRegion, nbins-1, xbins);
+  TH1F *hControl_ST = new TH1F("control_st", channel+"_"+controlRegion, nbins-1, xbins);
   // TH1F *hSignal_ST2 = new TH1F("signal_st", channel+"_"+signalRegion, 50, 100, 3500);
   // TH1F *hControl_ST2 = new TH1F("control_st", channel+"_"+controlRegion, 50, 100, 3500);
   TH1F *hSignal_M = new TH1F("signal_m", channel+"_"+signalRegion, nbins-1, xbins);
@@ -110,6 +108,8 @@ void reweight_background(TString channel, const TString year = "2018", const TSt
 	}
     }
 
+  hSignal_ST->SetBinErrorOption( TH1::kPoisson);
+  hControl_ST->SetBinErrorOption( TH1::kPoisson);
   // fit_ratio
   TGraphAsymmErrors* ratio = fit_ratio(hSignal_ST, hControl_ST);
   
@@ -206,22 +206,28 @@ TGraphAsymmErrors* fit_ratio(TH1F* hSignal, TH1F* hControl) {
   // ffit->SetParLimits(3, 500.0, 5000.0);
   // ffit->SetParLimits(4, 1.0, 1000.0);
 
-  TF1 *ffit = new TF1("ffit", "gaus(0)+pol0(3)", 500, 5000);
+  TF1 *ffit_gaus = new TF1("ffit_gaus", "gaus(0)+pol0(3)", 500, 5000);
   ffit->SetParameters(0.01, 1450.0, 1500.0, 0.005);
   ffit->SetParLimits(0, 0.0, 0.1);
   ffit->SetParLimits(3, 0.0, 0.1);
 
-  // TF1 *ffit = new TF1("ffit", "gaus", 500, 5000);
+  TF1 *ffit_landau = new TF1("ffit_landau", "landau", 500, 5000);
+
+  TF1 *ffit_line = new TF1("ffit_line", "pol0", 500, 5000);
+
+  // TF1 *ffit = new TF1("ffit", "pol2", 500, 5000);
   
-  ratio->Fit(ffit, "0", "", 500, 5000);
+  TFitResultPtr r_gaus =  ratio->Fit(ffit_gaus, "0", "", 500, 5000);
+  TFitResultPtr r_landau = ratio->Fit(ffit_landau, "0", "", 500, 5000);
   int n_points = 10000;
 
   for (int i = 0; i<n_points; ++i)
     {
-      ratio_int->SetPoint(i,500+3000-(3000*i/n_points),0);
+      ratio_int->SetPoint(i,500+3500-(3500*i/n_points),0);
     }
   ratio_int->SetFillColor(kGreen+1);
-  (TVirtualFitter::GetFitter())->GetConfidenceIntervals(ratio_int,0.68);
+
+  // (TVirtualFitter::GetFitter())->GetConfidenceIntervals(ratio_int,0.68);
   // Draw and safe
   TCanvas* c = new TCanvas("cfit","cfit",600,600);
   TPad* pad = SetupPad();

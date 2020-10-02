@@ -43,7 +43,7 @@ void reweight_syst(){
 
   const TString prefix = "uhh2.AnalysisModuleRunner.MC.";
   
-  const TString num_name = "JER";
+  const TString num_name = "JEC";
   const TString den_name = "NOMINAL";
 
   const TString channels[] = {"1btag1toptag20chi2_reco", "2btag1toptag_reco"};
@@ -83,8 +83,23 @@ TH1F* get_reweighted_hist(TH1F* h_num, TH1F* h_den, const TString name) {
   std::cout << "reweight hist ..." << std::endl;
   
   TH1F *h_reweight = (TH1F*) h_den->Clone();
+
+  // TH1F *ratio = (TH1F*) h_den->Clone();
+  // ratio->Divide(h_num,h_den);
   TGraphAsymmErrors* ratio = new TGraphAsymmErrors();
   ratio->Divide(h_num, h_den, "pois");
+
+  cout << ratio->GetN() << endl;
+  for (int i = 0; i < ratio->GetN(); ++i) 
+    {
+      double x, y;
+      ratio->GetPoint(i, x, y);
+      if (y <= 0.01) {
+	cout << x << ", " << y << " set error to zero" << endl;
+	ratio->SetPointError(i, 0,0,0,0);
+      }
+    }
+
   TF1* ffit = new TF1("ffit", "pol1", 0., 4000.);
   ratio->Fit(ffit);
   
@@ -92,13 +107,15 @@ TH1F* get_reweighted_hist(TH1F* h_num, TH1F* h_den, const TString name) {
     {
       h_reweight->SetBinContent(i, h_den->GetBinContent(i) * ffit->Eval(h_den->GetBinCenter(i)));
     } 
+
   setCMSStyle();
   TCanvas* c = new TCanvas("c","c",600,600);
   TPad* pad = SetupPad();
   pad->Draw();
   pad->cd();
   ratio->GetHistogram()->GetYaxis()->SetRangeUser(0.,2.);
-  ratio->Draw("AP");
+  // ratio->GetYaxis()->SetRangeUser(0.,2.);
+  ratio->Draw();
   ffit->Draw("SAME");
 
   c->Print("plots/"+name+".eps");

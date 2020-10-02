@@ -3,11 +3,12 @@ import ROOT
 import numpy as np
 from collections import defaultdict
 
+
 def write_histogram(pname, hin, hout, fout):
     """
     get histogram from input file and write as to output file
     """
-    # print "write {} {} {}".format(pname, hin, hout)
+    print "write {} {} {}".format(pname, hin, hout)
     fin = ROOT.TFile(pname)
     h = fin.Get(hin)
     # rate = h.Integral()
@@ -70,11 +71,35 @@ def draw_syst_shapes(fname, backgrounds, channels, systematics, syst_map):
             h_syst_up.SetLineColor(600) # kBlue
             h_syst_down.SetLineColor(634) # kRed+2
             canvas = ROOT.TCanvas("c","c", 600, 600)
+            yplot = 0.64
+            yratio = 0.34
+            y3 = 0.99
+            y2 = y3-yplot
+            y1 = y2-yratio
+            x1 = 0.01
+            x2 = 0.99
+
+            plot_pad = ROOT.TPad("plot_pad", "Control Plot", x1, y1, x2, y3)
+            plot_pad.SetTopMargin(0.05)
+            plot_pad.SetBottomMargin(0.12)
+            plot_pad.SetLeftMargin(0.14)
+            plot_pad.SetRightMargin(0.05)
+            plot_pad.Draw()
+            ratio_pad = ROOT.TPad("ratio_pad", "Ratio Plot", x1, y1, x2, y2)
+            ratio_pad.SetTopMargin(0.0)
+            ratio_pad.SetBottomMargin(0.35)
+            ratio_pad.SetLeftMargin(0.14)
+            ratio_pad.SetRightMargin(0.05)
+            ratio_pad.Draw()
+
+            plot_pad.cd()
             for process in backgrounds:
                 if syst in syst_map[channel][process]:
                     # add shape variations of syst
-                    h_syst_up.Add(fin.Get(channel+"__"+process+"_"+syst+"Up"))
-                    h_syst_down.Add(fin.Get(channel+"__"+process+"_"+syst+"Down"))
+                    s = syst
+                    if syst == 'BGEST': s += "_" + channel
+                    h_syst_up.Add(fin.Get(channel+"__"+process+"_"+s+"Up"))
+                    h_syst_down.Add(fin.Get(channel+"__"+process+"_"+s+"Down"))
                 else:
                     # add nominal since not effected by syst
                     h_syst_up.Add(fin.Get(channel+"__"+process))
@@ -84,14 +109,41 @@ def draw_syst_shapes(fname, backgrounds, channels, systematics, syst_map):
             leg.SetFillStyle(0)
             leg.AddEntry(h_nominal, "nominal", "f")
             leg.AddEntry(h_syst_up, syst+"Up", "lp")
-            leg.AddEntry(h_syst_down, syst+"Down", "lp")        
+            leg.AddEntry(h_syst_down, syst+"Down", "lp")
+            h_nominal.SetMinimum(0.01)
             h_nominal.Draw("HIST")
             h_syst_up.Draw("SAME")
             h_syst_down.Draw("SAME")
             leg.Draw()
+
+            ratio_pad.cd()
+            ratio_pad.SetLogy(False)
+
+            ratio_up = ROOT.TGraphAsymmErrors()
+            ratio_up.Divide(h_syst_up, h_nominal, "pois")
+            ratio_up.SetLineColor(600)
+            ratio_up.SetMarkerColor(600)
+            ratio_up.GetXaxis().SetLimits(h_nominal.GetXaxis().GetXmin(), h_nominal.GetXaxis().GetXmax())
+            ratio_up.GetYaxis().SetRangeUser(0.8,1.12)
+            ratio_up.Draw("AP0")
+            ratio_down = ROOT.TGraphAsymmErrors()
+            ratio_down.Divide(h_syst_down, h_nominal, "pois")
+            ratio_down.SetLineColor(634)
+            ratio_down.SetMarkerColor(634)
+            ratio_down.GetXaxis().SetLimits(h_nominal.GetXaxis().GetXmin(), h_nominal.GetXaxis().GetXmax())
+
+            ratio_down.Draw("SAME P0")
+            xmin = ratio_up.GetXaxis().GetXmin()
+            xmax = ratio_up.GetXaxis().GetXmax()
+            line = ROOT.TLine(xmin, 1, xmax, 1)
+            line.Draw()
+
             hname = channel+"_"+syst
             canvas.Print("shape_plots/"+hname+".eps")
+            del plot_pad
+            del ratio_pad
             del canvas
+            
 
 if __name__ == "__main__":
     """
@@ -104,18 +156,31 @@ if __name__ == "__main__":
     ##########################################
 
     file_prefix = "uhh2.AnalysisModuleRunner."
-    # channels = {"muon_region_1b1t":"1btag1toptag20chi2_reco/Bstar_reco_M_rebin", "muon_region_2b1t":"2btag1toptag_reco/Bstar_reco_M_rebin"}
     channels = {"muon_region_1b1t":"1btag1toptag20chi2_reco/Bstar_reco_M_rebin", "muon_region_2b1t":"2btag1toptag_reco/Bstar_reco_M_rebin",
                 "electron_region_1b1t":"1btag1toptag20chi2_reco/Bstar_reco_M_rebin", "electron_region_2b1t":"2btag1toptag_reco/Bstar_reco_M_rebin"}
-    signals = ["BstarToTW0700LH", "BstarToTW0800LH", "BstarToTW0900LH", "BstarToTW1000LH", "BstarToTW1100LH",
-               "BstarToTW1200LH", "BstarToTW1400LH", "BstarToTW1600LH", "BstarToTW1800LH", "BstarToTW2000LH",
-               "BstarToTW2200LH", "BstarToTW2400LH", "BstarToTW2600LH", "BstarToTW2800LH", "BstarToTW3000LH",
-               "BstarToTW3200LH", "BstarToTW3400LH", "BstarToTW3600LH", "BstarToTW3800LH", "BstarToTW4000LH", "BstarToTW4200LH"]
+    # channels = {"combined_region_1b1t":"1btag1toptag20chi2_reco/Bstar_reco_M_rebin", "combined_region_2b1t":"2btag1toptag_reco/Bstar_reco_M_rebin"}
+    # signals = ["BstarToTW0700LH", "BstarToTW0800LH", "BstarToTW0900LH", "BstarToTW1000LH", "BstarToTW1100LH",
+    #            "BstarToTW1200LH", "BstarToTW1400LH", "BstarToTW1600LH", "BstarToTW1800LH", "BstarToTW2000LH",
+    #            "BstarToTW2200LH", "BstarToTW2400LH", "BstarToTW2600LH", "BstarToTW2800LH", "BstarToTW3000LH",
+    #            "BstarToTW3200LH", "BstarToTW3400LH", "BstarToTW3600LH", "BstarToTW3800LH", "BstarToTW4000LH", "BstarToTW4200LH"]
     # signals = ["BstarToTW0700RH", "BstarToTW0800RH", "BstarToTW0900RH", "BstarToTW1000RH", "BstarToTW1100RH",
     #            "BstarToTW1200RH", "BstarToTW1400RH", "BstarToTW1600RH", "BstarToTW1800RH", "BstarToTW2000RH",
     #            "BstarToTW2200RH", "BstarToTW2400RH", "BstarToTW2600RH", "BstarToTW2800RH", "BstarToTW3000RH",
     #            "BstarToTW3200RH", "BstarToTW3400RH", "BstarToTW3600RH", "BstarToTW3800RH", "BstarToTW4000RH", "BstarToTW4200RH"]
-    # signals = ["BstarToTW0700VL", "BstarToTW0800VL", "BstarToTW0900VL", "BstarToTW1000VL", "BstarToTW1100VL",
+    signals = ["BstarToTW0700VL", "BstarToTW0800VL", "BstarToTW0900VL", "BstarToTW1000VL", "BstarToTW1100VL",
+               "BstarToTW1200VL", "BstarToTW1400VL", "BstarToTW1600VL", "BstarToTW1800VL", "BstarToTW2000VL",
+               "BstarToTW2200VL", "BstarToTW2400VL", "BstarToTW2600VL", "BstarToTW2800VL", "BstarToTW3000VL",
+               "BstarToTW3200VL", "BstarToTW3400VL", "BstarToTW3600VL", "BstarToTW3800VL", "BstarToTW4000VL", "BstarToTW4200VL"]
+
+    # signals = ["BstarToTW0700LH", "BstarToTW0800LH", "BstarToTW0900LH", "BstarToTW1000LH", "BstarToTW1100LH",
+    #            "BstarToTW1200LH", "BstarToTW1400LH", "BstarToTW1600LH", "BstarToTW1800LH", "BstarToTW2000LH",
+    #            "BstarToTW2200LH", "BstarToTW2400LH", "BstarToTW2600LH", "BstarToTW2800LH", "BstarToTW3000LH",
+    #            "BstarToTW3200LH", "BstarToTW3400LH", "BstarToTW3600LH", "BstarToTW3800LH", "BstarToTW4000LH", "BstarToTW4200LH",
+    #            "BstarToTW0700RH", "BstarToTW0800RH", "BstarToTW0900RH", "BstarToTW1000RH", "BstarToTW1100RH",
+    #            "BstarToTW1200RH", "BstarToTW1400RH", "BstarToTW1600RH", "BstarToTW1800RH", "BstarToTW2000RH",
+    #            "BstarToTW2200RH", "BstarToTW2400RH", "BstarToTW2600RH", "BstarToTW2800RH", "BstarToTW3000RH",
+    #            "BstarToTW3200RH", "BstarToTW3400RH", "BstarToTW3600RH", "BstarToTW3800RH", "BstarToTW4000RH", "BstarToTW4200RH",
+    #            "BstarToTW0700VL", "BstarToTW0800VL", "BstarToTW0900VL", "BstarToTW1000VL", "BstarToTW1100VL",
     #            "BstarToTW1200VL", "BstarToTW1400VL", "BstarToTW1600VL", "BstarToTW1800VL", "BstarToTW2000VL",
     #            "BstarToTW2200VL", "BstarToTW2400VL", "BstarToTW2600VL", "BstarToTW2800VL", "BstarToTW3000VL",
     #            "BstarToTW3200VL", "BstarToTW3400VL", "BstarToTW3600VL", "BstarToTW3800VL", "BstarToTW4000VL", "BstarToTW4200VL"]
@@ -124,12 +189,13 @@ if __name__ == "__main__":
     #            "BprimeTToTW1300RH", "BprimeTToTW1400RH", "BprimeTToTW1500RH", "BprimeTToTW1600RH", "BprimeTToTW1700RH","BprimeTToTW1800RH"]
     # signals = ["BprimeTToTW0700LH", "BprimeTToTW0800LH", "BprimeTToTW0900LH", "BprimeTToTW1000LH", "BprimeTToTW1100LH","BprimeTToTW1200LH",
     #            "BprimeTToTW1300LH", "BprimeTToTW1400LH", "BprimeTToTW1500LH", "BprimeTToTW1600LH", "BprimeTToTW1700LH","BprimeTToTW1800LH"]
+    # backgrounds = ["TT", "ST"]
     backgrounds = ["TT", "ST", "Other"]
     # backgrounds = ["TT", "ST", "WJets", "DYJets", "Diboson", "QCD"]
     # uncertainties
     lumierr = 1.025
-    mc_norm = {"TT":1.056,
-               "ST":1.1,
+    mc_norm = {"TT":1.20,
+               "ST":1.30,
                "WJets":1.1, 
                "DYJets":1.1,
                "Diboson":1.2,
@@ -141,8 +207,6 @@ if __name__ == "__main__":
     common_systematics = [
         'PDF',
         'PU',
-        # 'BTAG_bc',
-        # 'BTAG_udsg',
         'BTAG_bc_2016',
         'BTAG_bc_2017',
         'BTAG_bc_2018',
@@ -152,6 +216,8 @@ if __name__ == "__main__":
         'TOPTAG_2016',
         'TOPTAG_2017',
         'TOPTAG_2018',
+        # 'BTAG_bc',
+        # 'BTAG_udsg',
         # 'TOPTAG',
         'Prefiring',
         # 'JECs',
@@ -161,40 +227,46 @@ if __name__ == "__main__":
         'JECs_2018',
         'JERs_2016',
         'JERs_2017',
-        'JERs_2018'
+        'JERs_2018',
+        # 'JEC_2016',
+        # 'JEC_2017',
+        # 'JEC_2018',
+        # 'JER_2016',
+        # 'JER_2017',
+        # 'JER_2018'
         ]
     muon_systematics = [
-        'MUOID',
-        'MUOTR',
-        'MUOISO',
-        # 'MUOID_2016',
-        # 'MUOID_2017',
-        # 'MUOID_2018',
-        # 'MUOISO_2016',
-        # 'MUOISO_2017',
-        # 'MUOISO_2018',
-        # 'MUOTR_2016',
-        # 'MUOTR_2017',
-        # 'MUOTR_2018'
+        # 'MUOID',
+        # 'MUOTR',
+        # 'MUOISO',
+        'MUOID_2016',
+        'MUOID_2017',
+        'MUOID_2018',
+        'MUOISO_2016',
+        'MUOISO_2017',
+        'MUOISO_2018',
+        'MUOTR_2016',
+        'MUOTR_2017',
+        'MUOTR_2018'
         ]
 
     electron_systematics = [
-        'ELEID',
-        'ELEREC',
-        'ELETR',
-        # 'ELEID_2016',
-        # 'ELEID_2017',
-        # 'ELEID_2018',
-        # 'ELEREC_2016',
-        # 'ELEREC_2017',
-        # 'ELEREC_2018',
-        # 'ELETR_2016',
-        # 'ELETR_2017',
-        # 'ELETR_2018',
+        # 'ELEID',
+        # 'ELEREC',
+        # 'ELETR',
+        'ELEID_2016',
+        'ELEID_2017',
+        'ELEID_2018',
+        'ELEREC_2016',
+        'ELEREC_2017',
+        'ELEREC_2018',
+        'ELETR_2016',
+        'ELETR_2017',
+        'ELETR_2018',
         ]
-
+    
     all_syst = common_systematics + muon_systematics + electron_systematics + ["BGEST"] + ["TOPPT_alpha", "TOPPT_beta"] + ["SCALE_TT", "SCALE_ST", "SCALE_SIGNAL"]
-
+    
     shape_systematics = {
         "muon_region_1b1t":{
             "TT": common_systematics + muon_systematics + ["TOPPT_alpha", "TOPPT_beta", "SCALE_TT"],
@@ -219,7 +291,19 @@ if __name__ == "__main__":
             "ST": common_systematics + electron_systematics + ["SCALE_ST"],
             "signal": common_systematics + electron_systematics + ["SCALE_SIGNAL"],
             "Other": ["BGEST"]
-            }
+            },
+        "combined_region_1b1t":{
+            "TT": common_systematics + muon_systematics + electron_systematics + ["TOPPT_alpha", "TOPPT_beta", "SCALE_TT"],
+            "ST": common_systematics + muon_systematics + electron_systematics + ["SCALE_ST"],
+            "signal": common_systematics + muon_systematics + electron_systematics + ["SCALE_SIGNAL"],
+            "Other": ["BGEST"]
+            },
+        "combined_region_2b1t":{
+            "TT": common_systematics + muon_systematics + electron_systematics + ["TOPPT_alpha", "TOPPT_beta", "SCALE_TT"],
+            "ST": common_systematics + muon_systematics + electron_systematics + ["SCALE_ST"],
+            "signal": common_systematics + muon_systematics + electron_systematics + ["SCALE_SIGNAL"],
+            "Other": ["BGEST"]
+            },
         }
     
     ##########################################
@@ -232,6 +316,7 @@ if __name__ == "__main__":
     rates = defaultdict(dict)
     
     for lepton in ['Muon','Electron']:
+    # for lepton in ['Combined']:
         analysis_dir = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/%s/all/"%lepton
         for channel, hname in channels.iteritems():    
             if lepton.lower() not in channel: continue
@@ -242,18 +327,30 @@ if __name__ == "__main__":
                 rates[channel][signal] = write_histogram(pname, hname, channel+"__"+signal, fout)
                 for syst in shape_systematics[channel]["signal"]:
                     pname = analysis_dir + syst+"_up/" + file_prefix + "MC." + signal + ".root"
-                    write_histogram(pname, hname, channel+"__"+signal+"_"+syst+"Up", fout)
+                    if syst == "BGEST":
+                        write_histogram(pname, hname, channel+"__"+signal+"_"+syst+"_"+channel+"Up", fout)
+                    else:
+                        write_histogram(pname, hname, channel+"__"+signal+"_"+syst+"Up", fout)
                     pname = analysis_dir + syst+"_down/" + file_prefix + "MC." + signal + ".root"
-                    write_histogram(pname, hname, channel+"__"+signal+"_"+syst+"Down", fout)
+                    if syst == "BGEST":
+                        write_histogram(pname, hname, channel+"__"+signal+"_"+syst+"_"+channel+"Down", fout)
+                    else:
+                        write_histogram(pname, hname, channel+"__"+signal+"_"+syst+"Down", fout)
             # background
             for background in backgrounds: 
                 pname = analysis_dir + "NOMINAL/" + file_prefix + "MC." + background + ".root"
                 rates[channel][background] = write_histogram(pname, hname, channel+"__"+background, fout)
                 for syst in shape_systematics[channel][background]:
                     pname = analysis_dir + syst+"_up/" + file_prefix + "MC." + background + ".root"
-                    write_histogram(pname, hname, channel+"__"+background+"_"+syst+"Up", fout)
+                    if syst == "BGEST":
+                        write_histogram(pname, hname, channel+"__"+background+"_"+syst+"_"+channel+"Up", fout)
+                    else:
+                        write_histogram(pname, hname, channel+"__"+background+"_"+syst+"Up", fout)
                     pname = analysis_dir + syst+"_down/" + file_prefix + "MC." + background + ".root"
-                    write_histogram(pname, hname, channel+"__"+background+"_"+syst+"Down", fout)
+                    if syst == "BGEST":
+                        write_histogram(pname, hname, channel+"__"+background+"_"+syst+"_"+channel+"Down", fout)
+                    else:
+                        write_histogram(pname, hname, channel+"__"+background+"_"+syst+"Down", fout)
 
             #  data
             pname = analysis_dir + "NOMINAL/" + file_prefix + "DATA.DATA.root"
@@ -261,11 +358,11 @@ if __name__ == "__main__":
 
         # draw_channel(fout,channels,signal,backgrounds);
     fout.Close()
-    print rates
+    # print rates
     
     draw_syst_shapes(fout_name, backgrounds, channels, all_syst, shape_systematics)
 
-        # create datacard
+    # # create datacard
     for signal in signals:
         fcard_name = "datacard_" + signal + ".txt"
         with open(fcard_name, "w") as fcard:
@@ -297,5 +394,9 @@ if __name__ == "__main__":
                 fcard.write("{}mc lnN {}\n".format(background, (" - "+" -"*backgrounds.index(background) + " "+str(mc_norm[background]) + " -"*(len(backgrounds) - backgrounds.index(background) - 1))*len(channels)))
 
             for syst in all_syst:
-                fcard.write("{} shape {}\n".format(syst, " ".join([" 1 " if syst in shape_systematics[channel][process] else " - " for channel in channels for process in (["signal"] + backgrounds) ])))
+                if syst == "BGEST": 
+                    for ch in channels:
+                        fcard.write("{} shape {}\n".format(syst+"_"+ch, " ".join([" 1 " if syst in shape_systematics[channel][process] and channel == ch else " - " for channel in channels for process in (["signal"] + backgrounds) ])))
+                else:
+                    fcard.write("{} shape {}\n".format(syst, " ".join([" 1 " if syst in shape_systematics[channel][process] else " - " for channel in channels for process in (["signal"] + backgrounds) ])))
             fcard.write("* autoMCStats 0 0 1")

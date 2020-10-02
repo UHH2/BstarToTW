@@ -71,19 +71,19 @@ def draw_limits(masspoints,limits,dirs):
 
     h.Draw("AXIS SAME")
 
-    c.SaveAs("Combine_Limits.eps")
+    c.SaveAs("compare_limits.eps")
 
 if __name__ == "__main__":
 
-    dirs = ['combined_extrapolation_vjetsnlo','combined_mconly_vjetsnlo']
+    dirs = ['bg_gaus_pol0','bg_gaus_landau', 'bg_no_est']
     limits = []
 
     signals = ["BstarToTW0700LH", "BstarToTW0800LH", "BstarToTW0900LH", "BstarToTW1000LH", "BstarToTW1100LH",
                "BstarToTW1200LH", "BstarToTW1400LH", "BstarToTW1600LH", "BstarToTW1800LH", "BstarToTW2000LH",
-               "BstarToTW2200LH", "BstarToTW2400LH", "BstarToTW2600LH", "BstarToTW2800LH", "BstarToTW3000LH"]
+               "BstarToTW2200LH", "BstarToTW2400LH", "BstarToTW2600LH", "BstarToTW2800LH", "BstarToTW3000LH",
+               "BstarToTW3200LH", "BstarToTW3400LH", "BstarToTW3600LH", "BstarToTW3800LH", "BstarToTW4000LH", "BstarToTW4200LH"]
 
-    masspoints = [700, 800, 900, 1000, 1100, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000]
-
+    masspoints = [700, 800, 900, 1000, 1100, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000, 4200]
 
     for d in dirs:
         limits.append(get_limits(d,signals,True))

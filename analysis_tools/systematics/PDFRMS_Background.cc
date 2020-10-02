@@ -24,18 +24,18 @@ using namespace std;
 
 void PDFRMS_Background(){
 
-  TString base_path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/2018/";
+  TString base_path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/2016/";
   // TString base_path = "/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Electron/2016/";
   TString out_path = base_path;
   base_path += "NOMINAL/";
 
-  // TString signal_postfix = "_2016v3";
+  TString signal_postfix = "_2016v3";
   // TString signal_postfix = "_2017v2";
-  TString signal_postfix = "_2018";
+  // TString signal_postfix = "_2018";
   // TString signal_postfix = "";
 
-  // TString hist_path = "1btag1toptag20chi2";
-  TString hist_path = "2btag1toptag";
+  TString hist_path = "1btag1toptag20chi2";
+  // TString hist_path = "2btag1toptag";
 
   TString hist_name = hist_path + "_reco/Bstar_reco_M_rebin";
 
