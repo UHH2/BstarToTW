@@ -27,6 +27,11 @@
 	  <!ENTITY DATA_G_SinglePhoton   "&PRESELdir;/&PRESELfilename;.DATA.DATA_G_SinglePhoton_2016v3.root">
 	  <!ENTITY DATA_H_SinglePhoton   "&PRESELdir;/&PRESELfilename;.DATA.DATA_H_SinglePhoton_2016v3.root">
 
+	  <!ENTITY BstarToTW1000LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW1000LH_2016v3.root">
+	  <!ENTITY BstarToTW2000LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW2000LH_2016v3.root">
+	  <!ENTITY BstarToTW2600LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW2600LH_2016v3.root">
+	  <!ENTITY BstarToTW3000LH  "&PRESELdir;/&PRESELfilename;.MC.BstarToTW3000LH_2016v3.root">
+
 	  <!ENTITY TT "&PRESELdir;/&PRESELfilename;.MC.TT_2016v3.root">
 
 	  <!ENTITY WJetsToLNu_HT_70to100  "&PRESELdir;/&PRESELfilename;.MC.WJetsToLNu_HT_70to100_2016v3.root">
@@ -167,6 +172,30 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
+
+    <InputData Lumi="95548.0" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW1000LH_2016v3" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW1000LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />      
+    </InputData>
+
+    <InputData Lumi="100000" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW2000LH_2016v3" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW2000LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />      
+    </InputData>
+
+    <InputData Lumi="100000" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW2600LH_2016v3" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW2600LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />      
+    </InputData>
+
+    <InputData Lumi="100000" NEventsMax="&NEVT;" Type="MC" Version="BstarToTW3000LH_2016v3" Cacheable="&b_Cacheable;">
+      <In FileName="&BstarToTW3000LH;" Lumi="0.0"/>
+      <InputTree Name="AnalysisTree" />      
+      <OutputTree Name="AnalysisTree" />      
+    </InputData>
 
     <InputData Lumi="92260.16399" NEventsMax="&NEVT;" Type="MC" Version="TT_2016v3" Cacheable="&b_Cacheable;">
       <In FileName="&TT;" Lumi="0.0"/>
