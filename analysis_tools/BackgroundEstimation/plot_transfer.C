@@ -9,17 +9,17 @@ TGraphAsymmErrors* fit_ratio(TH1F* hSignal, TH1F* hControl);
 
 void plot_transfer(TString channel, const TString year = "2018", const TString signalRegion = "1btag1toptag20chi2") {
 
-  const TString controlRegion = "0btag1toptag";
+  const TString controlRegion = "0btag1toptag_tw";
 
   vector<TString> inDirs;
   if (channel == "Combined")
     {
-      inDirs.push_back("/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Electron/"+year+"/BACKGROUND/");
-      inDirs.push_back("/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/"+year+"/BACKGROUND/");
+      inDirs.push_back("/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Electron/"+year+"/WORKING/");
+      inDirs.push_back("/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/Muon/"+year+"/WORKING/");
     }
   else
     {
-      inDirs.push_back("/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/"+channel+"/"+year+"/BACKGROUND/");
+      inDirs.push_back("/nfs/dust/cms/user/froehlia/BstarToTW/Run2_102X_v1/Analysis/"+channel+"/"+year+"/WORKING/");
     }
   const TString prefix = "uhh2.AnalysisModuleRunner.";
    
@@ -58,8 +58,8 @@ void plot_transfer(TString channel, const TString year = "2018", const TString s
   // hSignal_ST->SetBins(nbins-1, xbins_tev);
   // hControl_ST->SetBins(nbins-1, xbins_tev);
 
-  hSignal_ST = (TH1F*)hSignal_ST->Rebin(nbins_rebin-1, "signal_rebin", xbins_rebin);
-  hControl_ST = (TH1F*)hControl_ST->Rebin(nbins_rebin-1, "control_rebin", xbins_rebin);
+  // hSignal_ST = (TH1F*)hSignal_ST->Rebin(nbins_rebin-1, "signal_rebin", xbins_rebin);
+  // hControl_ST = (TH1F*)hControl_ST->Rebin(nbins_rebin-1, "control_rebin", xbins_rebin);
   // fit_ratio
   TGraphAsymmErrors* ratio = fit_ratio(hSignal_ST, hControl_ST);
   

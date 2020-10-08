@@ -18,6 +18,12 @@ class Plotter(object):
             except yaml.YAMLError as exc:
                 print(exc)
         
+    def save_plot(self,c):
+        if "b_save_eps" in config and config["b_save_eps"]:
+            c.Print(c.GetName()+".eps")
+        if "b_save_pdf" in config and config["b_save_pdf"]:
+            c.Print(c.GetName()+".pdf")
+                
     def get_canvas(self,name, title= ""):
          """
          create a new TCavas
@@ -90,6 +96,6 @@ class Plotter(object):
         text.SetTextSize(0.6*top_margin)
         text.Draw()
         
-        return text
+        return [text]
 
         

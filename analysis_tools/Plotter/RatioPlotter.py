@@ -8,7 +8,6 @@ class RatioPlotter(Plotter):
     def __init__(self):
         super().__init__()    
         
-
     def get_ratio_pads():
         yplot = 0.65
         yratio = 0.34
@@ -23,14 +22,13 @@ class RatioPlotter(Plotter):
         ratio_pad = ROOT.TPad("rp1", "Ratio2", x1, y1, x2, y2)
         return [plot_pad, ratio_pad]
 
-    def draw_ratio(h_num, h_den):
+    def draw_ratio(h_num, h_den, name="RatioPlot"):
         """
         Draws ratio plot of hists h_num and h_den.
         h_num is the numerator and h_den is the denominator
         """
-        canvas_items = [] # keep everything drawn on the canvas here to avoid things going out of scope
-        c = super().get_canvas("ratio_plot")
-        pads = get_ratio_pads()
+        c = self.get_canvas(name)
+        pads = self.get_ratio_pads()
 
         # begin drawing the histograms
         pad[0].cd()
@@ -38,3 +36,5 @@ class RatioPlotter(Plotter):
 
         # begin drawing the ratio
         pad[1].cd()
+        
+        self.save_plot(c)
