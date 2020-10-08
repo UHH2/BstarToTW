@@ -17,7 +17,7 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
 
   is_mc = ctx.get("dataset_type") == "MC";
   //For Mbstar reconstruction
-  h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>("1TopTagReconstruction");
+  h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>("tW_reco");
   m_discriminator_name ="Chi2"; 
   m_oname = ctx.get("dataset_version");
   is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
