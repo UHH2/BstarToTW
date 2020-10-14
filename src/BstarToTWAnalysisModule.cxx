@@ -130,8 +130,8 @@ namespace uhh2 {
 
     // --- Reconstruction Modules
     string name_tw_reco = "tW_reco";
-    // string name_discriminator = "Chi2"; 
-    string name_discriminator = "closest_nu";
+    string name_discriminator = "Chi2"; 
+    // string name_discriminator = "closest_nu";
    reco_1toptag.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, name_tw_reco, id_toptag));
     disc_1toptag.reset(new BstarToTWChi2Discriminator(ctx, name_tw_reco));
     if (dataset_name.find("BstarToTW") == 0) // matching discriminator only works on signal
@@ -202,25 +202,25 @@ namespace uhh2 {
     // - 1+ btag
     sel_1plusbtag.reset(new NJetSelection(1, -1, id_btag));
     hist_1plusbtag1toptag.reset(new AndHists(ctx, "1plusbtag1toptag"));
-    hist_1plusbtag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_reco", name_tw_reco, name_discriminator));
+    hist_1plusbtag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_reco", name_tw_reco, "closest_nu"));
     hist_1plusbtag1toptag->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag1toptag_topmatch"));
     hist_1plusbtag1toptag->add_hist(new HOTVRHists(ctx, "1plusbtag1toptag_HOTVR_tagged", id_toptag));
     // PtBalance
     sel_ptbal.reset(new Chi2Selection(ctx, name_tw_reco, 0.05, "deltaPt_W"));
     hist_1plusbtag1toptag_tw.reset(new AndHists(ctx, "1plusbtag1toptag_tw"));
-    hist_1plusbtag1toptag_tw->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_tw_reco", name_tw_reco, name_discriminator));
+    hist_1plusbtag1toptag_tw->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_tw_reco", name_tw_reco, "closest_nu"));
     hist_1plusbtag1toptag_tw->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag1toptag_tw_topmatch"));
     hist_1plusbtag1toptag_tw->add_hist(new HOTVRHists(ctx, "1plusbtag1toptag_tw_HOTVR_tagged", id_toptag));
     hist_1plusbtag1toptag_tt.reset(new AndHists(ctx, "1plusbtag1toptag_tt"));
-    hist_1plusbtag1toptag_tt->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_tt_reco", name_tw_reco, name_discriminator));
+    hist_1plusbtag1toptag_tt->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_tt_reco", name_tw_reco, "closest_nu"));
     hist_1plusbtag1toptag_tt->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag1toptag_tt_topmatch"));
     hist_1plusbtag1toptag_tt->add_hist(new HOTVRHists(ctx, "1plusbtag1toptag_tt_HOTVR_tagged", id_toptag));
     hist_0btag1toptag_tw.reset(new AndHists(ctx, "0btag1toptag_tw"));
-    hist_0btag1toptag_tw->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_tw_reco", name_tw_reco, name_discriminator));
+    hist_0btag1toptag_tw->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_tw_reco", name_tw_reco, "closest_nu"));
     hist_0btag1toptag_tw->add_hist(new HOTVRMatchingHists(ctx, "0btag1toptag_tw_topmatch"));
     hist_0btag1toptag_tw->add_hist(new HOTVRHists(ctx, "0btag1toptag_tw_HOTVR_tagged", id_toptag));
     hist_0btag1toptag_tt.reset(new AndHists(ctx, "0btag1toptag_tt"));
-    hist_0btag1toptag_tt->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_tt_reco", name_tw_reco, name_discriminator));
+    hist_0btag1toptag_tt->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_tt_reco", name_tw_reco, "closest_nu"));
     hist_0btag1toptag_tt->add_hist(new HOTVRMatchingHists(ctx, "0btag1toptag_tt_topmatch"));
     hist_0btag1toptag_tt->add_hist(new HOTVRHists(ctx, "0btag1toptag_tt_HOTVR_tagged", id_toptag));
 
@@ -331,7 +331,7 @@ namespace uhh2 {
 	if (!sel_recomass->passes(event)) return false;
 	
 	// - 1+ btag region for testign
-	if (sel_1plusbtag->passes(event) && sel_deltaR_bjetlep->passes(event))
+	if (sel_1btag->passes(event) && sel_deltaR_bjetlep->passes(event))
 	  {
 	    hist_1plusbtag1toptag->fill(event);
 	    // split into tt and tw regions
@@ -340,6 +340,7 @@ namespace uhh2 {
 	    else
 	      hist_1plusbtag1toptag_tt->fill(event);
 	  }
+
 	// - 0 btag regions - //
 	if (sel_0btag->passes(event))
 	  {
@@ -358,6 +359,7 @@ namespace uhh2 {
 	      output_module->process(event);
 	    return do_for_cr;
 	  }
+
 	else if (sel_1btag->passes(event)) 
 	  {
 	    hist_1btag1toptag->fill(event);
@@ -369,9 +371,9 @@ namespace uhh2 {
 		if (sel_chi2->passes(event))
 		  {
 		  hist_1btag1toptag20chi2->fill(event);
-		if (!do_for_cr)
-		  output_module->process(event);	
-		return !do_for_cr;
+		  if (!do_for_cr)
+		    output_module->process(event);	
+		  return !do_for_cr;
 		  }
 		else
 		  hist_1btag1toptagchi2cr->fill(event);
