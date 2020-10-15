@@ -16,13 +16,42 @@ using namespace uhh2;
 BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool use_ntupleweights_, bool use_pdf_weights_): Hists(ctx, dirname), use_ntupleweights(use_ntupleweights_), use_pdf_weights(use_pdf_weights_){  
 
   is_mc = ctx.get("dataset_type") == "MC";
+  m_oname = ctx.get("dataset_version");
+  TString m_pdfname;
+  is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
+  
+  if (is_LO)
+    m_pdfname = "NNPDF30_lo_as_0130";
+
+  
+  Year year = extract_year(ctx);
+  // take_ntupleweights =  use_ntupleweights && (!is_LO || m_oname.Contains("DYJets")) && !(m_oname.Contains("ST_tW") && m_oname.Contains("2016v3"));
+
+  if (year == Year::is2016v2 || year == Year::is2016v3)
+    {
+      take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("ST_tW")|| m_oname.Contains("BstarToTW"));
+      if (m_oname.Contains("BstarToTW3000") || m_oname.Contains("BstarToTW2") || (m_oname.Contains("BstarToTW1") && !m_oname.Contains("BstarToTW11") && !m_oname.Contains("BstarToTW10")) ) // change pdfname for 1200 <= b* <=3TeV samples
+	m_pdfname = "MMHT2014lo68cl";
+      else if (m_oname.Contains("BstarToTW")) // change pdfname for b* > 3TeV
+	m_pdfname = "PDF4LHC15_nnlo_30_pdfas";
+    }
+  else if(year == Year::is2017v1 || year == Year::is2017v2)
+    {
+      take_ntupleweights = !(m_oname.Contains("QCD")|| m_oname.Contains("BstarToTW"));
+      if (m_oname.Contains("BstarToTW")) // change pdfname for b*
+	m_pdfname = "PDF4LHC15_nnlo_30_pdfas";
+    }
+  else if(year == Year::is2018)
+    {
+    take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("Diboson")|| m_oname.Contains("BstarToTW"));
+    if (m_oname.Contains("BstarToTW")) // change pdfname for b*
+      m_pdfname = "PDF4LHC15_nnlo_30_pdfas";
+    }
+
   //For Mbstar reconstruction
   h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>("tW_reco");
   m_discriminator_name ="Chi2"; 
-  m_oname = ctx.get("dataset_version");
-  is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
 
-  TString m_pdfname = "NNPDF30_lo_as_0130";
   //if(!is_LO && !m_oname.Contains("SingleTop")) m_pdfname = "PDF4LHC15_nlo_mc"; 
   // TString weightpath = ctx.get("PDFWeightPath");  cout << "File: " << weightpath+m_oname << endl; 
 
@@ -33,7 +62,6 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
   //1) the sample is LO (and doesn't have ntupleweights for that reason) (this assumption is protected by a runtime_error later)
   //2) the sample is NLO and yet doesn't have ntupleweights 
 
-  take_ntupleweights =  use_ntupleweights && (!is_LO || m_oname.Contains("DYJets")) && !(m_oname.Contains("ST_tW") && m_oname.Contains("2016v3"));
 
   cout << "For this sample '" << m_oname << "' is_LO is set to " << is_LO << endl;
   cout << "Are ntupleweights taken for this sample?: " << take_ntupleweights << endl;
