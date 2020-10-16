@@ -18,7 +18,8 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
   is_mc = ctx.get("dataset_type") == "MC";
   m_oname = ctx.get("dataset_version");
   TString m_pdfname;
-  is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
+  TString weightpath = ctx.get("PDFWeightsPath") + "/" + m_oname;
+  // is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
   
   if (is_LO)
     m_pdfname = "NNPDF30_lo_as_0130";
@@ -53,7 +54,6 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
   m_discriminator_name ="Chi2"; 
 
   //if(!is_LO && !m_oname.Contains("SingleTop")) m_pdfname = "PDF4LHC15_nlo_mc"; 
-  // TString weightpath = ctx.get("PDFWeightPath");  cout << "File: " << weightpath+m_oname << endl; 
 
   //take ntupleweights if
   //1) use_ntupleweights = true and the sample has ntupleweights stored
@@ -67,7 +67,10 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
   cout << "Are ntupleweights taken for this sample?: " << take_ntupleweights << endl;
 
   if(is_mc && !take_ntupleweights){
-    m_pdfweights.reset(new PDFWeights(m_pdfname)); 
+    if (m_oname.Contains("BstarToTW"))
+      m_pdfweights.reset(new PDFWeights(m_pdfname, weightpath));
+    else
+      m_pdfweights.reset(new PDFWeights(m_pdfname)); 
   }
 
   for(int i=0; i<100; i++){
