@@ -866,6 +866,9 @@
       <Item Name="BTagCalibration" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/common/data/2017/DeepFlavour_94XSF_WP_V3_B_F.csv" />
 
       <Item Name="HOTVRTopTagSFs" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/HOTVR/data/2017TopTaggingScaleFactors.root" />
+      <Item Name="ElectroWeakCorrections" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/EWKCorrections.root"/>
+
+      <Item Name="PDFWeightsPath" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/2017" />
       
       <!-- Keys for uncertainties -->
       <Item Name="ScaleVariationMuR"      Value="none" />

@@ -969,6 +969,8 @@
 
       <Item Name="HOTVRTopTagSFs" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/HOTVR/data/2018TopTaggingScaleFactors.root"/>
       <Item Name="ElectroWeakCorrections" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/EWKCorrections.root"/>
+
+      <Item Name="PDFWeightsPath" Value="/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/BstarToTW/data/2018" />
       
       <!-- Keys for uncertainties -->
       <Item Name="ScaleVariationMuR"      Value="none" />
