@@ -424,12 +424,10 @@ bool TopPtReweighting::process(uhh2::Event& event){
     return true;
   }
   const TTbarGen& ttbargen = !ttgen_name_.empty() ? event.get(h_ttbargen_) : TTbarGen(*event.genparticles,false);
-  
   float wgt = 1.;
   if (ttbargen.DecayChannel() != TTbarGen::e_notfound) {
     float tpt1 = ttbargen.Top().v4().Pt();
     float tpt2 = ttbargen.Antitop().v4().Pt();
-
     wgt = sqrt(exp(a_+b_*tpt1)*exp(a_+b_*tpt2));
   }
 
@@ -437,6 +435,5 @@ bool TopPtReweighting::process(uhh2::Event& event){
     event.set(h_weight_, wgt);
 
   event.weight *= wgt;
-
   return true;
 }

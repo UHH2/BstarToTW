@@ -11,7 +11,6 @@
 #include "UHH2/common/include/NSelections.h"
 #include "UHH2/common/include/TTbarReconstruction.h"
 #include "UHH2/common/include/JetHists.h"
-#include "UHH2/common/include/TopPtReweight.h"
 #include "UHH2/common/include/EventVariables.h"
 #include "UHH2/common/include/PrintingModules.h"
 
@@ -157,7 +156,7 @@ namespace uhh2 {
     // --- Scale Factors
     // parameters
     double par_top_pt_a = 0.0615; // top pt reweighting parameter a
-    double par_top_pt_b = -0.000; // top pt reweighting parameter b
+    double par_top_pt_b = -0.0005; // top pt reweighting parameter b
     do_scale_variation = (ctx.get("ScaleVariationMuR") == "up" || ctx.get("ScaleVariationMuR") == "down" ||  ctx.get("ScaleVariationMuF") == "up" || ctx.get("ScaleVariationMuF") == "down");
     do_pdf_variation = (ctx.get("b_PDFVariation") == "true");
     // modules
@@ -328,6 +327,7 @@ namespace uhh2 {
 	    disc_match->process(event);
 	    hist_bstar_matchreco->fill(event);
 	  }	    
+	hist_1toptag->fill(event);
 	if (!sel_recomass->passes(event)) return false;
 	
 	// - 1+ btag region for testign

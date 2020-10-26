@@ -1,4 +1,5 @@
 #include "UHH2/BstarToTW/include/BstarToTWSupplementPlotsModule.h"
+#include "UHH2/HOTVR/include/HOTVRHists.h"
 
 
 BstarToTWSupplementPlotsModule::BstarToTWSupplementPlotsModule(Context & ctx) {
@@ -19,19 +20,29 @@ BstarToTWSupplementPlotsModule::BstarToTWSupplementPlotsModule(Context & ctx) {
   // 0 b tag
   sel_0btag.reset(new NJetSelection(0, 0, id_btag));
   hist_0btag.reset(new AndHists(ctx, "0btag"));
+  hist_0btag->add_hist(new HOTVRMatchingHists(ctx, "0btag_topmatch"));
+  hist_0btag->add_hist(new HOTVRHists(ctx, "0btag_HOTVR_tagged", id_toptag));
   // 1 b tag
   sel_1btag.reset(new NJetSelection(1, 1, id_btag));
   hist_1btag.reset(new AndHists(ctx, "1btag"));
+  hist_1btag->add_hist(new HOTVRMatchingHists(ctx, "1btag_topmatch"));
+  hist_1btag->add_hist(new HOTVRHists(ctx, "1btag_HOTVR_tagged", id_toptag));
   // 1+ btag
   sel_1plusbtag.reset(new NJetSelection(1, -1, id_btag));
   hist_1plusbtag.reset(new AndHists(ctx, "1plusbtag"));
+  hist_1plusbtag->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag_topmatch"));
+  hist_1plusbtag->add_hist(new HOTVRHists(ctx, "1plusbtag_HOTVR_tagged", id_toptag));
   // 2  btag
   sel_2btag.reset(new NJetSelection(2, -1, id_btag));
   hist_2btag.reset(new AndHists(ctx, "2btag"));
+  hist_2btag->add_hist(new HOTVRMatchingHists(ctx, "2btag_topmatch"));
+  hist_2btag->add_hist(new HOTVRHists(ctx, "2btag_HOTVR_tagged", id_toptag));
 
   // --- top tag (without mass window)
   sel_1toptag.reset(new NTopJetSelection(1, -1, id_toptag));
   hist_1toptag.reset(new AndHists(ctx, "1toptag_no_masswindow"));
+  hist_1toptag->add_hist(new HOTVRMatchingHists(ctx, "1toptag_no_masswindow_topmatch"));
+  hist_1toptag->add_hist(new HOTVRHists(ctx, "1toptag_no_masswindow_HOTVR_tagged", id_toptag));
 
 
 }

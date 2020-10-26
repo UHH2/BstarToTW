@@ -19,10 +19,10 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
   m_oname = ctx.get("dataset_version");
   TString m_pdfname;
   TString weightpath = ctx.get("PDFWeightsPath") + "/" + m_oname;
-  // is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
-  
-  if (is_LO)
-    m_pdfname = "NNPDF30_lo_as_0130";
+  is_LO = m_oname.Contains("Diboson") || m_oname.Contains("DYJets") || m_oname.Contains("QCD"); // only non-madgraph
+
+  // if (is_LO)
+  m_pdfname = "NNPDF30_lo_as_0130";
 
   
   Year year = extract_year(ctx);
@@ -30,21 +30,24 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
 
   if (year == Year::is2016v2 || year == Year::is2016v3)
     {
-      take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("ST_tW")|| m_oname.Contains("BstarToTW"));
+      take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("ST_tW") || m_oname.Contains("Diboson") ||m_oname.Contains("BstarToTW") || m_oname.Contains("DYJets"));
       if (m_oname.Contains("BstarToTW3000") || m_oname.Contains("BstarToTW2") || (m_oname.Contains("BstarToTW1") && !m_oname.Contains("BstarToTW11") && !m_oname.Contains("BstarToTW10")) ) // change pdfname for 1200 <= b* <=3TeV samples
 	m_pdfname = "MMHT2014lo68cl";
       else if (m_oname.Contains("BstarToTW")) // change pdfname for b* > 3TeV
 	m_pdfname = "PDF4LHC15_nnlo_30_pdfas";
+      // else if (m_oname.Contains("ST_tW"))
+      // 	m_pdfname = "NNPDF30_nlo_as_0118";
+	      
     }
   else if(year == Year::is2017v1 || year == Year::is2017v2)
     {
-      take_ntupleweights = !(m_oname.Contains("QCD")|| m_oname.Contains("BstarToTW"));
+      take_ntupleweights = !(m_oname.Contains("QCD")|| m_oname.Contains("BstarToTW") || m_oname.Contains("Diboson") || m_oname.Contains("DYJets"));
       if (m_oname.Contains("BstarToTW")) // change pdfname for b*
 	m_pdfname = "PDF4LHC15_nnlo_30_pdfas";
     }
   else if(year == Year::is2018)
     {
-    take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("Diboson")|| m_oname.Contains("BstarToTW"));
+    take_ntupleweights = !(m_oname.Contains("QCD") || m_oname.Contains("Diboson") || m_oname.Contains("BstarToTW") || m_oname.Contains("Diboson") || m_oname.Contains("DYJets"));
     if (m_oname.Contains("BstarToTW")) // change pdfname for b*
       m_pdfname = "PDF4LHC15_nnlo_30_pdfas";
     }
@@ -72,8 +75,9 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
     else
       m_pdfweights.reset(new PDFWeights(m_pdfname)); 
   }
+  int n_hists = (m_pdfweights) ? m_pdfweights->GetNWeights() : 100;
 
-  for(int i=0; i<100; i++){
+  for(int i=0; i<n_hists; i++){
     stringstream ss_name;
     ss_name << "Bstar_reco_M_rebin_PDF_"  << i+1 ;
 
@@ -145,7 +149,7 @@ void BstarToTWPDFHists::fill(const Event & event){
       else
 	{ 
 	  std::vector<double> weights = m_pdfweights->GetWeightList(event);
-	  for(int i=0; i<100; i++)
+	  for(unsigned int i=0; i<m_pdfweights->GetNWeights(); i++)
 	    {
 	      if(use_pdf_weights)
 		{
