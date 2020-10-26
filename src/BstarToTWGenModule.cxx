@@ -33,8 +33,8 @@ namespace uhh2examples {
 
   private:
     // Additional Modules
-    std::unique_ptr<AnalysisModule> printer;
-    std::unique_ptr<AnalysisModule> BstarToTWgenprod;
+    // std::unique_ptr<AnalysisModule> printer;
+    // std::unique_ptr<AnalysisModule> BstarToTWgenprod;
   
     std::unique_ptr<AndHists> hist_all;
 
@@ -45,16 +45,24 @@ namespace uhh2examples {
   BstarToTWGenModule::BstarToTWGenModule(Context & ctx){
 
     // Additional Modules
-    printer.reset(new GenParticlesPrinter(ctx));  
-    BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
+    // printer.reset(new GenParticlesPrinter(ctx));  
+    // BstarToTWgenprod.reset(new BstarToTWGenProducer(ctx, "BstarToTWgen"));
 
   }
 
 
   bool BstarToTWGenModule::process(Event & event) {
-    BstarToTWgenprod->process(event);
-    hist_all->fill(event);
+    // BstarToTWgenprod->process(event);
+    // hist_all->fill(event);
 
+    for (const auto & gp : *event.genparticles)
+      {
+	if (gp.status() == 21 && abs(gp.pdgId()) != 21 && abs(gp.pdgId()) != 5)
+	  {
+	    cout << "PDG_ID: " << gp.pdgId() << endl;
+	    cout << "Daughters: " << gp.daughter1() << ", "<< gp.daughter2() << endl;
+	  }
+      }
 
     return true;
   }
