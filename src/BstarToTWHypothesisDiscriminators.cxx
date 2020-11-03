@@ -132,7 +132,7 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
 	  deltaPt_toplep = (hyp.get_topjet().pt() - (hyp.get_w() + closest_jet->v4()).pt()) / (hyp.get_topjet().pt() + (hyp.get_w() + closest_jet->v4()).pt());
 	}
 
-      double deltaR_lnu = abs(hyp.get_lepton().pz() - hyp.get_neutrino().pz());
+      double deltaZ_lnu = abs(hyp.get_lepton().pz() - hyp.get_neutrino().pz());
 
       hyp.set_discriminator("Chi2_top", chi2_mtop);
       hyp.set_discriminator("Chi2_deltaPhi", chi2_deltaPhi);
@@ -141,7 +141,7 @@ bool BstarToTWChi2Discriminator::process(uhh2::Event& event) {
       hyp.set_discriminator("Chi2_with_mass", chi2_mtop + chi2_deltaPhi + chi2_deltaPt);
       hyp.set_discriminator("deltaPt_W",deltaPt_reco);
       hyp.set_discriminator("deltaPt_toplep",deltaPt_toplep);
-      hyp.set_discriminator("closest_nu",deltaR_lnu);
+      hyp.set_discriminator("closest_nu",deltaZ_lnu);
     }
 
   return true;

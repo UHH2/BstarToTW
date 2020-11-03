@@ -84,17 +84,19 @@ namespace uhh2 {
     // b tag categories
     std::unique_ptr<Selection> sel_0btag, sel_1btag, sel_2btag;
     std::unique_ptr<AndHists> hist_0btag1toptag, hist_1btag1toptag, hist_2btag1toptag;
-    // 1+ btag region, for testing
-    std::unique_ptr<Selection> sel_1plusbtag, sel_ptbal;
-    std::unique_ptr<AndHists> hist_1plusbtag1toptag, hist_1plusbtag1toptag_tw, hist_1plusbtag1toptag_tt;
-    std::unique_ptr<AndHists> hist_0btag1toptag_tw, hist_0btag1toptag_tt;
     // delta R (b, lepton)
     std::unique_ptr<Selection> sel_deltaR_bjetlep, sel_deltaR_bjetlep_cr; // delta R between primary lepton and b-jet/leading-jet
     std::unique_ptr<AndHists> hist_1btag1toptagdr;
     // chi2 
-    std::unique_ptr<Selection> sel_chi2;
+    std::unique_ptr<Selection> sel_chi2, sel_chi2_cr_low, sel_chi2_cr_high;
     std::unique_ptr<AndHists> hist_0btag1toptag20chi2, hist_1btag1toptag20chi2;
     std::unique_ptr<AndHists> hist_1btag1toptagdrcr, hist_1btag1toptagchi2cr;
+
+    // --- Scans --- //
+    std::vector<std::unique_ptr<Selection>> scan_chi2;
+    std::vector<std::unique_ptr<Hists>> hist_scan_chi2;
+    int n_chi2;
+    
 
   };
 
@@ -129,7 +131,7 @@ namespace uhh2 {
 
     // --- Reconstruction Modules
     string name_tw_reco = "tW_reco";
-    string name_discriminator = "Chi2"; 
+    string name_discriminator = "closest_nu";
     // string name_discriminator = "closest_nu";
    reco_1toptag.reset(new BstarToTWReconstruction(ctx, NeutrinoReconstruction, name_tw_reco, id_toptag));
     disc_1toptag.reset(new BstarToTWChi2Discriminator(ctx, name_tw_reco));
@@ -186,7 +188,7 @@ namespace uhh2 {
     hist_btag_mc_efficiency.reset(new BTagMCEfficiencyHists(ctx,"BTagMCEfficiency", id_btag));    
     // toptag
     sel_1toptag.reset(new NTopJetSelection(1, 1, id_toptag));
-    sel_recomass.reset(new RecoMassSelection(ctx, 500., name_tw_reco));    
+    sel_recomass.reset(new RecoMassSelection(ctx, 500., name_tw_reco, name_discriminator));    
     hist_1toptag.reset(new AndHists(ctx, "1toptag"));
     hist_1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "1toptag_reco", name_tw_reco, name_discriminator));
     hist_1toptag->add_hist(new HOTVRHists(ctx, "1toptag_HOTVR_tagged", id_toptag));
@@ -197,31 +199,6 @@ namespace uhh2 {
     hist_0btag1toptag.reset(new AndHists(ctx, "0btag1toptag"));
     hist_0btag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_reco", name_tw_reco, name_discriminator));
     hist_0btag1toptag->add_hist(new HOTVRHists(ctx, "0btag1toptag_HOTVR_tagged", id_toptag));
-
-    // - 1+ btag
-    sel_1plusbtag.reset(new NJetSelection(1, -1, id_btag));
-    hist_1plusbtag1toptag.reset(new AndHists(ctx, "1plusbtag1toptag"));
-    hist_1plusbtag1toptag->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_reco", name_tw_reco, "closest_nu"));
-    hist_1plusbtag1toptag->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag1toptag_topmatch"));
-    hist_1plusbtag1toptag->add_hist(new HOTVRHists(ctx, "1plusbtag1toptag_HOTVR_tagged", id_toptag));
-    // PtBalance
-    sel_ptbal.reset(new Chi2Selection(ctx, name_tw_reco, 0.05, "deltaPt_W"));
-    hist_1plusbtag1toptag_tw.reset(new AndHists(ctx, "1plusbtag1toptag_tw"));
-    hist_1plusbtag1toptag_tw->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_tw_reco", name_tw_reco, "closest_nu"));
-    hist_1plusbtag1toptag_tw->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag1toptag_tw_topmatch"));
-    hist_1plusbtag1toptag_tw->add_hist(new HOTVRHists(ctx, "1plusbtag1toptag_tw_HOTVR_tagged", id_toptag));
-    hist_1plusbtag1toptag_tt.reset(new AndHists(ctx, "1plusbtag1toptag_tt"));
-    hist_1plusbtag1toptag_tt->add_hist(new BstarToTWHypothesisHists(ctx, "1plusbtag1toptag_tt_reco", name_tw_reco, "closest_nu"));
-    hist_1plusbtag1toptag_tt->add_hist(new HOTVRMatchingHists(ctx, "1plusbtag1toptag_tt_topmatch"));
-    hist_1plusbtag1toptag_tt->add_hist(new HOTVRHists(ctx, "1plusbtag1toptag_tt_HOTVR_tagged", id_toptag));
-    hist_0btag1toptag_tw.reset(new AndHists(ctx, "0btag1toptag_tw"));
-    hist_0btag1toptag_tw->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_tw_reco", name_tw_reco, "closest_nu"));
-    hist_0btag1toptag_tw->add_hist(new HOTVRMatchingHists(ctx, "0btag1toptag_tw_topmatch"));
-    hist_0btag1toptag_tw->add_hist(new HOTVRHists(ctx, "0btag1toptag_tw_HOTVR_tagged", id_toptag));
-    hist_0btag1toptag_tt.reset(new AndHists(ctx, "0btag1toptag_tt"));
-    hist_0btag1toptag_tt->add_hist(new BstarToTWHypothesisHists(ctx, "0btag1toptag_tt_reco", name_tw_reco, "closest_nu"));
-    hist_0btag1toptag_tt->add_hist(new HOTVRMatchingHists(ctx, "0btag1toptag_tt_topmatch"));
-    hist_0btag1toptag_tt->add_hist(new HOTVRHists(ctx, "0btag1toptag_tt_HOTVR_tagged", id_toptag));
 
     // - 1 btag
     sel_1btag.reset(new NJetSelection(1, 1, id_btag));
@@ -238,6 +215,8 @@ namespace uhh2 {
     hist_1btag1toptagdr->add_hist(new HOTVRMatchingHists(ctx, "1btag1toptagdr_topmatch"));
     // chi2
     sel_chi2.reset(new Chi2Selection(ctx, name_tw_reco, chi2_max, name_discriminator));
+    sel_chi2_cr_low.reset(new Chi2Selection(ctx, name_tw_reco, 50., name_discriminator));
+    sel_chi2_cr_high.reset(new Chi2Selection(ctx, name_tw_reco, 150., name_discriminator));
     hist_1btag1toptag20chi2.reset(new AndHists(ctx, "1btag1toptag20chi2"));
     hist_1btag1toptag20chi2->add_hist(new BstarToTWHypothesisHists(ctx, "1btag1toptag20chi2_reco", name_tw_reco, name_discriminator));
     hist_1btag1toptag20chi2->add_hist(new HOTVRHists(ctx, "1btag1toptag20chi2_HOTVR_tagged", id_toptag));
@@ -265,6 +244,20 @@ namespace uhh2 {
     hist_2btag1toptag->add_hist(new HOTVRMatchingHists(ctx, "2btag1toptag_topmatch"));
     hist_2btag1toptag->add_hist(new HOTVRHists(ctx, "2btag1toptag_HOTVR_tagged", id_toptag));
     if (do_pdf_variation) hist_2btag1toptag->add_hist(new BstarToTWPDFHists(ctx, "2btag1toptag_PDF_variations", true, do_pdf_variation));
+
+    // - Chi2 Scan - //
+    n_chi2 = 10;
+    double chi2[n_chi2] = {1, 5, 10, 15, 20, 30, 50, 75, 100, 200};
+    for (int i = 0; i < n_chi2; ++i)
+      {
+	std::unique_ptr<Selection> sel;
+	sel.reset(new Chi2Selection(ctx, name_tw_reco, chi2[i], name_discriminator));
+	scan_chi2.push_back(std::move(sel));
+	std::unique_ptr<Hists> hist;
+	hist.reset(new BstarToTWHypothesisHists(ctx, "Chi2Scan_reco" + to_string(i), name_tw_reco, name_discriminator));
+	hist_scan_chi2.push_back(std::move(hist));
+      }
+
   }
 
   bool BstarToTWAnalysisModule::process(Event & event) {
@@ -330,26 +323,10 @@ namespace uhh2 {
 	hist_1toptag->fill(event);
 	if (!sel_recomass->passes(event)) return false;
 	
-	// - 1+ btag region for testign
-	if (sel_1btag->passes(event) && sel_deltaR_bjetlep->passes(event))
-	  {
-	    hist_1plusbtag1toptag->fill(event);
-	    // split into tt and tw regions
-	    if (sel_ptbal->passes(event))
-	      hist_1plusbtag1toptag_tw->fill(event);
-	    else
-	      hist_1plusbtag1toptag_tt->fill(event);
-	  }
-
 	// - 0 btag regions - //
 	if (sel_0btag->passes(event))
 	  {
 	    hist_0btag1toptag->fill(event);
-	    // split into tt and tw regions
-	    if (sel_ptbal->passes(event))
-	      hist_0btag1toptag_tw->fill(event);
-	    else
-	      hist_0btag1toptag_tt->fill(event);
 	    // - Chi2
 	    if (sel_chi2->passes(event))
 	      {
@@ -368,6 +345,13 @@ namespace uhh2 {
 	      {
 		hist_1btag1toptagdr->fill(event);
 		// - Chi2
+		for (int i = 0; i < n_chi2; ++i)
+		  {
+		    if (scan_chi2.at(i)->passes(event))
+		      {
+			hist_scan_chi2.at(i)->fill(event);
+		      }
+		  }
 		if (sel_chi2->passes(event))
 		  {
 		  hist_1btag1toptag20chi2->fill(event);
@@ -375,7 +359,7 @@ namespace uhh2 {
 		    output_module->process(event);	
 		  return !do_for_cr;
 		  }
-		else
+		else if (sel_chi2_cr_high->passes(event) && !sel_chi2_cr_low->passes(event))
 		  hist_1btag1toptagchi2cr->fill(event);
 	      }
 	    else if (sel_deltaR_bjetlep_cr->passes(event) && sel_chi2->passes(event))

@@ -54,19 +54,20 @@ bool Chi2Selection::passes(const Event &event) {
   const BstarToTWHypothesis *hyp = get_best_hypothesis(event.get(h_hyp), m_disc_name);
   if (hyp)
     {
-      double chi2 = hyp->get_discriminator(m_disc_name);
+      double chi2 = hyp->get_discriminator("Chi2");
       return chi2 < m_chi2_max;
     }
   return false;
 }
 
-RecoMassSelection::RecoMassSelection(Context &ctx, double m_min_, string label):
+RecoMassSelection::RecoMassSelection(Context &ctx, double m_min_, string label, string disc_name):
+  m_disc_name(disc_name),
   m_min(m_min_),
   h_hyp(ctx.get_handle<vector<BstarToTWHypothesis>>(label)) {}
 
 bool RecoMassSelection::passes(const Event &event) {
   std::vector<BstarToTWHypothesis> hyps = event.get(h_hyp);
-  const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, "Chi2" );
+  const BstarToTWHypothesis* hyp = get_best_hypothesis( hyps, m_disc_name );
   if (!hyp)
     {
       cout << "WARNING: RecoMassSelection: Chi2 No hypothesis was valid!" << endl;

@@ -63,9 +63,10 @@ namespace uhh2 {
   
   class RecoMassSelection: public uhh2::Selection {
   public:
-    RecoMassSelection(uhh2::Context &ctx, double m_min_, std::string label);
+    RecoMassSelection(uhh2::Context &ctx, double m_min_, std::string label, std::string disc_name);
     virtual bool passes(const uhh2::Event &event) override;
   private:
+    std::string m_disc_name;
     double m_min;
     uhh2::Event::Handle<std::vector<BstarToTWHypothesis>> h_hyp;
   };

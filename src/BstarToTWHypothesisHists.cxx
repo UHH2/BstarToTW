@@ -8,47 +8,42 @@ using namespace std;
 BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const std::string & dirname, const std::string & hyps_name, const std::string & discriminator_name ): Hists(ctx, dirname){
 
   TString name = discriminator_name;
-    if(discriminator_name=="Chi2"){
-      name = "#chi^{2}";
-    }
-    else{
-      name += " discriminator";
-    }
-    Discriminator =   book<TH1F>("Discriminator", name,   100, 0, 500);
-    Discriminator_2 = book<TH1F>("Discriminator_2", name, 50,  0, 500);
-    Discriminator_3 = book<TH1F>("Discriminator_3", name, 300, 0,  30);     
+  name = "#chi^{2}";
+  Discriminator =   book<TH1F>("Discriminator", name,   100, 0, 500);
+  Discriminator_2 = book<TH1F>("Discriminator_2", name, 50,  0, 500);
+  Discriminator_3 = book<TH1F>("Discriminator_3", name, 300, 0,  30);     
+  
+  double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 3500};
+  // double xbins_fitbin[23] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3000, 3500}; // old binning
+  double xbins_fitbin[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
+  double xbins_extended[22] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200, 4000}; // old binning
+  Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 51, 500, 5500); // 100GeV binning for overview
+  Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV]", 21, xbins_extended);
+  Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV]", 20, xbins_fitbin);
+  Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
+    
+  // Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{b*}^{reco} [GeV/c^{2}]", 50, 0, 5000);
+  Bstar_reco_Pt = book<TH1F>("Bstar_reco_Pt", "p_{T, b#ast}^{reco}", 40, 0, 400);
+    
+  W_reco_M = book<TH1F>("W_reco_M", "M_{W}^{reco} [GeV]", 30, 0, 300);
+  W_reco_Pt = book<TH1F>("W_reco_Pt", "p_{T, W}^{reco} [GeV]", 100, 0, 2000);
 
-    double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 3500};
-    // double xbins_fitbin[23] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3000, 3500}; // old binning
-    double xbins_fitbin[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
-    double xbins_extended[22] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200, 4000}; // old binning
-    Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 51, 500, 5500); // 100GeV binning for overview
-    Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV]", 21, xbins_extended);
-    Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV]", 20, xbins_fitbin);
-    Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
-    
-    // Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{b*}^{reco} [GeV/c^{2}]", 50, 0, 5000);
-    Bstar_reco_Pt = book<TH1F>("Bstar_reco_Pt", "p_{T, b#ast}^{reco}", 40, 0, 400);
-    
-    W_reco_M = book<TH1F>("W_reco_M", "M_{W}^{reco} [GeV]", 30, 0, 300);
-    W_reco_Pt = book<TH1F>("W_reco_Pt", "p_{T, W}^{reco} [GeV]", 100, 0, 2000);
+  Top_reco_M = book<TH1F>("Top_reco_M", "M_{t}^{reco} [GeV]", 70, 0, 700);
+  Top_reco_Pt = book<TH1F>("Top_reco_Pt", "p_{T, t}^{reco} [GeV]", 100, 0, 2000);
+  DeltaR_top_W = book<TH1F>("DeltaR_top_W", "#Delta R_{t,W}", 60, 0, 6);
+  DeltaPhi_top_W = book<TH1F>("DeltaPhi_top_W", "#Delta #phi_{t,W}", 50, 2.5, 3.5);
+  DeltaPt_top_W = book<TH1F>("DeltaPt_top_W", "#Delta p_{T, t,W} [GeV]", 80, -400, 400);
+  DeltaPt_top_W_over_pt = book<TH1F>("DeltaPt_top_W_over_pt", "#Delta p_{T t,W}/p_{T t}", 50, -0.5, 0.5);
+  PtBalance = book<TH1F>("PtBalance","p_{T balance}", 100, -1, 1);
+  // DeltaEta_top_W = book<TH1F>("DeltaEta_top_W", "#Delta #eta_{t,W}", 20,-5,5);
 
-    Top_reco_M = book<TH1F>("Top_reco_M", "M_{t}^{reco} [GeV]", 70, 0, 700);
-    Top_reco_Pt = book<TH1F>("Top_reco_Pt", "p_{T, t}^{reco} [GeV]", 100, 0, 2000);
-    DeltaR_top_W = book<TH1F>("DeltaR_top_W", "#Delta R_{t,W}", 60, 0, 6);
-    DeltaPhi_top_W = book<TH1F>("DeltaPhi_top_W", "#Delta #phi_{t,W}", 50, 2.5, 3.5);
-    DeltaPt_top_W = book<TH1F>("DeltaPt_top_W", "#Delta p_{T, t,W} [GeV]", 80, -400, 400);
-    DeltaPt_top_W_over_pt = book<TH1F>("DeltaPt_top_W_over_pt", "#Delta p_{T t,W}/p_{T t}", 50, -0.5, 0.5);
-    PtBalance = book<TH1F>("PtBalance","p_{T balance}", 100, -1, 1);
-    // DeltaEta_top_W = book<TH1F>("DeltaEta_top_W", "#Delta #eta_{t,W}", 20,-5,5);
-
-    PtTop_over_PtW = book<TH1F>("PtTop_over_PtW", "p_{T}^{jet}/p_{T}^{W}", 40, 0, 2);
+  PtTop_over_PtW = book<TH1F>("PtTop_over_PtW", "p_{T}^{jet}/p_{T}^{W}", 40, 0, 2);
     
-    Discriminator_vs_M_bstar = book<TH2F>("Discriminator_vs_M_bstar", name+" vs M_{b*}^{rec}" , 50, 0, 500, 100, 0, 5000) ;
+  Discriminator_vs_M_bstar = book<TH2F>("Discriminator_vs_M_bstar", name+" vs M_{b*}^{rec}" , 50, 0, 500, 100, 0, 5000) ;
     
-    h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
-    m_name = hyps_name;
-    m_discriminator_name = discriminator_name;
+  h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
+  m_name = hyps_name;
+  m_discriminator_name = discriminator_name;
 }
 
 
@@ -91,11 +86,11 @@ void BstarToTWHypothesisHists::fill(const uhh2::Event & e){
 
   Bstar_reco_Pt->Fill (ptbstar_reco, weight);
 
-  Discriminator->Fill(hyp->get_discriminator(m_discriminator_name) ,weight);
-  Discriminator_2->Fill(hyp->get_discriminator(m_discriminator_name) ,weight);
-  Discriminator_3->Fill(hyp->get_discriminator(m_discriminator_name) ,weight);
+  Discriminator->Fill(hyp->get_discriminator("Chi2") ,weight);
+  Discriminator_2->Fill(hyp->get_discriminator("Chi2") ,weight);
+  Discriminator_3->Fill(hyp->get_discriminator("Chi2") ,weight);
 
-  Discriminator_vs_M_bstar->Fill(hyp->get_discriminator(m_discriminator_name), mbstar_reco, weight);
+  Discriminator_vs_M_bstar->Fill(hyp->get_discriminator("Chi2"), mbstar_reco, weight);
 
   double mtop = 0;
   if(hyp->get_topjet().isTimelike()) mtop = hyp->get_topjet().M();
