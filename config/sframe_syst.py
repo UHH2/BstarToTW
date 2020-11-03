@@ -10,12 +10,12 @@ sys.path.append('/nfs/dust/cms/user/froehlia/CMSSW_10_2_10/src/UHH2/Varial')
 sys_uncerts = {
     # 'name' : {'item name': 'item value', ...},
      # 'NOMINAL'               : {'b_TopPtReweight':'true', 'b_PDFVariation':'true'}, #{...} is a dummy
-     'SCALE_upup'            : {'ScaleVariationMuR':'up','ScaleVariationMuF':'up'},
-     'SCALE_upnone'          : {'ScaleVariationMuR':'up','ScaleVariationMuF':'none'},
-     'SCALE_noneup'          : {'ScaleVariationMuR':'none','ScaleVariationMuF':'up'},
-     'SCALE_nonedown'        : {'ScaleVariationMuR':'none','ScaleVariationMuF':'down'},
-     'SCALE_downnone'        : {'ScaleVariationMuR':'down','ScaleVariationMuF':'none'},
-     'SCALE_downdown'        : {'ScaleVariationMuR':'down','ScaleVariationMuF':'down'},
+     # 'SCALE_upup'            : {'ScaleVariationMuR':'up','ScaleVariationMuF':'up'},
+     # 'SCALE_upnone'          : {'ScaleVariationMuR':'up','ScaleVariationMuF':'none'},
+     # 'SCALE_noneup'          : {'ScaleVariationMuR':'none','ScaleVariationMuF':'up'},
+     # 'SCALE_nonedown'        : {'ScaleVariationMuR':'none','ScaleVariationMuF':'down'},
+     # 'SCALE_downnone'        : {'ScaleVariationMuR':'down','ScaleVariationMuF':'none'},
+     # 'SCALE_downdown'        : {'ScaleVariationMuR':'down','ScaleVariationMuF':'down'},
      'PU_up'                 : {'Systematic_PU':'up'},
      'PU_down'               : {'Systematic_PU':'down'},
      # 'MUOID_up'               : {'Systematic_MuonID':'up'},

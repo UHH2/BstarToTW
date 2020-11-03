@@ -989,6 +989,8 @@
       <Item Name="Systematic_TopTag"      Value="nominal" />
       
       <!-- Channel? ELECTRON or MUON -->
+      <Item Name="do_supplement_plots" Value="true"/>
+
       <Item Name="analysis_channel" Value="MUON"/>
 
       <Item Name="do_for_cr" Value="false"/>
