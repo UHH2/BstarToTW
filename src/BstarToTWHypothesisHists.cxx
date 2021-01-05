@@ -16,8 +16,8 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
   double xbins[17] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1900, 2100, 2400, 3500};
   // double xbins_fitbin[23] = {0, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3000, 3500}; // old binning
   double xbins_fitbin[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
-  double xbins_extended[22] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200, 4000}; // old binning
-  Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 51, 500, 5500); // 100GeV binning for overview
+  double xbins_extended[22] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200, 5500};
+  Bstar_reco_M_unbinned = book<TH1F>("Bstar_reco_M_unbinned", "M_{tW} [GeV]", 50, 500, 5500); // 100GeV binning for overview
   Bstar_reco_M_fine = book<TH1F>("Bstar_reco_M_fine", "M_{tW} [GeV]", 21, xbins_extended);
   Bstar_reco_M_rebin = book<TH1F>("Bstar_reco_M_rebin", "M_{tW} [GeV]", 20, xbins_fitbin);
   Bstar_reco_M = book<TH1F>("Bstar_reco_M", "M_{tW} [GeV]", 16, xbins);
@@ -27,6 +27,8 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
     
   W_reco_M = book<TH1F>("W_reco_M", "M_{W}^{reco} [GeV]", 30, 0, 300);
   W_reco_Pt = book<TH1F>("W_reco_Pt", "p_{T, W}^{reco} [GeV]", 100, 0, 2000);
+
+  neutrino_pz_dif = book<TH1F>("nu_pz_difference","|p_{z,#nu} - p_{z,#mu}|", 30,0,30);
 
   Top_reco_M = book<TH1F>("Top_reco_M", "M_{t}^{reco} [GeV]", 70, 0, 700);
   Top_reco_Pt = book<TH1F>("Top_reco_Pt", "p_{T, t}^{reco} [GeV]", 100, 0, 2000);
@@ -44,6 +46,7 @@ BstarToTWHypothesisHists::BstarToTWHypothesisHists(uhh2::Context & ctx, const st
   h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>(hyps_name);
   m_name = hyps_name;
   m_discriminator_name = discriminator_name;
+
 }
 
 
@@ -72,16 +75,18 @@ void BstarToTWHypothesisHists::fill(const uhh2::Event & e){
   if (mbstar_reco <= 4000.) 
     {
       Bstar_reco_M_rebin->Fill(mbstar_reco, weight);
+      Bstar_reco_M_fine->Fill(mbstar_reco, weight);
     }
   else 
     {
       Bstar_reco_M_rebin->Fill(3999.0, weight);
+      Bstar_reco_M_fine->Fill(3999.0, weight);
+
     }
 
 
   // Bstar_reco_M_rebin->Fill(mbstar_reco, weight);
   Bstar_reco_M_unbinned->Fill(mbstar_reco, weight);
-  Bstar_reco_M_fine->Fill(mbstar_reco, weight);
 
 
   Bstar_reco_Pt->Fill (ptbstar_reco, weight);
@@ -91,6 +96,8 @@ void BstarToTWHypothesisHists::fill(const uhh2::Event & e){
   Discriminator_3->Fill(hyp->get_discriminator("Chi2") ,weight);
 
   Discriminator_vs_M_bstar->Fill(hyp->get_discriminator("Chi2"), mbstar_reco, weight);
+
+  neutrino_pz_dif->Fill(hyp->get_discriminator("closest_nu"),weight);
 
   double mtop = 0;
   if(hyp->get_topjet().isTimelike()) mtop = hyp->get_topjet().M();

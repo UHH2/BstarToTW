@@ -54,7 +54,7 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
 
   //For Mbstar reconstruction
   h_hyps = ctx.get_handle<std::vector<BstarToTWHypothesis>>("tW_reco");
-  m_discriminator_name ="Chi2"; 
+  m_discriminator_name ="closest_nu"; 
 
   //if(!is_LO && !m_oname.Contains("SingleTop")) m_pdfname = "PDF4LHC15_nlo_mc"; 
 
@@ -79,7 +79,7 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
 
   for(int i=0; i<n_hists; i++){
     stringstream ss_name;
-    ss_name << "Bstar_reco_M_rebin_PDF_"  << i+1 ;
+    ss_name << "Bstar_reco_M_fine_PDF_"  << i+1 ;
 
     stringstream ss_title;
     ss_title << "M_{tW} [GeV] for PDF No. "  << i+1 << " out of 100" ;
@@ -91,10 +91,11 @@ BstarToTWPDFHists::BstarToTWPDFHists(Context & ctx, const string & dirname, bool
     histo_names[i] = s_name;
 
     
-    double xbins[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000}; // new extended binning
+    // double xbins[21] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 4000};
+    double xbins[22] = {500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2200, 2400, 2600, 2800, 3200, 5500}; // new extended binning
 
 
-    book<TH1F>(char_name, char_title, 20, xbins);
+    book<TH1F>(char_name, char_title, 21, xbins);
   }
 
 }
