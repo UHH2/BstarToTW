@@ -980,7 +980,7 @@
       <Item Name="ScaleVariationMuR"      Value="none" />
       <Item Name="ScaleVariationMuF"      Value="none" />
 
-      <Item Name="b_PDFVariation"     Value="true" />
+      <Item Name="b_PDFVariation"         Value="false" />
       <Item Name="b_TopPtReweight"        Value="true" />
 
       <Item Name="Systematic_PU"          Value="central" />

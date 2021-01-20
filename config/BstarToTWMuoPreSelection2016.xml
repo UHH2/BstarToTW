@@ -155,11 +155,11 @@
  <!--    <OutputTree Name="AnalysisTree" /> -->
  <!--  </InputData> -->
 
- <!--  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_C_2016v3" Cacheable="&b_Cacheable;"> -->
- <!--    &DATA_C; -->
- <!--    <InputTree Name="AnalysisTree" /> -->
- <!--    <OutputTree Name="AnalysisTree" /> -->
- <!--  </InputData> -->
+  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_C_2016v3" Cacheable="&b_Cacheable;">
+    &DATA_C;
+    <InputTree Name="AnalysisTree" />
+    <OutputTree Name="AnalysisTree" />
+  </InputData>
 
  <!--  <InputData Lumi="1" NEventsMax="&NEVT;" Type="DATA" Version="DATA_D_2016v3" Cacheable="&b_Cacheable;"> -->
  <!--    &DATA_D; -->
