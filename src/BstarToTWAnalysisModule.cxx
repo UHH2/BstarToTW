@@ -87,6 +87,7 @@ namespace uhh2 {
     // delta R (b, lepton)
     std::unique_ptr<Selection> sel_deltaR_bjetlep, sel_deltaR_bjetlep_cr; // delta R between primary lepton and b-jet/leading-jet
     std::unique_ptr<AndHists> hist_1btag1toptagdr;
+    // std::unique_ptr<AndHists> hist_2btag1toptag_passdr, hist_2btag1toptag_faildr;
     // chi2 
     std::unique_ptr<Selection> sel_chi2, sel_chi2_cr_low, sel_chi2_cr_high;
     std::unique_ptr<AndHists> hist_0btag1toptag20chi2, hist_1btag1toptag20chi2;
@@ -213,6 +214,11 @@ namespace uhh2 {
     hist_1btag1toptagdr->add_hist(new BstarToTWHypothesisHists(ctx, "1btag1toptagdr_reco", name_tw_reco, name_discriminator));
     hist_1btag1toptagdr->add_hist(new HOTVRHists(ctx, "1btag1toptagdr_HOTVR_tagged", id_toptag));
     hist_1btag1toptagdr->add_hist(new HOTVRMatchingHists(ctx, "1btag1toptagdr_topmatch"));
+
+    // hist_2btag1toptag_passdr.reset(new AndHists(ctx, "2btag1toptag_passdr"));
+    // hist_2btag1toptag_passdr->add_hist(new BstarToTWHypothesisHists(ctx, "2btag1toptag_passdr_reco", name_tw_reco, name_discriminator));
+    // hist_2btag1toptag_faildr.reset(new AndHists(ctx, "2btag1toptag_faildr"));
+    // hist_2btag1toptag_faildr->add_hist(new BstarToTWHypothesisHists(ctx, "2btag1toptag_faildr_reco", name_tw_reco, name_discriminator));
     // chi2
     sel_chi2.reset(new Chi2Selection(ctx, name_tw_reco, chi2_max, name_discriminator));
     sel_chi2_cr_low.reset(new Chi2Selection(ctx, name_tw_reco, 50., name_discriminator));
@@ -373,6 +379,10 @@ namespace uhh2 {
 	    if (!do_for_cr)
 	      output_module->process(event);	
 	    return !do_for_cr;
+	    // if (sel_deltaR_bjetlep->passes(event)) 
+	    //   hist_2btag1toptag_passdr->fill(event);
+	    // else
+	    //   hist_2btag1toptag_faildr->fill(event);
 	  }
       }
     
